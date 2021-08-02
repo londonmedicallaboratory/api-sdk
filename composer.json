@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
@@ -17,6 +17,8 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "psalm/plugin-symfony": "^2.4",
+        "vimeo/psalm": "^4.9"
     },
     "config": {
         "optimize-autoloader": true,
