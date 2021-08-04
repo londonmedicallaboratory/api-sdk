@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Biomarker;
+namespace LML\SDK\Model\Biomarker;
 
-use App\Model\IdInterface;
-use App\Model\Category\CategoryInterface;
+use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\Category\CategoryInterface;
 
 interface BiomarkerInterface extends IdInterface
 {

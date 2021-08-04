@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Product;
+namespace LML\SDK\Model\Product;
 
-use App\Model\IdInterface;
-use App\Model\File\FileInterface;
-use App\Model\Shipping\ShippingInterface;
-use App\Model\Category\CategoryInterface;
-use App\Model\Biomarker\BiomarkerInterface;
+use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\File\FileInterface;
+use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Model\Category\CategoryInterface;
+use LML\SDK\Model\Biomarker\BiomarkerInterface;
 
 interface ProductInterface extends IdInterface
 {

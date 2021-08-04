@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Customer;
+namespace LML\SDK\Model\Customer;
 
-use App\Model\IdInterface;
+use LML\SDK\Model\IdInterface;
 
 interface CustomerAddressInterface extends IdInterface
 {

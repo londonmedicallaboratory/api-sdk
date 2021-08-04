@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Basket;
+namespace LML\SDK\Model\Basket;
 
-use App\Model\Money\PriceInterface;
-use App\Model\Product\ProductInterface;
+use LML\SDK\Model\Money\PriceInterface;
+use LML\SDK\Model\Product\ProductInterface;
 
 interface BasketItemInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Product;
+namespace LML\SDK\Model\Product;
 
-use App\Model\IdInterface;
+use LML\SDK\Model\IdInterface;
 
 interface ProductFaqInterface extends IdInterface
 {

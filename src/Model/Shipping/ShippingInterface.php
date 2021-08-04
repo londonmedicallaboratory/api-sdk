@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Shipping;
+namespace LML\SDK\Model\Shipping;
 
-use App\Model\IdInterface;
+use LML\SDK\Model\IdInterface;
 
 interface ShippingInterface extends IdInterface
 {

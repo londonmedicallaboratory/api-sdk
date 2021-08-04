@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Biomarker;
+namespace LML\SDK\Model\Biomarker;
 
 interface TestTypeInterface
 {

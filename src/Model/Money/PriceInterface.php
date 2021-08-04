@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Money;
+namespace LML\SDK\Model\Money;
 
 use Stringable;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\File;
+namespace LML\SDK\Model\File;
 
-use App\Model\IdInterface;
+use LML\SDK\Model\IdInterface;
 
 interface FileInterface extends IdInterface
 {
