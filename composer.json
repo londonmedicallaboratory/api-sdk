@@ -9,12 +9,14 @@
         }
     ],
     "require": {
-        "symfony/http-kernel": "^5.3"
+        "symfony/http-kernel": "^5.3",
+        "symfony/http-client": "^5.3"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "vimeo/psalm": "^4.9",
-        "psalm/plugin-symfony": "^2.4"
+        "psalm/plugin-symfony": "^2.4",
+        "symfony/phpunit-bridge": "^5.3"
     },
     "autoload": {
         "psr-4": {
