@@ -10,7 +10,5 @@ interface PriceInterface
 
     public function getCurrency(): string;
 
-    public function getCurrencyCode(): string;
-
     public function getFormattedValue(): string;
 }

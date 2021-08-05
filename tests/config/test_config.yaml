@@ -1,0 +1,9 @@
+framework:
+    test: true
+
+lml_sdk:
+    base_url: 'http://localhost/api'
+    username: 'test@example.com'
+    password: '123123123'
+
+

@@ -4,30 +4,16 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ProductRepositoryTest extends TestCase
+class ProductRepositoryTest extends KernelTestCase
 {
-    private HttpClientInterface $client;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->client = HttpClient::create();
-    }
-
     public function testClient(): void
     {
-        $responses = [];
-        $client = $this->client;
-        for ($i = 0; $i < 5; ++$i) {
-            $uri = "https://http2.akamai.com/demo/tile-$i.png";
-            $responses[] = $client->request('GET', $uri);
-        }
-        foreach ($responses as $response) {
-            $response->getContent();
-        }
+        self::bootKernel();
+
+        $repo = self::$kernel->getContainer()->get('lml_api.product_repository');
+        $repo->find('qwe');
+
     }
 }

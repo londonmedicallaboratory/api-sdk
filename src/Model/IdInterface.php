@@ -6,5 +6,6 @@ namespace LML\SDK\Model;
 
 interface IdInterface
 {
+    public function getId(): string;
 
 }
