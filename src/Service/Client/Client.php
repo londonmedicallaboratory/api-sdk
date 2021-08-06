@@ -33,6 +33,7 @@ class Client
         $url = $this->baseUrl . $url;
         $content = $this->client->request('GET', $url)->getContent();
 
+        dd($content);
         return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
     }
 }
