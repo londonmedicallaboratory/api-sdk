@@ -10,8 +10,8 @@ lml_view:
     cache_pool: view_cache_pool
 
 lml_sdk:
-    base_url: 'http://localhost/api'
-    username: 'test@example.com'
-    password: '123123123'
+    base_url: '%env(resolve:API_BASE_URL)%'
+    username: '%env(resolve:API_USERNAME)%'
+    password: '%env(resolve:API_PASSWORD)%'
     cache_pool: api_pool
     cache_expiration: 5

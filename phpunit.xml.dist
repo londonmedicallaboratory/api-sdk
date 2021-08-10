@@ -23,6 +23,10 @@
         <server name="KERNEL_CLASS" value="LML\SDK\Tests\TestKernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1" />
         <env name="APP_ENV" value="testing" force="true"/>
+
+        <env name="API_BASE_URL" value="https://example.com" force="true"/>
+        <env name="API_USERNAME" value="example" force="true"/>
+        <env name="API_PASSWORD" value="example" force="true"/>
     </php>
 
 

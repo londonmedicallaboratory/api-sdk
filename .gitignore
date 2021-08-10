@@ -3,3 +3,4 @@ lsp
 .idea
 .phpunit.cache
 var
+phpunit.xml
