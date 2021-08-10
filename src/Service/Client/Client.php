@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Service\Client;
 
 use RuntimeException;
+use LML\SDK\Lazy\AsyncLazyValue;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -34,6 +35,23 @@ class Client
         );
     }
 
+//    public function getAsync(string $url, array $filters = [], int $page = 1)
+//    {
+//        $url = str_replace('//', '/', $url);
+//        $url = $this->baseUrl . $url;
+//
+//        $filters['page'] = $page;
+//        $options = [
+//            'query' => $filters,
+//        ];
+//
+//        $cacheKey = sprintf('%s-%s', $url, json_encode($options, JSON_THROW_ON_ERROR));
+//
+//        $response = $this->client->request('GET', $url, $options);
+//
+//        return new AsyncLazyValue($response);
+//    }
+
     /**
      * @return array<string, mixed>
      *
@@ -53,11 +71,10 @@ class Client
         $cacheKey = sprintf('%s-%s', $url, json_encode($options, JSON_THROW_ON_ERROR));
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
 
-        return $cache->get($cacheKey, function (ItemInterface $item) use ($url, $options): mixed {
+        return $cache->get($cacheKey, function (ItemInterface $item) use ($url, $options): array {
             $item->expiresAfter($this->cacheExpiration);
-            $content = $this->client->request('GET', $url, $options)->getContent();
 
-            return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            return $this->client->request('GET', $url, $options)->toArray();
         });
     }
 }

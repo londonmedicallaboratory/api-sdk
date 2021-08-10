@@ -24,6 +24,12 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 {
     private ?Client $client = null;
 
+//    public function findAsyncPaginated(array $filters = [], ?string $baseUrl = null, int $page = 1)
+//    {
+//        $client = $this->client ?? throw new RuntimeException();
+//
+//    }
+
     /**
      * @param TFilters $filters
      *
@@ -74,7 +80,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
                 $results[] = $item;
             }
             $page++;
-        } while ($paginated->getNextPage());
+        } while ($paginated->hasNextPage());
 
         return $results;
     }
