@@ -4,9 +4,19 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Shipping;
 
-use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\ModelInterface;
 
-interface ShippingInterface extends IdInterface
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      type: string,
+ *      description: ?string,
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
+interface ShippingInterface extends ModelInterface
 {
     public function getType(): string;
 

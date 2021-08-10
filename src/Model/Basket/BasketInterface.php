@@ -9,9 +9,9 @@ use LML\SDK\Model\Money\PriceInterface;
 interface BasketInterface
 {
     /**
-     * @return iterable<BasketItemInterface>
+     * @return list<BasketItemInterface>
      */
-    public function getItems(): iterable;
+    public function getItems();
 
     public function getTotal(): PriceInterface;
 }

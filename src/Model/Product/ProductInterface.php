@@ -4,14 +4,27 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Product;
 
-use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
 use LML\SDK\Model\Category\CategoryInterface;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 
-interface ProductInterface extends IdInterface
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      slug: string,
+ *      description: string,
+ *      short_description: string,
+ *      preview_image_url: ?string,
+ *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
+interface ProductInterface extends ModelInterface
 {
     public function getName(): string;
 
@@ -26,27 +39,27 @@ interface ProductInterface extends IdInterface
     public function getPreviewImageUrl(): ?string;
 
     /**
-     * @return iterable<ShippingInterface>
+     * @return list<ShippingInterface>
      */
-    public function getShippingTypes(): iterable;
+    public function getShippingTypes();
 
     /**
-     * @return iterable<FileInterface>
+     * @return list<FileInterface>
      */
-    public function getFiles(): iterable;
+    public function getFiles();
 
     /**
-     * @return iterable<BiomarkerInterface>
+     * @return list<BiomarkerInterface>
      */
-    public function getBiomarkers(): iterable;
+    public function getBiomarkers();
 
     /**
-     * @return iterable<ProductFaqInterface>
+     * @return list<ProductFaqInterface>
      */
-    public function getFaqs(): iterable;
+    public function getFaqs();
 
     /**
-     * @return iterable<CategoryInterface>
+     * @return list<CategoryInterface>
      */
-    public function getCategories(): iterable;
+    public function getCategories();
 }

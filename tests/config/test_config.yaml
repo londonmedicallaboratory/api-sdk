@@ -1,9 +1,17 @@
 framework:
     test: true
+    cache:
+        pools:
+            view_cache_pool:    # default pool name; use redis if possible
+                tags: true      # adapter must allow tagging items
+            api_pool:
+
+lml_view:
+    cache_pool: view_cache_pool
 
 lml_sdk:
     base_url: 'http://localhost/api'
     username: 'test@example.com'
     password: '123123123'
-
-
+    cache_pool: api_pool
+    cache_expiration: 5

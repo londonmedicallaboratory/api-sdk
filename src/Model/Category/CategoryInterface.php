@@ -4,10 +4,20 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Category;
 
-use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 
-interface CategoryInterface extends IdInterface
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      slug: string,
+ *      description: ?string,
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
+interface CategoryInterface extends ModelInterface
 {
     public function getName(): string;
 
@@ -16,7 +26,7 @@ interface CategoryInterface extends IdInterface
     public function getDescription(): ?string;
 
     /**
-     * @return iterable<BiomarkerInterface>
+     * @return list<BiomarkerInterface>
      */
-    public function getBiomarkers(): iterable;
+    public function getBiomarkers();
 }

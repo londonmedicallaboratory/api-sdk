@@ -5,15 +5,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="lml_sdk.client" class="LML\SDK\Service\Client\Client"/>
 
-        <instanceof id="LML\SDK\Repository\RepositoryInterface">
-            <tag name="lml_sdk.repository"/>
-        </instanceof>
-
-        <service id="lml_api.client" class="LML\SDK\Service\Client\Client"/>
-
-        <service id="lml_api.product_repository" class="LML\SDK\Repository\Product\ProductRepository"/>
-        <service id="lml_api.identity_map" class="LML\SDK\Service\IdentityMap\IdentityMap"/>
+        <service id="LML\SDK\Repository\ProductRepository">
+            <tag name="lml_sdk.repository" />
+        </service>
+        <service id="LML\SDK\Repository\BiomarkerRepository">
+            <tag name="lml_sdk.repository" />
+        </service>
+        <service id="LML\SDK\Repository\CategoryRepository">
+            <tag name="lml_sdk.repository" />
+        </service>
+        <service id="LML\SDK\Repository\ShippingRepository">
+            <tag name="lml_sdk.repository" />
+        </service>
 
     </services>
 </container>

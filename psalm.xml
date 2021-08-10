@@ -11,6 +11,8 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="src/DependencyInjection" />
+            <file name="src/LMLSDKBundle.php" />
         </ignoreFiles>
     </projectFiles>
 </psalm>

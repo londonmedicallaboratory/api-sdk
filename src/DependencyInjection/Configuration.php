@@ -14,9 +14,11 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('lml_sdk');
         $treeBuilder->getRootNode()
             ->children()
-            ->scalarNode('base_url')->isRequired()->end()
-            ?->scalarNode('username')->isRequired()->end()
-            ?->scalarNode('password')->isRequired()->end()
+            ->scalarNode('base_url')->defaultValue('')->isRequired()->end()
+            ?->scalarNode('username')->defaultValue('')->isRequired()->end()
+            ?->scalarNode('password')->defaultValue('')->isRequired()->end()
+            ?->scalarNode('cache_pool')->defaultValue(null)->end()
+            ?->integerNode('cache_expiration')->defaultValue(0)->end()
             ?->end();
 
         return $treeBuilder;

@@ -4,9 +4,19 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Product;
 
-use LML\SDK\Model\IdInterface;
+use LML\SDK\Model\ModelInterface;
 
-interface ProductFaqInterface extends IdInterface
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      question: string,
+ *      answer: string,
+ *      priority: int,
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
+interface ProductFaqInterface extends ModelInterface
 {
     public function getQuestion(): string;
 

@@ -1,4 +1,0 @@
-lml_sdk:
-    base_url: 'base_url_or_env'
-    username: 'username_or_env'
-    password: 'password_or_env'

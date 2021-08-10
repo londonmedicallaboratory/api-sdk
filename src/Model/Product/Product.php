@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Product;
 
+use LML\View\Lazy\LazyValue;
+use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Model\Money\PriceInterface;
+use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Model\Category\CategoryInterface;
+use LML\SDK\Model\Biomarker\BiomarkerInterface;
 
-/**
- * extends AbstractModel<array{
- *      id: string,
- *      name: string,
- *      slug: string,
- *      description: string,
- *      short_description: string,
- *      preview_image_url: ?string,
- *      price: array{amount_minor: int, currency: string, formatted_value: string},
- * }>
- */
 class Product implements ProductInterface
 {
+    /**
+     * @param LazyValue<list<BiomarkerInterface>> $biomarkers
+     * @param LazyValue<list<ShippingInterface>> $shippingTypes
+     * @param LazyValue<list<FileInterface>> $files
+     * @param LazyValue<list<CategoryInterface>> $categories
+     */
     public function __construct(
         private string $id,
         private string $name,
@@ -27,8 +27,17 @@ class Product implements ProductInterface
         private string $shortDescription,
         private ?string $previewImageUrl,
         private PriceInterface $price,
+        private LazyValue $biomarkers,
+        private LazyValue $shippingTypes,
+        private LazyValue $files,
+        private LazyValue $categories,
     )
     {
+    }
+
+    public function getBiomarkers()
+    {
+        return $this->biomarkers->getValue();
     }
 
     public function getId(): string
@@ -66,28 +75,42 @@ class Product implements ProductInterface
         return $this->price;
     }
 
-    public function getShippingTypes(): iterable
+    public function getShippingTypes()
+    {
+        return $this->shippingTypes->getValue();
+    }
+
+    public function getFiles()
+    {
+        return $this->files->getValue();
+    }
+
+    public function getFaqs()
     {
         return [];
     }
 
-    public function getFiles(): iterable
+    public function getCategories()
     {
-        return [];
+        return $this->categories->getValue();
     }
 
-    public function getBiomarkers(): iterable
+    public function toArray()
     {
-        return [];
-    }
+        $price = $this->getPrice();
 
-    public function getFaqs(): iterable
-    {
-        return [];
-    }
-
-    public function getCategories(): iterable
-    {
-        return [];
+        return [
+            'id'                => $this->getId(),
+            'name'              => $this->getName(),
+            'slug'              => $this->getSlug(),
+            'description'       => $this->getLongDescription(),
+            'short_description' => $this->getShortDescription(),
+            'preview_image_url' => $this->getPreviewImageUrl(),
+            'price'             => [
+                'amount_minor'    => $price->getAmount(),
+                'currency'        => $price->getCurrency(),
+                'formatted_value' => $price->getFormattedValue(),
+            ],
+        ];
     }
 }
