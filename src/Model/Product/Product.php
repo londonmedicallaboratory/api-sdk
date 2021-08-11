@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Product;
 
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Model\File\FileInterface;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
 use LML\SDK\Model\Category\CategoryInterface;
@@ -14,10 +14,10 @@ use LML\SDK\Model\Biomarker\BiomarkerInterface;
 class Product implements ProductInterface
 {
     /**
-     * @param LazyValue<list<BiomarkerInterface>> $biomarkers
-     * @param LazyValue<list<ShippingInterface>> $shippingTypes
-     * @param LazyValue<list<FileInterface>> $files
-     * @param LazyValue<list<CategoryInterface>> $categories
+     * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
+     * @param LazyValueInterface<list<ShippingInterface>> $shippingTypes
+     * @param LazyValueInterface<list<FileInterface>> $files
+     * @param LazyValueInterface<list<CategoryInterface>> $categories
      */
     public function __construct(
         private string $id,
@@ -27,10 +27,10 @@ class Product implements ProductInterface
         private string $shortDescription,
         private ?string $previewImageUrl,
         private PriceInterface $price,
-        private LazyValue $biomarkers,
-        private LazyValue $shippingTypes,
-        private LazyValue $files,
-        private LazyValue $categories,
+        private LazyValueInterface $biomarkers,
+        private LazyValueInterface $shippingTypes,
+        private LazyValueInterface $files,
+        private LazyValueInterface $categories,
     )
     {
     }

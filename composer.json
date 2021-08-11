@@ -12,7 +12,9 @@
         "symfony/http-kernel": "^5.3",
         "symfony/http-client": "^5.3",
         "endroid/installer": "^1.3",
-        "londonmedicallaboratory/view-bundle": "dev-master"
+        "londonmedicallaboratory/view-bundle": "dev-master",
+        "react/http": "^1.5",
+        "clue/block-react": "^1.4"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -20,7 +22,9 @@
         "psalm/plugin-symfony": "^2.4",
         "symfony/phpunit-bridge": "^5.3",
         "symfony/framework-bundle": "^5.3",
-        "symfony/yaml": "^5.3"
+        "symfony/yaml": "^5.3",
+        "symfony/stopwatch": "^5.3",
+        "bocmah/psalm-reactphp-promise-plugin": "^0.1.1"
     },
     "repositories": [
         {

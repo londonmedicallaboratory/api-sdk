@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\View\Lazy\LazyValue;
+use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Product\Product;
+use React\Promise\PromiseInterface;
 use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Category\CategoryInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\Model\Biomarker\BiomarkerInterface;
 use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Model\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**
@@ -44,10 +46,10 @@ class ProductRepository extends AbstractViewRepository
             shortDescription: $entity['short_description'],
             previewImageUrl: $entity['preview_image_url'],
             price: $price,
-            biomarkers: new LazyValue(fn() => $this->getBiomarkers($id)),
-            shippingTypes: new LazyValue(fn() => $this->getShippingTypes($id)),
-            files: new LazyValue(fn() => $this->getFiles($id)),
-            categories: new LazyValue(fn() => $this->getCategories($id)),
+            biomarkers: new LazyPromise($this->getBiomarkers($id)),
+            shippingTypes: new LazyPromise($this->getShippingTypes($id)),
+            files: new LazyPromise($this->getFiles($id)),
+            categories: new LazyPromise($this->getCategories($id)),
         );
     }
 
@@ -57,42 +59,42 @@ class ProductRepository extends AbstractViewRepository
     }
 
     /**
-     * @return list<FileInterface>
+     * @return PromiseInterface<list<CategoryInterface>>
+     */
+    private function getCategories(string $id): PromiseInterface
+    {
+        $url = sprintf('/product/%s/categories', $id);
+
+        return $this->get(CategoryRepository::class)->findBy(url: $url);
+    }
+
+    /**
+     * @return PromiseInterface<list<FileInterface>>
      */
     private function getFiles(string $id)
     {
         $url = sprintf('/product/%s/files', $id);
 
-        return $this->get(FileRepository::class)->findFromUrl($url);
+        return $this->get(FileRepository::class)->findBy(url: $url);
     }
 
     /**
-     * @return list<CategoryInterface>
-     */
-    private function getCategories(string $id)
-    {
-        $url = sprintf('/product/%s/categories', $id);
-
-        return $this->get(CategoryRepository::class)->findFromUrl($url);
-    }
-
-    /**
-     * @return list<BiomarkerInterface>
+     * @return PromiseInterface<list<BiomarkerInterface>>
      */
     private function getBiomarkers(string $id)
     {
         $url = sprintf('/product/%s/biomarkers', $id);
 
-        return $this->get(BiomarkerRepository::class)->findFromUrl($url);
+        return $this->get(BiomarkerRepository::class)->findBy(url: $url);
     }
 
     /**
-     * @return list<ShippingInterface>
+     * @return PromiseInterface<list<ShippingInterface>>
      */
     private function getShippingTypes(string $id)
     {
         $url = sprintf('/product/%s/shipping', $id);
 
-        return $this->get(ShippingRepository::class)->findFromUrl($url);
+        return $this->get(ShippingRepository::class)->findBy(url: $url);
     }
 }

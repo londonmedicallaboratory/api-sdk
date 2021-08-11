@@ -1,18 +1,23 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="1"
-    resolveFromConfigFile="true"
-    findUnusedPsalmSuppress="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        errorLevel="1"
+        resolveFromConfigFile="true"
+        findUnusedPsalmSuppress="false"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
-            <directory name="src/DependencyInjection" />
-            <file name="src/LMLSDKBundle.php" />
+            <directory name="vendor"/>
+            <directory name="src/DependencyInjection"/>
+            <file name="src/LMLSDKBundle.php"/>
         </ignoreFiles>
     </projectFiles>
+
+
+    <plugins>
+        <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>
+    </plugins>
 </psalm>

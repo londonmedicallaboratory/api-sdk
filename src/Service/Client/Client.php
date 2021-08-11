@@ -4,77 +4,79 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client;
 
+use Closure;
 use RuntimeException;
-use LML\SDK\Lazy\AsyncLazyValue;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use React\Http\Browser;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Message\ResponseInterface;
 use function sprintf;
-use function json_decode;
 use function json_encode;
 use function str_replace;
+use function json_decode;
+use function array_merge;
+use function base64_encode;
+use function http_build_query;
 
 class Client
 {
-    private HttpClientInterface $client;
+    private Browser $browser;
 
     public function __construct(
         private string $baseUrl,
-        string $username,
-        string $password,
-        private ?CacheInterface $cache,
+        private string $username,
+        private string $password,
+        private ?CacheItemPoolInterface $cache,
         private int $cacheExpiration,
     )
     {
-        $this->client = HttpClient::createForBaseUri(
-            $baseUrl,
-            [
-                'auth_basic' => [$username, $password],
-            ]
-        );
+        $this->browser = new Browser();
     }
 
-//    public function getAsync(string $url, array $filters = [], int $page = 1)
-//    {
-//        $url = str_replace('//', '/', $url);
-//        $url = $this->baseUrl . $url;
-//
-//        $filters['page'] = $page;
-//        $options = [
-//            'query' => $filters,
-//        ];
-//
-//        $cacheKey = sprintf('%s-%s', $url, json_encode($options, JSON_THROW_ON_ERROR));
-//
-//        $response = $this->client->request('GET', $url, $options);
-//
-//        return new AsyncLazyValue($response);
-//    }
-
     /**
-     * @return array<string, mixed>
+     * @return PromiseInterface<mixed>
      *
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
-    public function get(string $url, array $filters = [], int $page = 1): array
+    public function getAsyncPromise(string $url, array $filters = [], int $page = 1): PromiseInterface
     {
+        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
         $url = str_replace('//', '/', $url);
         $url = $this->baseUrl . $url;
+//        $url .= '/';
 
-        $filters['page'] = $page;
-        $options = [
-            'query' => $filters,
-        ];
+        if ($queryParams) {
+            $url .= '?' . $queryParams;
+        }
 
-        $cacheKey = sprintf('%s-%s', $url, json_encode($options, JSON_THROW_ON_ERROR));
+        $cacheKey = json_encode($url, JSON_THROW_ON_ERROR);
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
 
-        return $cache->get($cacheKey, function (ItemInterface $item) use ($url, $options): array {
-            $item->expiresAfter($this->cacheExpiration);
+        $item = $cache->getItem($cacheKey);
 
-            return $this->client->request('GET', $url, $options)->toArray();
-        });
+        if ($item->isHit()) {
+            return new Promise(function (Closure $resolve) use ($item) {
+                $resolve($item->get());
+            });
+        }
+
+        $token = sprintf('%s:%s', $this->username, $this->password);
+
+        /** @psalm-suppress TooManyTemplateParams */
+        return $this->browser->get($url, [
+            'Authorization' => 'Basic ' . base64_encode($token),
+        ])
+            ->then(function (ResponseInterface $response) use ($item, $cache): array {
+                $body = (string)$response->getBody();
+                /** @var array<string, mixed> $data */
+                $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                $item->expiresAfter($this->cacheExpiration);
+                $item->set($data);
+                $cache->save($item);
+
+                return $data;
+            });
     }
 }

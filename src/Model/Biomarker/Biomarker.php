@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Biomarker;
 
-use LML\View\Lazy\LazyValue;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Category\CategoryInterface;
 
 class Biomarker implements BiomarkerInterface
 {
     /**
-     * @param LazyValue<CategoryInterface> $category
+     * @param LazyValueInterface<CategoryInterface> $category
      */
     public function __construct(
         private string $id,
@@ -18,7 +18,7 @@ class Biomarker implements BiomarkerInterface
         private string $slug,
         private string $code,
         private ?string $description,
-        private LazyValue $category,
+        private LazyValueInterface $category,
     )
     {
     }
@@ -61,10 +61,10 @@ class Biomarker implements BiomarkerInterface
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'code' => $this->getCode(),
-            'slug' => $this->getSlug(),
+            'id'          => $this->getId(),
+            'name'        => $this->getName(),
+            'code'        => $this->getCode(),
+            'slug'        => $this->getSlug(),
             'description' => $this->getDescription(),
         ];
     }

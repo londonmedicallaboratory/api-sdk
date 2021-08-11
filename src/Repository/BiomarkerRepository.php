@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\View\Lazy\LazyValue;
+use LML\SDK\Lazy\LazyPromise;
+use React\Promise\PromiseInterface;
 use LML\SDK\Model\Biomarker\Biomarker;
-use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Model\Category\CategoryInterface;
 use LML\SDK\ViewFactory\AbstractViewRepository;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
@@ -31,7 +32,7 @@ class BiomarkerRepository extends AbstractViewRepository
             slug: $entity['slug'],
             code: $entity['code'],
             description: $entity['description'],
-            category: new LazyValue(fn() => $this->getCategory($id))
+            category: new LazyPromise($this->getCategory($id))
         );
     }
 
@@ -40,10 +41,13 @@ class BiomarkerRepository extends AbstractViewRepository
         return '/biomarkers';
     }
 
-    private function getCategory(string $id): CategoryInterface
+    /**
+     * @return PromiseInterface<CategoryInterface>
+     */
+    private function getCategory(string $id)
     {
         $url = sprintf('/biomarker/%s/category', $id);
 
-        return $this->get(CategoryRepository::class)->findOneFromUrl($url) ?? throw new DataNotFoundException();
+        return $this->get(CategoryRepository::class)->findOneByOrException(url: $url);
     }
 }
