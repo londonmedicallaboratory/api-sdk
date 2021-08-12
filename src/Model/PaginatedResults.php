@@ -13,11 +13,11 @@ class PaginatedResults
      * @param list<T> $items
      */
     public function __construct(
-        private int $currentPage,
-        private int $nrOfPages,
-        private int $resultsPerPage,
-        private ?int $nextPage,
-        private $items,
+        protected int $currentPage,
+        protected int $nrOfPages,
+        protected int $resultsPerPage,
+        protected ?int $nextPage,
+        protected $items,
     )
     {
     }

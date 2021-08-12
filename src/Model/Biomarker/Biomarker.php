@@ -13,12 +13,12 @@ class Biomarker implements BiomarkerInterface
      * @param LazyValueInterface<CategoryInterface> $category
      */
     public function __construct(
-        private string $id,
-        private string $name,
-        private string $slug,
-        private string $code,
-        private ?string $description,
-        private LazyValueInterface $category,
+        protected string $id,
+        protected string $name,
+        protected string $slug,
+        protected string $code,
+        protected ?string $description,
+        protected LazyValueInterface $category,
     )
     {
     }

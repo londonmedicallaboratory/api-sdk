@@ -7,10 +7,10 @@ namespace LML\SDK\Model\Category;
 class Category implements CategoryInterface
 {
     public function __construct(
-        private string $id,
-        private string $name,
-        private string $slug,
-        private ?string $description,
+        protected string $id,
+        protected string $name,
+        protected string $slug,
+        protected ?string $description,
     )
     {
     }

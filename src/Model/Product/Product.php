@@ -20,17 +20,17 @@ class Product implements ProductInterface
      * @param LazyValueInterface<list<CategoryInterface>> $categories
      */
     public function __construct(
-        private string $id,
-        private string $name,
-        private string $slug,
-        private string $description,
-        private string $shortDescription,
-        private ?string $previewImageUrl,
-        private PriceInterface $price,
-        private LazyValueInterface $biomarkers,
-        private LazyValueInterface $shippingTypes,
-        private LazyValueInterface $files,
-        private LazyValueInterface $categories,
+        protected string $id,
+        protected string $name,
+        protected string $slug,
+        protected string $description,
+        protected string $shortDescription,
+        protected ?string $previewImageUrl,
+        protected PriceInterface $price,
+        protected LazyValueInterface $biomarkers,
+        protected LazyValueInterface $shippingTypes,
+        protected LazyValueInterface $files,
+        protected LazyValueInterface $categories,
     )
     {
     }

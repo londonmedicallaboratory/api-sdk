@@ -7,10 +7,10 @@ namespace LML\SDK\Model\Product;
 class ProductFaq implements ProductFaqInterface
 {
     public function __construct(
-        private string $id,
-        private string $question,
-        private string $answer,
-        private int $priority,
+        protected string $id,
+        protected string $question,
+        protected string $answer,
+        protected int $priority,
     )
     {
     }

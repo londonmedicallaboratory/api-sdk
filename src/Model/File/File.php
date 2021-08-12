@@ -7,10 +7,10 @@ namespace LML\SDK\Model\File;
 class File implements FileInterface
 {
     public function __construct(
-        private string $id,
-        private string $filename,
-        private string $url,
-        private bool $isPrimary,
+        protected string $id,
+        protected string $filename,
+        protected string $url,
+        protected bool $isPrimary,
     )
     {
     }

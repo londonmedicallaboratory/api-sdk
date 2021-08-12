@@ -7,9 +7,9 @@ namespace LML\SDK\Model\Money;
 class Price implements PriceInterface
 {
     public function __construct(
-        private int $amount,
-        private string $currency,
-        private string $formattedValue,
+        protected int $amount,
+        protected string $currency,
+        protected string $formattedValue,
     )
     {
     }

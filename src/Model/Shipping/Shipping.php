@@ -7,10 +7,10 @@ namespace LML\SDK\Model\Shipping;
 class Shipping implements ShippingInterface
 {
     public function __construct(
-        private string $id,
-        private string $type,
-        private string $name,
-        private ?string $description,
+        protected string $id,
+        protected string $type,
+        protected string $name,
+        protected ?string $description,
     )
     {
     }
