@@ -1,0 +1,21 @@
+<?php
+
+namespace Clue\React\Block;
+
+use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
+use React\Promise\CancellablePromiseInterface;
+use UnderflowException;
+use Exception;
+use React\Promise;
+use React\Promise\Timer;
+use React\Promise\Timer\TimeoutException;
+
+/**
+ * @template TResolved
+ *
+ * @param PromiseInterface<TResolved> $promise
+ *
+ * @return TResolved
+ */
+function await(PromiseInterface $promise, LoopInterface $loop, $timeout = null){}

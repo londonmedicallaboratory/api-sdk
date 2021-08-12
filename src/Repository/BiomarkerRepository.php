@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\Biomarker\Biomarker;
@@ -22,7 +21,7 @@ use function sprintf;
  */
 class BiomarkerRepository extends AbstractViewRepository
 {
-    protected function one($entity, $options, LazyValue $optimizer)
+    protected function one($entity, $options, $optimizer)
     {
         $id = $entity['id'];
 

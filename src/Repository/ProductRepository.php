@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Product\Product;
@@ -26,7 +25,7 @@ use function sprintf;
  */
 class ProductRepository extends AbstractViewRepository
 {
-    protected function one($entity, $options, LazyValue $optimizer)
+    protected function one($entity, $options, $optimizer)
     {
         $priceData = $entity['price'];
 

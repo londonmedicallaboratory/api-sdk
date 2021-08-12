@@ -2,7 +2,7 @@
 <psalm
         errorLevel="1"
         resolveFromConfigFile="true"
-        findUnusedPsalmSuppress="false"
+        findUnusedPsalmSuppress="true"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -15,6 +15,10 @@
             <file name="src/LMLSDKBundle.php"/>
         </ignoreFiles>
     </projectFiles>
+    
+    <stubs>
+        <file name="stubs/Clue/React/Block/functions.stubphp"/>
+    </stubs>
 
 
     <plugins>

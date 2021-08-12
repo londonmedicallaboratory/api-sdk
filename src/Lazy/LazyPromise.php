@@ -23,10 +23,6 @@ class LazyPromise implements LazyValueInterface
     {
     }
 
-    /**
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
-     */
     public function getValue()
     {
         return await($this->promise, Loop::get());

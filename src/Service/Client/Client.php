@@ -36,9 +36,6 @@ class Client
 
     /**
      * @return PromiseInterface<mixed>
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     public function getAsyncPromise(string $url, array $filters = [], int $page = 1): PromiseInterface
     {
@@ -64,7 +61,6 @@ class Client
 
         $token = sprintf('%s:%s', $this->username, $this->password);
 
-        /** @psalm-suppress TooManyTemplateParams */
         return $this->browser->get($url, [
             'Authorization' => 'Basic ' . base64_encode($token),
         ])

@@ -72,44 +72,47 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 
     /**
      * @param list<TView> $stored
+     * @param-in list<TView> $stored
+     * @param-out list<TView> $stored
      *
      * @return PromiseInterface<list<TView>>
      *
-     * @psalm-suppress InvalidReturnStatement
      * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress MixedArrayAssignment
+     * @psalm-suppress MixedArgument
+     *
+     * @todo Fix this mess
      */
     public function findBy(array $filters = [], ?string $url = null, int $page = 1, &$stored = []): PromiseInterface
     {
-        return $this->findPaginated($filters, $url, $page)
-            ->then(
-                /** @param PaginatedResults<TView> $pagerfanta */
-                function (PaginatedResults $pagerfanta) use ($filters, $url, &$stored) {
+        $promise = $this->findPaginated($filters, $url, $page);
 
-                foreach ($pagerfanta->getItems() as $item) {
-                    $stored[] = $item;
-                }
-                $nextPage = $pagerfanta->getNextPage();
-                if (!$nextPage) {
-                    return $stored;
-                }
+        return $promise->then(function (PaginatedResults $paginatedResults) use ($filters, $url, &$stored) {
+            foreach ($paginatedResults->getItems() as $item) {
+                $stored[] = $item;
+            }
+            $nextPage = $paginatedResults->getNextPage();
+            if (!$nextPage) {
+                return $stored;
+            }
 
-                return $this->findBy($filters, $url, $nextPage, $stored);
-            });
+            return $this->findBy($filters, $url, $nextPage, $stored);
+        });
     }
 
     /**
      * @return PromiseInterface<PaginatedResults<TView>>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
      */
-    public function findPaginated(array $filters = [], ?string $baseUrl = null, int $page = 1): PromiseInterface
+    public function findPaginated(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
     {
         $client = $this->client ?? throw new RuntimeException();
 
-        return $client->getAsyncPromise($baseUrl ?? $this->getBaseUrl(), $filters, $page)
-            ->then(
-                /** @param array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>} $data */
-                function (array $data) {
+        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
+        $promise = $client->getAsyncPromise($url ?? $this->getBaseUrl(), $filters, $page);
+
+        return $promise
+            ->then(function (array $data) {
                 $views = $this->build($data['items']);
 
                 return new PaginatedResults(

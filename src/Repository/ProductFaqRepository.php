@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Model\Product\ProductFaq;
 use LML\SDK\Model\Product\ProductFaqInterface;
 use LML\SDK\ViewFactory\AbstractViewRepository;
@@ -17,7 +16,7 @@ use LML\SDK\ViewFactory\AbstractViewRepository;
  */
 class ProductFaqRepository extends AbstractViewRepository
 {
-    protected function one($entity, $options, LazyValue $optimizer): ProductFaqInterface
+    protected function one($entity, $options, $optimizer): ProductFaqInterface
     {
         return new ProductFaq(
             id: $entity['id'],
