@@ -818,12 +818,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/londonmedicallaboratory/view-bundle.git",
-                "reference": "ee4d125e72311bd79349f0f9ea9defb67a57a4ff"
+                "reference": "27f02ce22240bc6e73aa0278e6fbe38444ff59c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/londonmedicallaboratory/view-bundle/zipball/ee4d125e72311bd79349f0f9ea9defb67a57a4ff",
-                "reference": "ee4d125e72311bd79349f0f9ea9defb67a57a4ff",
+                "url": "https://api.github.com/repos/londonmedicallaboratory/view-bundle/zipball/27f02ce22240bc6e73aa0278e6fbe38444ff59c3",
+                "reference": "27f02ce22240bc6e73aa0278e6fbe38444ff59c3",
                 "shasum": ""
             },
             "require": {
@@ -866,7 +866,7 @@
                 "source": "https://github.com/londonmedicallaboratory/view-bundle/tree/master",
                 "issues": "https://github.com/londonmedicallaboratory/view-bundle/issues"
             },
-            "time": "2021-08-12T12:03:52+00:00"
+            "time": "2021-08-12T12:57:46+00:00"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -4002,23 +4002,23 @@
         },
         {
             "name": "psalm/plugin-symfony",
-            "version": "v2.4.0",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/psalm/psalm-plugin-symfony.git",
-                "reference": "2992656853b564fa18cdf45d446ecb80cbf7fa0b"
+                "reference": "3b455dd263f2d728af9ad730ce2a3501253dad3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psalm/psalm-plugin-symfony/zipball/2992656853b564fa18cdf45d446ecb80cbf7fa0b",
-                "reference": "2992656853b564fa18cdf45d446ecb80cbf7fa0b",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-symfony/zipball/3b455dd263f2d728af9ad730ce2a3501253dad3a",
+                "reference": "3b455dd263f2d728af9ad730ce2a3501253dad3a",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
                 "php": "^7.1 || ^8.0",
                 "symfony/framework-bundle": "^3.0 || ^4.0 || ^5.0",
-                "vimeo/psalm": "^4.8"
+                "vimeo/psalm": "^4.9"
             },
             "require-dev": {
                 "doctrine/orm": "^2.7",
@@ -4060,9 +4060,9 @@
             "description": "Psalm Plugin for Symfony",
             "support": {
                 "issues": "https://github.com/psalm/psalm-plugin-symfony/issues",
-                "source": "https://github.com/psalm/psalm-plugin-symfony/tree/v2.4.0"
+                "source": "https://github.com/psalm/psalm-plugin-symfony/tree/v2.5.0"
             },
-            "time": "2021-07-04T17:21:01+00:00"
+            "time": "2021-08-12T13:01:03+00:00"
         },
         {
             "name": "roave/security-advisories",
