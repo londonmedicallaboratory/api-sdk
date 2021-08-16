@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Model\OrderInterface;
+namespace LML\SDK\Model\Order;
 
 use LML\SDK\Model\Customer\CustomerInterface;
 use LML\SDK\Model\Customer\CustomerAddressInterface;

@@ -6,10 +6,10 @@ namespace LML\SDK\ViewFactory;
 
 use RuntimeException;
 use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Service\Client\Client;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\PaginatedResults;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 
@@ -22,7 +22,7 @@ use LML\View\ViewFactory\AbstractViewFactory;
  */
 abstract class AbstractViewRepository extends AbstractViewFactory
 {
-    private ?Client $client = null;
+    private ?ClientInterface $client = null;
 
     /**
      * @param TFilters $filters
@@ -109,7 +109,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         $client = $this->client ?? throw new RuntimeException();
 
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
-        $promise = $client->getAsyncPromise($url ?? $this->getBaseUrl(), $filters, $page);
+        $promise = $client->getAsync($url ?? $this->getBaseUrl(), $filters, $page);
 
         return $promise
             ->then(function (array $data) {
@@ -133,7 +133,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         return $this->findBy(filters: $filters, url: $url);
     }
 
-    public function setClient(Client $client): void
+    public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
     }

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace LML\SDK\Tests\Repository;
 
 use LML\SDK\Model\Product\Product;
+use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Stopwatch\Stopwatch;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Category\CategoryInterface;
+use LML\SDK\Model\Shipping\ShippingInterface;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function count;
@@ -60,6 +62,19 @@ class AsyncTest extends KernelTestCase
         $book = $lazyValue->getValue();
 
         self::assertInstanceOf(ProductInterface::class, $book);
+
+        foreach ($book->getCategories() as $category) {
+            self::assertInstanceOf(CategoryInterface::class, $category);
+        }
+        foreach ($book->getBiomarkers() as $biomarker) {
+            self::assertInstanceOf(BiomarkerInterface::class, $biomarker);
+        }
+        foreach ($book->getFiles() as $biomarker) {
+            self::assertInstanceOf(FileInterface::class, $biomarker);
+        }
+        foreach ($book->getShippingTypes() as $biomarker) {
+            self::assertInstanceOf(ShippingInterface::class, $biomarker);
+        }
 
 //        dump($book->getCategories());
     }

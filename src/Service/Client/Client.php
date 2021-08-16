@@ -12,14 +12,13 @@ use React\Promise\PromiseInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use function sprintf;
-use function json_encode;
 use function str_replace;
 use function json_decode;
 use function array_merge;
 use function base64_encode;
 use function http_build_query;
 
-class Client
+class Client implements ClientInterface
 {
     private Browser $browser;
 
@@ -37,20 +36,20 @@ class Client
     /**
      * @return PromiseInterface<mixed>
      */
-    public function getAsyncPromise(string $url, array $filters = [], int $page = 1): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
     {
         $queryParams = http_build_query(array_merge(['page' => $page], $filters));
         $url = str_replace('//', '/', $url);
         $url = $this->baseUrl . $url;
-//        $url .= '/';
 
         if ($queryParams) {
             $url .= '?' . $queryParams;
         }
 
-        $cacheKey = json_encode($url, JSON_THROW_ON_ERROR);
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
 
+        // make unique key with reserved-characters protection
+        $cacheKey = base64_encode($url);
         $item = $cache->getItem($cacheKey);
 
         if ($item->isHit()) {

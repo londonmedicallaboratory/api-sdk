@@ -14,5 +14,5 @@ lml_sdk:
     username: '%env(resolve:API_USERNAME)%'
     password: '%env(resolve:API_PASSWORD)%'
     cache_pool: api_pool
-    cache_expiration: 10
+    cache_expiration: 60
 
