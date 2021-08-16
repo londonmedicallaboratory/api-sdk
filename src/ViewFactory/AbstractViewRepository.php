@@ -12,6 +12,7 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
+use function sprintf;
 
 /**
  * @template TData
@@ -49,6 +50,25 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         $promise = $this->findOneBy(['slug' => $slug]);
 
         return new LazyPromise($promise);
+    }
+
+    /**
+     * @return PromiseInterface<?TView>
+     */
+    public function find(string $id)
+    {
+        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
+        $client = $this->client ?? throw new RuntimeException('Client is not defined.');
+
+        return $client->getAsync($url)
+            ->then(function ($data) {
+                if (!$data) {
+                    return null;
+                }
+                $id = (string)$data['id'];
+
+                return $this->cache[$id] ??= $this->buildOne($data);
+            });
     }
 
     /**

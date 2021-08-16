@@ -55,5 +55,6 @@ class ProductFaker implements FakerInterface
                 self::PRODUCT_2,
             ],
         ];
+        yield '/product/1' => self::PRODUCT_1;
     }
 }

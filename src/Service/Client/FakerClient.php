@@ -39,7 +39,7 @@ class FakerClient implements ClientInterface
     {
         foreach ($this->fakers as $faker) {
             foreach ($faker->getPaginatedData() as $prefix => $paginatedDatum) {
-                if (str_starts_with($prefix, $url)) {
+                if ($prefix === $url) {
                     return new Promise(function (Closure $resolve) use ($paginatedDatum) {
                         $resolve($paginatedDatum);
                     });
