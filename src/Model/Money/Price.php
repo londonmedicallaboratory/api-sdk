@@ -14,6 +14,11 @@ class Price implements PriceInterface
     {
     }
 
+    public function __toString(): string
+    {
+        return $this->formattedValue;
+    }
+
     public function getAmount(): int
     {
         return $this->amount;

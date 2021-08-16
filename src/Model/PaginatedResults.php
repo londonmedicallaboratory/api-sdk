@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model;
 
+use IteratorAggregate;
+
 /**
  * @template T
+ * @implements IteratorAggregate<T>
  */
-class PaginatedResults
+class PaginatedResults implements IteratorAggregate
 {
     /**
      * @param list<T> $items
@@ -56,5 +59,10 @@ class PaginatedResults
     public function getItems()
     {
         return $this->items;
+    }
+
+    public function getIterator()
+    {
+        yield from $this->getItems();
     }
 }

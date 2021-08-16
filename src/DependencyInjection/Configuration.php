@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
             ?->scalarNode('password')->defaultValue('')->isRequired()->end()
             ?->scalarNode('cache_pool')->defaultValue(null)->end()
             ?->integerNode('cache_expiration')->defaultValue(0)->end()
+            ?->booleanNode('faker')->defaultValue(false)->end()
             ?->end();
 
         return $treeBuilder;

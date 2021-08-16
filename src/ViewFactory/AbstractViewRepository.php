@@ -22,6 +22,11 @@ use LML\View\ViewFactory\AbstractViewFactory;
  */
 abstract class AbstractViewRepository extends AbstractViewFactory
 {
+    /**
+     * @var array<string, TView>
+     */
+    private array $cache = [];
+
     private ?ClientInterface $client = null;
 
     /**
@@ -113,7 +118,13 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 
         return $promise
             ->then(function (array $data) {
-                $views = $this->build($data['items']);
+                $views = [];
+                $items = $data['items'];
+                foreach ($items as $item) {
+                    $id = $item['id'] ?? throw new RuntimeException();
+                    $view = $this->cache[(string)$id] ??= $this->buildOne($item);
+                    $views[] = $view;
+                }
 
                 return new PaginatedResults(
                     currentPage: $data['current_page'],
@@ -123,6 +134,17 @@ abstract class AbstractViewRepository extends AbstractViewFactory
                     items: $views,
                 );
             });
+    }
+
+    /**
+     * @return PaginatedResults<TView>
+     */
+    public function awaitPaginated(array $filters = [], ?string $url = null, int $page = 1)
+    {
+        $promise = $this->findPaginated($filters, $url, $page);
+        $lazy = new LazyPromise($promise);
+
+        return $lazy->getValue();
     }
 
     /**

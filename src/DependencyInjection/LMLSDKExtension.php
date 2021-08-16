@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\DependencyInjection;
 
+use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;
 use LML\SDK\ViewFactory\AbstractViewRepository;
 use Symfony\Component\DependencyInjection\Reference;
@@ -39,7 +40,22 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->getDefinition('lml_sdk.client')
+        $this->configureClient($mergedConfig, $container);
+    }
+
+    private function configureClient(array $mergedConfig, ContainerBuilder $container): void
+    {
+        $definition = $container->getDefinition('lml_sdk.client');
+
+        if ($mergedConfig['faker']) {
+            $definition
+                ->setClass(FakerClient::class)
+            ;
+
+            return;
+        }
+
+        $definition
             ->setArgument(0, $mergedConfig['base_url'])
             ->setArgument(1, $mergedConfig['username'])
             ->setArgument(2, $mergedConfig['password'])

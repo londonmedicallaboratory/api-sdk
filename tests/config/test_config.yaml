@@ -15,4 +15,5 @@ lml_sdk:
     password: '%env(resolve:API_PASSWORD)%'
     cache_pool: api_pool
     cache_expiration: 60
+    faker: false
 

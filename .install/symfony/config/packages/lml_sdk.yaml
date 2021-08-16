@@ -11,3 +11,4 @@ lml_sdk:
     password: 'password_or_env'
     cache_pool: cache.app       # use default cache pool or create your own
     cache_expiration: 3600
+    faker: false
