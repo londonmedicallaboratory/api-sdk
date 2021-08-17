@@ -64,7 +64,7 @@ class ProductRepository extends AbstractViewRepository
     {
         $url = sprintf('/product/%s/categories', $id);
 
-        return $this->get(CategoryRepository::class)->findBy(url: $url);
+        return $this->get(BiomarkerCategoryRepository::class)->findBy(url: $url);
     }
 
     /**

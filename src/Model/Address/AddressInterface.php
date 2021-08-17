@@ -2,14 +2,26 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Model\Customer;
+namespace LML\SDK\Model\Address;
 
 use LML\SDK\Model\ModelInterface;
 
 /**
+ * @psalm-type S=array{
+ *      id: string,
+ *      line1: string,
+ *      line2: ?string,
+ *      line3: ?string,
+ *      postal_code: string,
+ *      country_name: ?string,
+ *      country_code: string,
+ * }
+ *
+ * @extends ModelInterface<S>
+ *
  * @noinspection TypoSafeNamingInspection
  */
-interface CustomerAddressInterface extends ModelInterface
+interface AddressInterface extends ModelInterface
 {
     public function getAddressLine1(): string;
 

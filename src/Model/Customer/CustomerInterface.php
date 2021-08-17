@@ -11,4 +11,9 @@ interface CustomerInterface extends ModelInterface
     public function getFirstName(): string;
 
     public function getLastName(): string;
+
+    public function getPhoneNumber(): ?string;
+
+    public function getEmail(): string;
+
 }

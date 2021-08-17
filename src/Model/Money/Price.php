@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Money;
 
+use Brick\Money\Money;
+
 class Price implements PriceInterface
 {
     public function __construct(
@@ -14,9 +16,22 @@ class Price implements PriceInterface
     {
     }
 
+    public static function fromMoney(Money $money): Price
+    {
+        return new Price($money->getMinorAmount()->toInt(), $money->getCurrency()->__toString(), $money->formatTo('en'));
+    }
+
     public function __toString(): string
     {
         return $this->formattedValue;
+    }
+
+    public function multiply(int $by): PriceInterface
+    {
+        $newAmount = $this->amount * $by;
+        $money = Money::ofMinor($newAmount, $this->currency);
+
+        return new Price($newAmount, $this->currency, $money->formatTo('en'));
     }
 
     public function getAmount(): int

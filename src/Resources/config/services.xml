@@ -15,7 +15,10 @@
         <service id="LML\SDK\Repository\BiomarkerRepository">
             <tag name="lml_sdk.repository" />
         </service>
-        <service id="LML\SDK\Repository\CategoryRepository">
+        <service id="LML\SDK\Repository\BiomarkerCategoryRepository">
+            <tag name="lml_sdk.repository" />
+        </service>
+        <service id="LML\SDK\Repository\ProductCategoryRepository">
             <tag name="lml_sdk.repository" />
         </service>
         <service id="LML\SDK\Repository\ShippingRepository">
@@ -23,6 +26,10 @@
         </service>
         <service id="LML\SDK\Repository\FileRepository">
             <tag name="lml_sdk.repository" />
+        </service>
+
+        <service id="LML\SDK\Twig\AwaitFilter">
+            <tag name="twig.extension" />
         </service>
 
     </services>

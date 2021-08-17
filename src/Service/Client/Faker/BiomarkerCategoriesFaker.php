@@ -12,7 +12,7 @@ use LML\SDK\Model\Category\CategoryInterface;
  *
  * @see CategoryInterface
  */
-class CategoriesFaker implements FakerInterface
+class BiomarkerCategoriesFaker implements FakerInterface
 {
     public const CATEGORY_1 = [
         'id'          => '1',
@@ -89,6 +89,19 @@ class CategoriesFaker implements FakerInterface
             'results_per_page' => 10,
             'next_page'        => null,
             'items'            => [
+                self::CATEGORY_3,
+            ],
+        ];
+
+        yield '/biomarker_categories' => [
+            'current_page'     => 1,
+            'nr_of_results'    => 1,
+            'nr_of_pages'      => 1,
+            'results_per_page' => 10,
+            'next_page'        => null,
+            'items'            => [
+                self::CATEGORY_1,
+                self::CATEGORY_2,
                 self::CATEGORY_3,
             ],
         ];

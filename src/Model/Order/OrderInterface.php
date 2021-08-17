@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Order;
 
+use LML\SDK\Model\ModelInterface;
+use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
-use LML\SDK\Model\Customer\CustomerAddressInterface;
 
 interface OrderInterface
+//    extends ModelInterface
 {
-    public function getPhoneNumber(): ?string;
+    public function getCustomer(): CustomerInterface;
 
     public function getCompanyName(): ?string;
 
-    public function getCustomer(): CustomerInterface;
+    public function getAddress(): AddressInterface;
 
-    public function getAddress(): CustomerAddressInterface;
-
-    public function getEmail(): string;
+    public function getBillingAddress(): ?AddressInterface;
 }

@@ -54,6 +54,8 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 
     /**
      * @return PromiseInterface<?TView>
+     *
+     * @psalm-suppress MixedArrayAccess
      */
     public function find(string $id)
     {
@@ -67,6 +69,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
                 }
                 $id = (string)$data['id'];
 
+                /** @psalm-suppress MixedArgument */
                 return $this->cache[$id] ??= $this->buildOne($data);
             });
     }
@@ -141,7 +144,9 @@ abstract class AbstractViewRepository extends AbstractViewFactory
                 $views = [];
                 $items = $data['items'];
                 foreach ($items as $item) {
+                    /** @var ?string $id */
                     $id = $item['id'] ?? throw new RuntimeException();
+                    /** @psalm-suppress PossiblyInvalidArgument */
                     $view = $this->cache[(string)$id] ??= $this->buildOne($item);
                     $views[] = $view;
                 }

@@ -11,4 +11,6 @@ interface PriceInterface
     public function getCurrency(): string;
 
     public function getFormattedValue(): string;
+
+    public function multiply(int $by): PriceInterface;
 }

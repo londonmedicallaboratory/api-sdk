@@ -13,9 +13,9 @@ use LML\SDK\Service\Client\Faker\ProductFaker;
 use LML\SDK\Service\Client\Faker\ShippingFaker;
 use LML\SDK\Service\Client\Faker\FakerInterface;
 use LML\SDK\Service\Client\Faker\BiomarkerFaker;
-use LML\SDK\Service\Client\Faker\CategoriesFaker;
+use LML\SDK\Service\Client\Faker\ProductCategoriesFaker;
+use LML\SDK\Service\Client\Faker\BiomarkerCategoriesFaker;
 use function sprintf;
-use function str_starts_with;
 
 class FakerClient implements ClientInterface
 {
@@ -31,7 +31,8 @@ class FakerClient implements ClientInterface
             new BiomarkerFaker(),
             new ShippingFaker(),
             new FilesFaker(),
-            new CategoriesFaker(),
+            new BiomarkerCategoriesFaker(),
+            new ProductCategoriesFaker(),
         ];
     }
 

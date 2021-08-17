@@ -15,7 +15,7 @@ use LML\SDK\ViewFactory\AbstractViewRepository;
  *
  * @see CategoryInterface
  */
-class CategoryRepository extends AbstractViewRepository
+class ProductCategoryRepository extends AbstractViewRepository
 {
     protected function one($entity, $options, $optimizer): Category
     {
@@ -29,6 +29,6 @@ class CategoryRepository extends AbstractViewRepository
 
     protected function getBaseUrl(): string
     {
-        return '/categories';
+        return '/product_categories';
     }
 }
