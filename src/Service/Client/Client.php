@@ -11,6 +11,7 @@ use React\Promise\Promise;
 use React\Promise\PromiseInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
+use function rtrim;
 use function sprintf;
 use function str_replace;
 use function json_decode;
@@ -38,10 +39,12 @@ class Client implements ClientInterface
      */
     public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
     {
-        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
-        $url = str_replace('//', '/', $url);
-        $url = $this->baseUrl . $url;
+        $baseUrl = rtrim($this->baseUrl, '/');
+        $url = ltrim($url, '/');
 
+        $url = sprintf('%s/%s', $baseUrl, $url);
+
+        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
         if ($queryParams) {
             $url .= '?' . $queryParams;
         }
@@ -50,6 +53,7 @@ class Client implements ClientInterface
 
         // make unique key with reserved-characters protection
         $cacheKey = base64_encode($url);
+        $cacheKey = str_replace('/', '-', $cacheKey);  // base64 allows trailing slash; it is one of reserved characters
         $item = $cache->getItem($cacheKey);
 
         if ($item->isHit()) {

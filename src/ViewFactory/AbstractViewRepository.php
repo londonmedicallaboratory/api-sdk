@@ -12,6 +12,7 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
+use function rtrim;
 use function sprintf;
 
 /**
@@ -135,9 +136,12 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     public function findPaginated(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
     {
         $client = $this->client ?? throw new RuntimeException();
+        if (!$url) {
+            $url = rtrim($this->getBaseUrl(), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
+        }
 
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
-        $promise = $client->getAsync($url ?? $this->getBaseUrl(), $filters, $page);
+        $promise = $client->getAsync($url, $filters, $page);
 
         return $promise
             ->then(function (array $data) {
