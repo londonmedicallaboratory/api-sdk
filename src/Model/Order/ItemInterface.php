@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Model\Basket;
+namespace LML\SDK\Model\Order;
 
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Product\ProductInterface;
 
-interface BasketItemInterface
+interface ItemInterface
 {
     public function getProduct(): ProductInterface;
 

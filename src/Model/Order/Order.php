@@ -6,13 +6,18 @@ namespace LML\SDK\Model\Order;
 
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
+use function array_map;
 
 class Order implements OrderInterface
 {
+    /**
+     * @param list<ItemInterface> $items
+     */
     public function __construct(
         private string $id,
         private CustomerInterface $customer,
         private AddressInterface $address,
+        private array $items = [],
         private ?string $companyName = null,
         private ?AddressInterface $billingAddress = null,
     )
@@ -44,6 +49,11 @@ class Order implements OrderInterface
         return $this->id;
     }
 
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
     public function toArray()
     {
         return [
@@ -51,6 +61,7 @@ class Order implements OrderInterface
             'company' => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
             'address' => $this->getAddress()->toArray(),
+            'items' => array_map(fn(ItemInterface $item) => [$item->getProduct()->getId() => $item->getQuantity()], $this->getItems()),
         ];
     }
 }

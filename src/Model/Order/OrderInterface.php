@@ -28,7 +28,11 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *          last_name: string,
  *          phone_number: string
  *      },
+ *      items: list<array<string, int>>
  * }
+ *
+ * Items is array of ``product_id: quantity`` ; we don't need other values
+ *
  * @extends ModelInterface<S>
  *
  * @todo https://github.com/vimeo/psalm/issues/5148
@@ -42,4 +46,9 @@ interface OrderInterface extends ModelInterface
     public function getAddress(): AddressInterface;
 
     public function getBillingAddress(): ?AddressInterface;
+
+    /**
+     * @return list<ItemInterface>
+     */
+    public function getItems();
 }
