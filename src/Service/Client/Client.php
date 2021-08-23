@@ -8,14 +8,17 @@ use Closure;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\Promise;
+use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use function rtrim;
+use function ltrim;
 use function sprintf;
 use function str_replace;
 use function json_decode;
 use function array_merge;
+use function json_encode;
 use function base64_encode;
 use function http_build_query;
 
@@ -32,6 +35,16 @@ class Client implements ClientInterface
     )
     {
         $this->browser = new Browser();
+    }
+
+    public function post(string $url, array $data)
+    {
+        $baseUrl = rtrim($this->baseUrl, '/');
+        $url = ltrim($url, '/');
+
+        $url = sprintf('%s/%s/', $baseUrl, $url);
+
+        return $this->browser->post($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -62,11 +75,7 @@ class Client implements ClientInterface
             });
         }
 
-        $token = sprintf('%s:%s', $this->username, $this->password);
-
-        return $this->browser->get($url, [
-            'Authorization' => 'Basic ' . base64_encode($token),
-        ])
+        return $this->browser->get($url, $this->getAuthHeaders())
             ->then(function (ResponseInterface $response) use ($item, $cache): array {
                 $body = (string)$response->getBody();
                 /** @var array<string, mixed> $data */
@@ -77,5 +86,17 @@ class Client implements ClientInterface
 
                 return $data;
             });
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getAuthHeaders(): array
+    {
+        $token = sprintf('%s:%s', $this->username, $this->password);
+
+        return [
+            'Authorization' => 'Basic ' . base64_encode($token),
+        ];
     }
 }

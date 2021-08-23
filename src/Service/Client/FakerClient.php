@@ -50,4 +50,9 @@ class FakerClient implements ClientInterface
 
         throw new RuntimeException(sprintf('URL "%s" is not faked.', $url));
     }
+
+    public function post(string $url, array $data)
+    {
+        throw new RuntimeException('Not supported for faker.');
+    }
 }

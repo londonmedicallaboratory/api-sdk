@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Model;
 
 /**
- * @template T
+ * @template T of array<string, mixed>
  */
 interface ModelInterface
 {

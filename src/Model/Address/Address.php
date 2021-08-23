@@ -11,10 +11,10 @@ class Address implements AddressInterface
     public function __construct(
         private string $id,
         private string $line1,
-        private ?string $line2,
-        private ?string $line3,
         private string $postalCode,
         private string $countryCode,
+        private ?string $line2 = null,
+        private ?string $line3 = null,
     )
     {
     }

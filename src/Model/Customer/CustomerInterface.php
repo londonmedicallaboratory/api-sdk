@@ -6,6 +6,17 @@ namespace LML\SDK\Model\Customer;
 
 use LML\SDK\Model\ModelInterface;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      first_name: string,
+ *      last_name: string,
+ *      phone_number: string,
+ *      email: string,
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
 interface CustomerInterface extends ModelInterface
 {
     public function getFirstName(): string;

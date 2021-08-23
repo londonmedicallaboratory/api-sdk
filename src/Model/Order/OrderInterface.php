@@ -8,8 +8,32 @@ use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
 
-interface OrderInterface
-//    extends ModelInterface
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      company: ?string,
+ *      address: array{
+ *          id: string,
+ *          country_code: string,
+ *          country_name: null|string,
+ *          line1: string,
+ *          line2: null|string,
+ *          line3: null|string,
+ *          postal_code: string
+ *      },
+ *      customer: array{
+ *          id: string,
+ *          email: string,
+ *          first_name: string,
+ *          last_name: string,
+ *          phone_number: string
+ *      },
+ * }
+ * @extends ModelInterface<S>
+ *
+ * @todo https://github.com/vimeo/psalm/issues/5148
+ */
+interface OrderInterface extends ModelInterface
 {
     public function getCustomer(): CustomerInterface;
 

@@ -68,6 +68,12 @@ class Customer implements CustomerInterface
 
     public function toArray()
     {
-        throw new \RuntimeException('N/A');
+        return [
+            'id' => $this->getId(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'phone_number' => $this->getPhoneNumber(),
+            'email' => $this->getEmail(),
+        ];
     }
 }

@@ -42,6 +42,7 @@ class ProductFaker implements FakerInterface
         ],
     ];
 
+    /** @psalm-suppress MoreSpecificReturnType */
     public function getPaginatedData()
     {
         yield '/product' => [

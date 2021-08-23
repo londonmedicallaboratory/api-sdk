@@ -10,10 +10,11 @@ use LML\SDK\Model\Customer\CustomerInterface;
 class Order implements OrderInterface
 {
     public function __construct(
+        private string $id,
         private CustomerInterface $customer,
-        private ?string $companyName,
         private AddressInterface $address,
-        private ?AddressInterface $billingAddress,
+        private ?string $companyName = null,
+        private ?AddressInterface $billingAddress = null,
     )
     {
     }
@@ -36,5 +37,20 @@ class Order implements OrderInterface
     public function getBillingAddress(): ?AddressInterface
     {
         return $this->billingAddress;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'company' => $this->getCompanyName(),
+            'customer' => $this->getCustomer()->toArray(),
+            'address' => $this->getAddress()->toArray(),
+        ];
     }
 }

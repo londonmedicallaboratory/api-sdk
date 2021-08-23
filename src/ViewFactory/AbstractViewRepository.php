@@ -6,9 +6,11 @@ namespace LML\SDK\ViewFactory;
 
 use RuntimeException;
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Model\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\PaginatedResults;
 use LML\View\Lazy\LazyValueInterface;
+use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
@@ -17,10 +19,12 @@ use function sprintf;
 
 /**
  * @template TData
- * @template TView
+ * @template TView of ModelInterface
  * @template TFilters of array
  *
  * @extends AbstractViewFactory<TData, TView, array, array>
+ *
+ * @see ModelInterface
  */
 abstract class AbstractViewRepository extends AbstractViewFactory
 {
@@ -30,6 +34,18 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     private array $cache = [];
 
     private ?ClientInterface $client = null;
+
+    /**
+     * @param TView $model
+     *
+     * @return PromiseInterface<ResponseInterface>
+     */
+    public function persist($model)
+    {
+        $client = $this->client ?? throw new RuntimeException('Client is not defined.');
+
+        return $client->post($this->getBaseUrl(), $model->toArray());
+    }
 
     /**
      * @param TFilters $filters
