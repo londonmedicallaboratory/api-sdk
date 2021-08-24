@@ -29,7 +29,8 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *          last_name: string,
  *          phone_number: string
  *      },
- *      items: list<array{product_id: string, quantity: int}>
+ *      items: list<array{product_id: string, quantity: int}>,
+ *      price: array{amount_minor: int, currency: string, formatted_value: string},
  * }
  *
  * @extends ModelInterface<S>

@@ -74,11 +74,18 @@ class Order implements OrderInterface
 
     public function toArray()
     {
+        $price = $this->getTotal();
+
         return [
             'id'       => $this->getId(),
             'company'  => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
             'address'  => $this->getAddress()->toArray(),
+            'price'             => [
+                'amount_minor'    => $price->getAmount(),
+                'currency'        => $price->getCurrency(),
+                'formatted_value' => $price->getFormattedValue(),
+            ],
             'items'    => array_map(fn(ItemInterface $item) => [
                 'product_id' => $item->getProduct()->getId(),
                 'quantity'   => $item->getQuantity(),
