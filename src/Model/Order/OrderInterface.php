@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Model\Order;
 
 use LML\SDK\Model\ModelInterface;
+use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
 
@@ -28,10 +29,8 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *          last_name: string,
  *          phone_number: string
  *      },
- *      items: list<array<string, int>>
+ *      items: list<array{product_id: string, quantity: int}>
  * }
- *
- * Items is array of ``product_id: quantity`` ; we don't need other values
  *
  * @extends ModelInterface<S>
  *
@@ -51,4 +50,6 @@ interface OrderInterface extends ModelInterface
      * @return list<ItemInterface>
      */
     public function getItems();
+
+    public function getTotal(): PriceInterface;
 }

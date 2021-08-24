@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Order;
 
+use Brick\Money\Money;
+use LML\SDK\Model\Money\Price;
+use LML\SDK\Model\Money\PriceInterface;
+use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
 use function array_map;
@@ -12,6 +16,8 @@ class Order implements OrderInterface
 {
     /**
      * @param list<ItemInterface> $items
+     *
+     * @see OrderRepository::one
      */
     public function __construct(
         private string $id,
@@ -54,14 +60,29 @@ class Order implements OrderInterface
         return $this->items;
     }
 
+    public function getTotal(): PriceInterface
+    {
+        $amount = 0;
+        foreach ($this->getItems() as $item) {
+            $amount += $item->getTotal()->getAmount();
+        }
+
+        $money = Money::ofMinor($amount, 'GBP');
+
+        return Price::fromMoney($money);
+    }
+
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
-            'company' => $this->getCompanyName(),
+            'id'       => $this->getId(),
+            'company'  => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
-            'address' => $this->getAddress()->toArray(),
-            'items' => array_map(fn(ItemInterface $item) => [$item->getProduct()->getId() => $item->getQuantity()], $this->getItems()),
+            'address'  => $this->getAddress()->toArray(),
+            'items'    => array_map(fn(ItemInterface $item) => [
+                'product_id' => $item->getProduct()->getId(),
+                'quantity'   => $item->getQuantity(),
+            ], $this->getItems()),
         ];
     }
 }
