@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Order;
 
-use Brick\Money\Money;
-use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Model\Address\AddressInterface;
@@ -23,6 +21,7 @@ class Order implements OrderInterface
         private string $id,
         private CustomerInterface $customer,
         private AddressInterface $address,
+        private PriceInterface $total,
         private array $items = [],
         private ?string $companyName = null,
         private ?AddressInterface $billingAddress = null,
@@ -62,14 +61,7 @@ class Order implements OrderInterface
 
     public function getTotal(): PriceInterface
     {
-        $amount = 0;
-        foreach ($this->getItems() as $item) {
-            $amount += $item->getTotal()->getAmount();
-        }
-
-        $money = Money::ofMinor($amount, 'GBP');
-
-        return Price::fromMoney($money);
+        return $this->total;
     }
 
     public function toArray()
@@ -81,7 +73,7 @@ class Order implements OrderInterface
             'company'  => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
             'address'  => $this->getAddress()->toArray(),
-            'price'             => [
+            'price'    => [
                 'amount_minor'    => $price->getAmount(),
                 'currency'        => $price->getCurrency(),
                 'formatted_value' => $price->getFormattedValue(),

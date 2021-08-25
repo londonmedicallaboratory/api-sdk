@@ -14,4 +14,6 @@ interface ItemInterface
     public function getQuantity(): int;
 
     public function getTotal(): PriceInterface;
+
+    public function setQuantity(int $quantity): void;
 }

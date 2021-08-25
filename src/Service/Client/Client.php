@@ -8,7 +8,6 @@ use Closure;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\Promise;
-use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -37,6 +36,16 @@ class Client implements ClientInterface
         $this->browser = new Browser();
     }
 
+    public function patch(string $url, array $data): PromiseInterface
+    {
+        $baseUrl = rtrim($this->baseUrl, '/');
+        $url = ltrim($url, '/');
+
+        $url = sprintf('%s/%s/', $baseUrl, $url);
+
+        return $this->browser->patch($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
+    }
+
     public function post(string $url, array $data)
     {
         $baseUrl = rtrim($this->baseUrl, '/');
@@ -52,21 +61,10 @@ class Client implements ClientInterface
      */
     public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
     {
-        $baseUrl = rtrim($this->baseUrl, '/');
-        $url = ltrim($url, '/');
-
-        $url = sprintf('%s/%s', $baseUrl, $url);
-
-        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
-        if ($queryParams) {
-            $url .= '?' . $queryParams;
-        }
-
+        $url = $this->createRealUrl($url, $filters, $page);
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
 
-        // make unique key with reserved-characters protection
-        $cacheKey = base64_encode($url);
-        $cacheKey = str_replace('/', '-', $cacheKey);  // base64 allows trailing slash; it is one of reserved characters
+        $cacheKey = $this->createCacheKey($url);
         $item = $cache->getItem($cacheKey);
 
         if ($item->isHit()) {
@@ -86,6 +84,29 @@ class Client implements ClientInterface
 
                 return $data;
             });
+    }
+
+    private function createRealUrl(string $url, array $filters = [], int $page = 1): string
+    {
+        $baseUrl = rtrim($this->baseUrl, '/');
+        $url = ltrim($url, '/');
+
+        $url = sprintf('%s/%s', $baseUrl, $url);
+
+        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
+        if ($queryParams) {
+            $url .= '?' . $queryParams;
+        }
+
+        return $url;
+    }
+
+    private function createCacheKey(string $url): string
+    {
+        // make unique key with reserved-characters protection
+        $cacheKey = base64_encode($url);
+
+        return str_replace('/', '-', $cacheKey);  // base64 allows trailing slash; it is one of reserved characters
     }
 
     /**

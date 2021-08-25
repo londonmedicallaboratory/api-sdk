@@ -41,5 +41,25 @@
             <tag name="twig.extension" />
         </service>
 
+        <service id="LML\SDK\Service\InformationBooth">
+            <argument type="service" id="lml_sdk.client" />
+        </service>
+
+        <service id="LML\SDK\Service\Payment\Tagged\SagePaymentProcessor">
+            <argument id="LML\SDK\Service\InformationBooth" />
+<!--            <tag name="lml_sdk.payment_strategy"/>-->
+        </service>
+
+        <service id="LML\SDK\Service\Payment\PaymentProcessor">
+            <argument type="tagged_locator" tag="lml_sdk.payment_strategy" default-index-method="getName" />
+            <argument type="service" id="LML\SDK\Repository\OrderRepository" />
+        </service>
+
+        <service id="LML\SDK\Service\Basket">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="LML\SDK\Repository\ProductRepository" />
+            <argument type="service" id="LML\SDK\Repository\OrderRepository" />
+        </service>
+
     </services>
 </container>

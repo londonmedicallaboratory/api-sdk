@@ -10,6 +10,7 @@ use LML\SDK\ViewFactory\AbstractViewRepository;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use LML\SDK\Service\Payment\Tagged\PaymentProcessorStrategyInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
@@ -36,6 +37,8 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
     {
         $container->registerForAutoconfiguration(AbstractViewRepository::class)
             ->addTag('lml_sdk.repository');
+        $container->registerForAutoconfiguration(PaymentProcessorStrategyInterface::class)
+            ->addTag('lml_sdk.payment_strategy');
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');

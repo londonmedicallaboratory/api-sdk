@@ -35,6 +35,13 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 
     private ?ClientInterface $client = null;
 
+    public function patchId(string $id, array $data): PromiseInterface
+    {
+        $client = $this->getClient();
+
+        return $client->patch($this->getBaseUrl() . '/' . $id, $data);
+    }
+
     /**
      * @param TView $model
      *
@@ -42,7 +49,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
      */
     public function persist($model)
     {
-        $client = $this->client ?? throw new RuntimeException('Client is not defined.');
+        $client = $this->getClient();
 
         return $client->post($this->getBaseUrl(), $model->toArray());
     }
@@ -77,7 +84,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     public function find(string $id)
     {
         $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
-        $client = $this->client ?? throw new RuntimeException('Client is not defined.');
+        $client = $this->getClient();
 
         return $client->getAsync($url)
             ->then(function ($data) {
@@ -151,7 +158,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
      */
     public function findPaginated(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
     {
-        $client = $this->client ?? throw new RuntimeException();
+        $client = $this->getClient();
         if (!$url) {
             $url = rtrim($this->getBaseUrl(), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
@@ -203,6 +210,11 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
+    }
+
+    private function getClient(): ClientInterface
+    {
+        return $this->client ?? throw new RuntimeException('Cliet is not defined.');
     }
 
     abstract protected function getBaseUrl(): string;

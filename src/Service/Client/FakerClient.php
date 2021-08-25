@@ -55,4 +55,9 @@ class FakerClient implements ClientInterface
     {
         throw new RuntimeException('Not supported for faker.');
     }
+
+    public function patch(string $url, array $data): PromiseInterface
+    {
+        throw new RuntimeException('Not implemented.');
+    }
 }

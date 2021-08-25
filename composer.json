@@ -16,7 +16,8 @@
         "react/http": "^1.5",
         "clue/block-react": "^1.4",
         "brick/money": "^0.5.2",
-        "symfony/twig-bundle": "^5.3"
+        "symfony/twig-bundle": "^5.3",
+        "omnipay/sagepay": "^3.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
