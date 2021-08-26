@@ -19,6 +19,10 @@ use function sprintf;
 use function method_exists;
 use function number_format;
 
+/**
+ * @internal
+ * @psalm-internal LML\SDK\Service\Payment
+ */
 class SagePaymentProcessor implements PaymentProcessorStrategyInterface
 {
     public function __construct(
@@ -35,17 +39,14 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
     public function confirm(Payment $payment): ?Response
     {
         $gateway = $this->createGateway();
-        $completeRequest = $gateway->completeAuthorize([
-            'transactionId' => $payment->id,
-        ]);
-        $completeRequest->send();
-        $response = $completeRequest->getResponse();
-        if (!$response->isSuccessful()) {
-            throw new PaymentFailureException($response->getMessage() ?? 'Failure, but no code provided.');
-        }
+        $id = $payment->id ?? throw new RuntimeException('You must provide $id for payment confirmation to work.');
 
-        if ($redirectResponse = $this->extractRedirectResponse($response)) {
-            return $redirectResponse;
+        $completeRequest = $gateway->completeAuthorize([
+            'transactionId' => $id,
+        ]);
+        $message = $completeRequest->send();
+        if ($response = $this->extractRedirectResponse($message)) {
+            return $response;
         }
 
         if ($successUrl = $payment->successUrl) {
@@ -107,7 +108,6 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         $vendor = $info['sage_auth']['vendor'] ?? throw new RuntimeException();
         $encryptionKey = $info['sage_auth']['encryption_key'] ?? throw new RuntimeException();
 
-
         return Omnipay::create('SagePay\Direct')->initialize([
             'vendor'        => $vendor,
             'testMode'      => true,
@@ -121,6 +121,10 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
      */
     private function extractRedirectResponse(ResponseInterface $responseMessage): ?Response
     {
+        if (!$responseMessage->isSuccessful()) {
+            throw new PaymentFailureException($responseMessage->getMessage());
+        }
+
         if ($responseMessage->isRedirect() && method_exists($responseMessage, 'getRedirectResponse')) {
             /** @noinspection PhpUnnecessaryLocalVariableInspection */
 

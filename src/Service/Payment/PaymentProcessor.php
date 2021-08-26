@@ -7,6 +7,8 @@ namespace LML\SDK\Service\Payment;
 use LML\SDK\DTO\Payment;
 use LML\SDK\Repository\OrderRepository;
 use Symfony\Component\HttpFoundation\Response;
+use LML\SDK\Exception\PaymentFailureException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use LML\SDK\Service\Payment\Tagged\PaymentProcessorStrategyInterface;
 
@@ -22,22 +24,47 @@ class PaymentProcessor
     {
     }
 
-    public function confirm(string $name, Payment $configuration): ?Response
+    /**
+     * @no-named-arguments
+     */
+    public function pay(string $name, Payment $payment): ?Response
     {
-        $strategy = $this->getStrategy($name);
-
-        return $strategy->confirm($configuration);
+        try {
+            return $this->strategies->get($name)->pay($payment);
+        } catch (PaymentFailureException $e) {
+            return $this->handlePaymentFailureException($e, $payment);
+        }
     }
 
-    public function pay(string $name, Payment $configuration): ?Response
+    /**
+     * @no-named-arguments
+     */
+    public function confirm(string $name, Payment $payment): ?Response
     {
-        $strategy = $this->getStrategy($name);
-
-        return $strategy->pay($configuration);
+        try {
+            return $this->strategies->get($name)->confirm($payment);
+        } catch (PaymentFailureException $e) {
+            return $this->handlePaymentFailureException($e, $payment);
+        }
     }
 
-    private function getStrategy(string $name): PaymentProcessorStrategyInterface
+    /**
+     * When payment has failed, try to handle it in this order:
+     *
+     * - if there is a callback ``paymentExceptionHandler`` registered, run it first
+     * - if there is a registered ``failureUrl``, redirect to it
+     *
+     * If all fails, throw it and let ExceptionListener take care of it, or 500
+     */
+    private function handlePaymentFailureException(PaymentFailureException $e, Payment $payment): ?Response
     {
-        return $this->strategies->get($name);
+        $handler = $payment->paymentExceptionHandler;
+        if ($handler) {
+            return $handler($e);
+        }
+        if ($failureUrl = $payment->failureUrl) {
+            return new RedirectResponse($failureUrl);
+        }
+        throw $e;
     }
 }

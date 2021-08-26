@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace LML\SDK\DTO;
 
+use Closure;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Exception\PaymentFailureException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @noinspection TypoSafeNamingInspection
  */
 class Payment
 {
+    /**
+     * @param null|Closure(PaymentFailureException): ?Response $paymentExceptionHandler
+     */
     public function __construct(
         public ?string $id = null,
         public ?PriceInterface $price = null,
@@ -40,6 +46,8 @@ class Payment
         public ?string $paymentConfirmationUrl = null,
 
         public ?ShippingInterface $shipping = null,
+
+        public ?Closure $paymentExceptionHandler = null,
 
         public bool $isTest = true,
     )
