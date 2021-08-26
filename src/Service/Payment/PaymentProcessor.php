@@ -26,6 +26,8 @@ class PaymentProcessor
 
     /**
      * @no-named-arguments
+     *
+     * @throws PaymentFailureException
      */
     public function pay(string $name, Payment $payment): ?Response
     {
@@ -38,6 +40,8 @@ class PaymentProcessor
 
     /**
      * @no-named-arguments
+     *
+     * @throws PaymentFailureException
      */
     public function confirm(string $name, Payment $payment): ?Response
     {
@@ -58,8 +62,7 @@ class PaymentProcessor
      */
     private function handlePaymentFailureException(PaymentFailureException $e, Payment $payment): ?Response
     {
-        $handler = $payment->paymentExceptionHandler;
-        if ($handler) {
+        if ($handler = $payment->paymentExceptionHandler) {
             return $handler($e);
         }
         if ($failureUrl = $payment->failureUrl) {

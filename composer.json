@@ -17,7 +17,8 @@
         "clue/block-react": "^1.4",
         "brick/money": "^0.5.2",
         "symfony/twig-bundle": "^5.3",
-        "omnipay/sagepay": "^3.2"
+        "omnipay/sagepay": "^3.2",
+        "symfony/intl": "^5.3"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
