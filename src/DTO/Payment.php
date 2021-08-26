@@ -21,12 +21,23 @@ class Payment
     public function __construct(
         public ?string $id = null,
         public ?PriceInterface $price = null,
+        public ?string $customersEmail = null,
+
         public ?string $customersFirstName = null,
         public ?string $customersLastName = null,
-        public ?string $customersEmail = null,
         public ?string $customersPhoneNumber = null,
         public ?string $customersCompany = null,
+        public ?string $customersAddressLine1 = null,
+        public ?string $customersAddressLine2 = null,
+        public ?string $customersAddressLine3 = null,
+        public ?string $customersPostalCode = null,
+        public ?string $customersCity = null,
+        public ?string $customersCountry = null,
 
+        public ?string $deliveryFirstName = null,
+        public ?string $deliveryLastName = null,
+        public ?string $deliveryPhoneNumber = null,
+        public ?string $deliveryCompany = null,
         public ?string $deliveryAddressLine1 = null,
         public ?string $deliveryAddressLine2 = null,
         public ?string $deliveryAddressLine3 = null,
@@ -57,6 +68,9 @@ class Payment
         }
     }
 
+    /**
+     * @see https://www.opayo.co.uk/support/12/36/test-card-details-for-your-test-transactions
+     */
     private function populateTestData(): void
     {
         $this->cardNumber = '4929 0000 0555 9';

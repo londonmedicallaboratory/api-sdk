@@ -65,15 +65,15 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         $year = $splitCardExpire[1] ?? throw new RuntimeException();
 
         $card = new CreditCard([
-            'firstName'   => $payment->customersFirstName ?? throw new RuntimeException(),
-            'lastName'    => $payment->customersLastName ?? throw new RuntimeException(),
+            'firstName'   => $payment->cardFirstName ?? throw new RuntimeException(),
+            'lastName'    => $payment->cardLastName ?? throw new RuntimeException(),
             'number'      => $payment->cardNumber ?? throw new RuntimeException(),
             'cvv'         => $payment->cardCVV ?? throw new RuntimeException(),
             'expiryMonth' => $month,
             'expiryYear'  => $year,
-            'address1'    => $payment->deliveryAddressLine1 ?? throw new RuntimeException(),
-            'city'        => $payment->deliveryCity ?? throw new RuntimeException(),
-            'postcode'    => $payment->deliveryPostalCode ?? throw new RuntimeException(),
+            'address1'    => $payment->customersAddressLine1 ?? throw new RuntimeException(),
+            'city'        => $payment->customersCity ?? throw new RuntimeException(),
+            'postcode'    => $payment->customersPostalCode ?? throw new RuntimeException(),
             'country'     => 'GB',
         ]);
 
