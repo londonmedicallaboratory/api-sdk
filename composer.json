@@ -19,7 +19,7 @@
         "symfony/twig-bundle": "^5.3",
         "omnipay/sagepay": "^3.2",
         "symfony/intl": "^5.3",
-        "sensio/framework-extra-bundle": "^6.1"
+        "sensio/framework-extra-bundle": "^5.3"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
