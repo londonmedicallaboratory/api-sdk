@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\DataCollector;
 
-use LML\SDK\Promise\CachedItemPromise;
+use Throwable;
 use React\Promise\PromiseInterface;
-use Psr\Http\Message\ResponseInterface;
+use LML\SDK\Promise\CachedItemPromise;
 use LML\SDK\Service\Client\ClientInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
 {
     /**
      * @psalm-suppress NonInvariantDocblockPropertyType
-     * @var array{requests: list<array{url: string, cached: bool}>}
+     * @var array{requests: list<array{url: string, cached: bool, method: string, filters: array}>}
      */
     protected $data = [
         'requests' => [],
@@ -29,43 +29,36 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
     }
 
     /**
-     * @return PromiseInterface<mixed>
-     */
-    public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
-    {
-        $promise = $this->client->getAsync($url, $filters, $page);
-
-        $isCached = $promise instanceof CachedItemPromise;
-        $this->data['requests'][] = ['url' => $url, 'cached' => $isCached];
-
-        return $promise;
-    }
-
-    /**
      * @return list<array{url: string, cached: bool}>
+     *
+     * Used in client_collector.html.twig
      */
     public function getRequests()
     {
         return $this->data['requests'];
     }
 
-    /**
-     * @return PromiseInterface<ResponseInterface>
-     */
+    public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
+    {
+        $promise = $this->client->getAsync($url, $filters, $page);
+
+        $isCached = $promise instanceof CachedItemPromise;
+        $this->data['requests'][] = ['url' => $url, 'cached' => $isCached, 'method' => 'GET', 'filters' => $filters];
+
+        return $promise;
+    }
+
     public function post(string $url, array $data)
     {
         return $this->client->post($url, $data);
     }
 
-    /**
-     * @return PromiseInterface<ResponseInterface>
-     */
     public function patch(string $url, array $data): PromiseInterface
     {
         return $this->client->patch($url, $data);
     }
 
-    public function collect(Request $request, Response $response, \Throwable $exception = null): void
+    public function collect(Request $request, Response $response, Throwable $exception = null): void
     {
     }
 
@@ -73,4 +66,5 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
     {
         return 'lml_sdk.client_collector';
     }
+
 }

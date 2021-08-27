@@ -20,13 +20,26 @@
                     <thead>
                     <tr>
                         <th>URL</th>
+                        <th>Method</th>
                         <th>Cached</th>
                     </tr>
                     </thead>
                     <tbody class="sf-toolbar-ajax-request-list">
                     {% for request in collector.requests %}
                         <tr>
-                            <td>{{ request.url }}</td>
+                            <td>
+                                {% if request.filters %}
+                                    <abbr title="{{ request.filters|url_encode }}">
+                                        {{ request.url }}
+                                    </abbr>
+                                {% else %}
+                                    <div>
+                                        {{ request.url|u.truncate(60, '...') }}
+                                    </div>
+                                {% endif %}
+
+                            </td>
+                            <td>{{ request.method }}</td>
                             <td>
                                 {% if request.cached %}
                                     <i class="fa fa-check" style="float: right"></i>
