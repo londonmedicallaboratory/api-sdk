@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Biomarker;
 
+use LML\SDK\Attribute\Model;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Repository\BiomarkerRepository;
 use LML\SDK\Model\Category\CategoryInterface;
 
+#[Model(repositoryClass: BiomarkerRepository::class)]
 class Biomarker implements BiomarkerInterface
 {
     /**

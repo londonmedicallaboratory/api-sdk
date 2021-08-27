@@ -8,6 +8,7 @@ use Closure;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\Promise;
+use LML\SDK\Promise\CachedItemPromise;
 use React\Promise\PromiseInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -68,7 +69,7 @@ class Client implements ClientInterface
         $item = $cache->getItem($cacheKey);
 
         if ($item->isHit()) {
-            return new Promise(function (Closure $resolve) use ($item) {
+            return new CachedItemPromise(function (Closure $resolve) use ($item) {
                 $resolve($item->get());
             });
         }

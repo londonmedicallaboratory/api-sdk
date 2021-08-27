@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Product;
 
+use LML\SDK\Attribute\Model;
 use LML\SDK\Model\File\FileInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Money\PriceInterface;
+use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Model\Shipping\ShippingInterface;
 use LML\SDK\Model\Category\CategoryInterface;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 
+#[Model(repositoryClass: ProductRepository::class)]
 class Product implements ProductInterface
 {
     /**

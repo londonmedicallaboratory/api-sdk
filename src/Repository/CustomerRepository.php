@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\File\File;
 use LML\SDK\Model\Customer\Customer;
-use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
 use LML\SDK\ViewFactory\AbstractViewRepository;
 

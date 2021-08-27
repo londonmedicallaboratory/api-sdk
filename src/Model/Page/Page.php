@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Page;
 
+use LML\SDK\Attribute\Model;
+use LML\SDK\Repository\PageRepository;
+
+#[Model(repositoryClass: PageRepository::class)]
 class Page implements PageInterface
 {
     public function __construct(

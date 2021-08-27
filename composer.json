@@ -18,7 +18,8 @@
         "brick/money": "^0.5.2",
         "symfony/twig-bundle": "^5.3",
         "omnipay/sagepay": "^3.2",
-        "symfony/intl": "^5.3"
+        "symfony/intl": "^5.3",
+        "sensio/framework-extra-bundle": "^6.1"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -28,7 +29,8 @@
         "symfony/framework-bundle": "^5.3",
         "symfony/yaml": "^5.3",
         "symfony/stopwatch": "^5.3",
-        "bocmah/psalm-reactphp-promise-plugin": "^0.1.1"
+        "bocmah/psalm-reactphp-promise-plugin": "^0.1.1",
+        "symfony/web-profiler-bundle": "^5.3"
     },
     "repositories": [
         {

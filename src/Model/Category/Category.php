@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Category;
 
+use LML\SDK\Attribute\Model;
+use LML\SDK\Repository\ProductCategoryRepository;
+
+#[Model(repositoryClass: ProductCategoryRepository::class)]
 class Category implements CategoryInterface
 {
     public function __construct(

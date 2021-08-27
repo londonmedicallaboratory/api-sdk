@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Address;
 
-/** @noinspection TypoSafeNamingInspection */
+use LML\SDK\Attribute\Model;
+use LML\SDK\Repository\AddressRepository;
 
+/** @noinspection TypoSafeNamingInspection */
+#[Model(repositoryClass: AddressRepository::class)]
 class Address implements AddressInterface
 {
     public function __construct(

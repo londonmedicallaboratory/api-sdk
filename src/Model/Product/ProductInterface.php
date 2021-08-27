@@ -6,6 +6,7 @@ namespace LML\SDK\Model\Product;
 
 use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\File\FileInterface;
+use LML\SDK\Model\SluggableInterface;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
 use LML\SDK\Model\Category\CategoryInterface;
@@ -24,7 +25,7 @@ use LML\SDK\Model\Biomarker\BiomarkerInterface;
  *
  * @extends ModelInterface<S>
  */
-interface ProductInterface extends ModelInterface
+interface ProductInterface extends ModelInterface, SluggableInterface
 {
     public function getName(): string;
 

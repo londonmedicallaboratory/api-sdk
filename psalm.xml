@@ -21,12 +21,20 @@
             <file name="src/LMLSDKBundle.php"/>
         </ignoreFiles>
     </projectFiles>
-    
+
     <stubs>
         <file name="stubs/Clue/React/Block/functions.stubphp"/>
         <file name="stubs/Symfony/Component/DependencyInjection/ServiceLocator.stubphp"/>
+        <file name="stubs/Sensio/Bundle/FrameworkExtraBundle/Configuration/ParamConverter.stubphp"/>
     </stubs>
 
+    <issueHandlers>
+        <MethodSignatureMismatch>
+            <errorLevel type="suppress">
+                <file name="src/Promise/CachedItemPromise.php"/>
+            </errorLevel>
+        </MethodSignatureMismatch>
+    </issueHandlers>
 
     <plugins>
         <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>

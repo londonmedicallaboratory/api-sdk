@@ -1,0 +1,41 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <span class="sf-toolbar-value"><i class="fa fa-vector-square"></i> &nbsp;{{ collector.requests|length }}</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <span class="sf-toolbar-header">
+                <b class="sf-toolbar-ajax-info">API calls</b>
+            </span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <table class="sf-toolbar-ajax-requests">
+                <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>Cached</th>
+                </tr>
+                </thead>
+                <tbody class="sf-toolbar-ajax-request-list">
+                {% for request in collector.requests %}
+                    <tr>
+                        <td>{{ request.url }}</td>
+                        <td>
+                            {% if request.cached %}
+                                <i class="fa fa-check" style="float: right"></i>
+                            {% else %}
+                                <i class="fa fa-times" style="float: right"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: false }) }}
+{% endblock %}

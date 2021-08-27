@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\ViewFactory;
 
 use RuntimeException;
+use React\EventLoop\Loop;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\ModelInterface;
 use React\Promise\PromiseInterface;
@@ -16,6 +17,7 @@ use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function rtrim;
 use function sprintf;
+use function Clue\React\Block\await;
 
 /**
  * @template TData
@@ -34,6 +36,30 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     private array $cache = [];
 
     private ?ClientInterface $client = null;
+
+    /**
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
+     *
+     * @psalm-suppress MixedArrayAccess
+     */
+    public function find(string $id, bool $await = false)
+    {
+        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
+        $client = $this->getClient();
+
+        $promise = $client->getAsync($url)
+            ->then(function ($data) {
+                if (!$data) {
+                    return null;
+                }
+                $id = (string)$data['id'];
+
+                /** @psalm-suppress MixedArgument */
+                return $this->cache[$id] ??= $this->buildOne($data);
+            });
+
+        return $await ? await($promise, Loop::get()) : $promise;
+    }
 
     public function patchId(string $id, array $data): PromiseInterface
     {
@@ -66,48 +92,31 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         return new LazyPromise($promise);
     }
 
+
     /**
-     * @return LazyValueInterface<?TView>
+     * Finding one by slug is mostly used query so this method is just a shortcut.
+     *
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function findLazyBySlug(string $slug)
+    public function findOneBySlug(string $slug, bool $await = false)
     {
         $promise = $this->findOneBy(['slug' => $slug]);
 
-        return new LazyPromise($promise);
+        return $await ? await($promise, Loop::get()) : $promise;
     }
 
     /**
-     * @return PromiseInterface<?TView>
-     *
-     * @psalm-suppress MixedArrayAccess
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function find(string $id)
-    {
-        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
-        $client = $this->getClient();
-
-        return $client->getAsync($url)
-            ->then(function ($data) {
-                if (!$data) {
-                    return null;
-                }
-                $id = (string)$data['id'];
-
-                /** @psalm-suppress MixedArgument */
-                return $this->cache[$id] ??= $this->buildOne($data);
-            });
-    }
-
-    /**
-     * @return PromiseInterface<?TView>
-     */
-    public function findOneBy(array $filters = [], ?string $url = null)
+    public function findOneBy(array $filters = [], ?string $url = null, bool $await = false)
     {
         $paginated = $this->findPaginated($filters, $url);
 
-        return $paginated->then(function (PaginatedResults $results) {
+        $promise = $paginated->then(function (PaginatedResults $results) {
             return $results->first();
         });
+
+        return $await ? await($promise, Loop::get()) : $promise;
     }
 
     /**
@@ -214,7 +223,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
 
     private function getClient(): ClientInterface
     {
-        return $this->client ?? throw new RuntimeException('Cliet is not defined.');
+        return $this->client ?? throw new RuntimeException('Client is not defined.');
     }
 
     abstract protected function getBaseUrl(): string;

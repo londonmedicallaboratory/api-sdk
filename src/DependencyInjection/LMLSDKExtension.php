@@ -42,6 +42,9 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+        if ($container->getParameter('kernel.debug') === true) {
+            $loader->load('profiler.xml');
+        }
 
         $this->configureClient($mergedConfig, $container);
     }
@@ -52,8 +55,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
 
         if ($mergedConfig['faker']) {
             $definition
-                ->setClass(FakerClient::class)
-            ;
+                ->setClass(FakerClient::class);
 
             return;
         }

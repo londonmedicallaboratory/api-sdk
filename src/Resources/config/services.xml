@@ -64,5 +64,13 @@
             <argument type="service" id="LML\SDK\Repository\OrderRepository" />
         </service>
 
+        <service id="LML\SDK\Service\Model\ModelManager">
+            <argument type="tagged_locator" tag="lml_sdk.repository" default-index-method="getDefaultName" />
+        </service>
+
+        <service id="LML\SDK\ArgumentValueResolver\ModelParamConverter">
+            <argument type="service" id="LML\SDK\Service\Model\ModelManager" />
+        </service>
+
     </services>
 </container>
