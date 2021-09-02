@@ -48,7 +48,7 @@
             <argument type="service" id="lml_sdk.client" />
         </service>
 
-        <service id="LML\SDK\Service\Payment\Tagged\SagePaymentProcessor">
+        <service id="LML\SDK\Service\Payment\Strategy\SagePaymentProcessor">
             <argument id="LML\SDK\Service\InformationBooth" />
 <!--            <tag name="lml_sdk.payment_strategy"/>-->
         </service>

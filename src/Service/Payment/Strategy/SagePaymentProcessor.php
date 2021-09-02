@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Service\Payment\Tagged;
+namespace LML\SDK\Service\Payment\Strategy;
 
 use Omnipay\Omnipay;
 use RuntimeException;
@@ -14,6 +14,7 @@ use Omnipay\Common\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use LML\SDK\Service\Payment\Strategy\PaymentProcessorStrategyInterface;
 use function sscanf;
 use function sprintf;
 use function method_exists;
@@ -111,7 +112,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         return Omnipay::create('SagePay\Direct')->initialize([
             'vendor'        => $vendor,
             'testMode'      => true,
-//            'encryptionKey' => $encryptionKey,
+            'encryptionKey' => $encryptionKey,
         ]);
     }
 
@@ -121,17 +122,18 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
      */
     private function extractRedirectResponse(ResponseInterface $responseMessage): ?Response
     {
-        if (!$responseMessage->isSuccessful()) {
-            throw new PaymentFailureException($responseMessage->getMessage());
-        }
-
         if ($responseMessage->isRedirect() && method_exists($responseMessage, 'getRedirectResponse')) {
             /** @noinspection PhpUnnecessaryLocalVariableInspection */
+
 
             /** @var Response $redirectResponse */
             $redirectResponse = $responseMessage->getRedirectResponse();
 
             return $redirectResponse;
+        }
+
+        if (!$responseMessage->isSuccessful()) {
+            throw new PaymentFailureException($responseMessage->getMessage());
         }
 
         return null;

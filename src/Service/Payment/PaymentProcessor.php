@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ServiceLocator;
-use LML\SDK\Service\Payment\Tagged\PaymentProcessorStrategyInterface;
+use LML\SDK\Service\Payment\Strategy\PaymentProcessorStrategyInterface;
 
 class PaymentProcessor
 {

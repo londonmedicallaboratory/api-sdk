@@ -10,7 +10,7 @@ use LML\SDK\ViewFactory\AbstractViewRepository;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use LML\SDK\Service\Payment\Tagged\PaymentProcessorStrategyInterface;
+use LML\SDK\Service\Payment\Strategy\PaymentProcessorStrategyInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Service\Payment\Tagged;
+namespace LML\SDK\Service\Payment\Strategy;
 
 use LML\SDK\DTO\Payment;
 use LML\SDK\Service\Payment\PaymentProcessor;

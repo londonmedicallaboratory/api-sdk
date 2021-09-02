@@ -73,8 +73,8 @@ class Payment
      */
     private function populateTestData(): void
     {
-//        $this->cardNumber = '4929 0000 0555 9';
-            $this->cardNumber = '4929 0000 0000 6';
+        $this->cardNumber = '4929000005559';
+//            $this->cardNumber = '4929000000006';
         $this->cardExpirationDate = '12/25';
         $this->cardCVV = '123';
     }
