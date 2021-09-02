@@ -111,7 +111,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         return Omnipay::create('SagePay\Direct')->initialize([
             'vendor'        => $vendor,
             'testMode'      => true,
-            'encryptionKey' => $encryptionKey,
+//            'encryptionKey' => $encryptionKey,
         ]);
     }
 
