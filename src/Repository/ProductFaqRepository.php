@@ -30,5 +30,4 @@ class ProductFaqRepository extends AbstractViewRepository
     {
         return '/product_faq';
     }
-
 }

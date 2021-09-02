@@ -50,16 +50,19 @@ class Basket
             firstName: $payment->customersFirstName ?? throw new RuntimeException(),
             lastName: $payment->customersLastName ?? throw new RuntimeException(),
             email: $payment->customersEmail ?? throw new RuntimeException(),
-            phoneNumber: $payment->customersEmail ?? throw new RuntimeException(),
+            phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
         );
+
+        $deliveryLine1 = $payment->deliveryAddressLine1 ?? $payment->customersAddressLine1;
+        $postalCode = $payment->deliveryPostalCode ?? $payment->customersPostalCode;
 
         $address = new Address(
             id: '',
-            line1: $payment->deliveryAddressLine1 ?? throw new RuntimeException(),
-            postalCode: $payment->deliveryAddressLine1 ?? throw new RuntimeException(),
+            line1: $deliveryLine1 ?? throw new RuntimeException(),
+            postalCode: $postalCode ?? throw new RuntimeException(),
             countryCode: 'GB',
-            line2: $payment->deliveryAddressLine1,
-            line3: $payment->deliveryAddressLine1,
+            line2: $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
+            line3: $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
         );
 
         $order = new Order(
