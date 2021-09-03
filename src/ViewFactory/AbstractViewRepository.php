@@ -221,7 +221,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         $this->client = $client;
     }
 
-    private function getClient(): ClientInterface
+    protected function getClient(): ClientInterface
     {
         return $this->client ?? throw new RuntimeException('Client is not defined.');
     }

@@ -13,6 +13,9 @@ class TestLocation implements TestLocationInterface
     public function __construct(
         private string $id,
         private string $fullAddress,
+        private string $city,
+        private string $postalCode,
+        private string $name,
     )
     {
     }
@@ -27,11 +30,29 @@ class TestLocation implements TestLocationInterface
         return $this->fullAddress;
     }
 
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    public function getPostalCode(): string
+    {
+        return $this->postalCode;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function toArray()
     {
         return [
             'id'           => $this->getId(),
             'full_address' => $this->getFullAddress(),
+            'city'         => $this->getCity(),
+            'postal_code'  => $this->getPostalCode(),
+            'name'         => $this->getName(),
         ];
     }
 }

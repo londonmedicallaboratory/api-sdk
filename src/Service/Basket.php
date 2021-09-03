@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use function json_decode;
 use function array_filter;
 use function array_values;
+use function func_get_args;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
@@ -203,7 +204,8 @@ class Basket
             $promises[] = $repository->find((string)$id)
                 ->then(function (?ProductInterface $product) use ($quantity) {
                     return $product ? new BasketItem($product, $quantity) : null;
-                });
+                }, fn() => null)
+            ;
         }
 
         /** @var list<?BasketItem> $responses */
