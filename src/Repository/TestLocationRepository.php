@@ -49,12 +49,6 @@ class TestLocationRepository extends AbstractViewRepository
         $slots = await($promise, Loop::get());
 
         return array_map(fn(string $date) => new DateTime($date), $slots);
-        $dates = [];
-        foreach ($slots as $date) {
-            $dates[] = new DateTime($date);
-        }
-
-        return $dates;
     }
 
     protected function one($entity, $options, $optimizer)
