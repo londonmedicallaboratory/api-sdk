@@ -57,9 +57,11 @@ class Client implements ClientInterface
     }
 
     /**
+     * @param int|null $cacheTimeout *
+     *
      * @return PromiseInterface<mixed>
      */
-    public function getAsync(string $url, array $filters = [], int $page = 1): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null): PromiseInterface
     {
         $url = $this->createRealUrl($url, $filters, $page);
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
@@ -74,11 +76,12 @@ class Client implements ClientInterface
         }
 
         return $this->browser->get($url, $this->getAuthHeaders())
-            ->then(function (ResponseInterface $response) use ($item, $cache): array {
+            ->then(function (ResponseInterface $response) use ($item, $cache, $cacheTimeout): array {
+                $cacheTimeout ??= $this->cacheExpiration;
                 $body = (string)$response->getBody();
                 /** @var array<string, mixed> $data */
                 $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-                $item->expiresAfter($this->cacheExpiration);
+                $item->expiresAfter($cacheTimeout);
                 $item->set($data);
                 $cache->save($item);
 
