@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "10790a93fb9784262bc49c68fc0dfccb",
+    "content-hash": "454fe8e3c1aa3afdd4f6ae8bd78ec3c8",
     "packages": [
         {
             "name": "brick/math",
@@ -2759,16 +2759,16 @@
         },
         {
             "name": "strictify/form-mapper-bundle",
-            "version": "v0.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/strictify/form-mapper-bundle.git",
-                "reference": "fe68189cd0b23ac3708a57d4a44d8748121fb13e"
+                "reference": "907ed98f9c16f58ff72cb5ad49a4aa91d48d8925"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/strictify/form-mapper-bundle/zipball/fe68189cd0b23ac3708a57d4a44d8748121fb13e",
-                "reference": "fe68189cd0b23ac3708a57d4a44d8748121fb13e",
+                "url": "https://api.github.com/repos/strictify/form-mapper-bundle/zipball/907ed98f9c16f58ff72cb5ad49a4aa91d48d8925",
+                "reference": "907ed98f9c16f58ff72cb5ad49a4aa91d48d8925",
                 "shasum": ""
             },
             "require": {
@@ -2795,6 +2795,7 @@
                 "symplify/easy-coding-standard": "^9",
                 "vimeo/psalm": "dev-master"
             },
+            "default-branch": true,
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
@@ -2834,10 +2835,10 @@
                 "form mapper"
             ],
             "support": {
-                "source": "https://github.com/strictify/form-mapper-bundle/tree/v0.0.1",
+                "source": "https://github.com/strictify/form-mapper-bundle/tree/master",
                 "issues": "https://github.com/strictify/form-mapper-bundle/issues"
             },
-            "time": "2021-05-18T12:06:02+00:00"
+            "time": "2021-07-05T13:49:05+00:00"
         },
         {
             "name": "symfony/cache",
@@ -7901,6 +7902,7 @@
     "stability-flags": {
         "londonmedicallaboratory/view-bundle": 20,
         "omnipay/sagepay": 20,
+        "strictify/form-mapper-bundle": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
