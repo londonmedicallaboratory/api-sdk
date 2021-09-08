@@ -31,6 +31,7 @@ class CreateOrderTest extends KernelTestCase
             line1: 'First line 42',
             postalCode: 'test',
             countryCode: 'GB',
+            countryName: 'GB',
 
         );
         $order = new Order(

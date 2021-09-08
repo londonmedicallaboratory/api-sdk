@@ -61,6 +61,30 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         return $await ? await($promise, Loop::get()) : $promise;
     }
 
+    /**
+     * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
+     *
+     * @psalm-suppress MixedArrayAccess
+     */
+    public function findOrThrowException(string $id, bool $await = false)
+    {
+        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
+        $client = $this->getClient();
+
+        $promise = $client->getAsync($url)
+            ->then(function ($data) {
+                if (!$data) {
+                    throw new RuntimeException();
+                }
+                $id = (string)$data['id'];
+
+                /** @psalm-suppress MixedArgument */
+                return $this->cache[$id] ??= $this->buildOne($data);
+            });
+
+        return $await ? await($promise, Loop::get()) : $promise;
+    }
+
     public function patchId(string $id, array $data): PromiseInterface
     {
         $client = $this->getClient();
@@ -117,6 +141,17 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         });
 
         return $await ? await($promise, Loop::get()) : $promise;
+    }
+
+    /**
+     * @psalm-return ($await is true ? list<TView> : PromiseInterface<list<TView>>)
+     */
+    public function findAll(bool $await = false)
+    {
+        $promise = $this->findBy();
+
+        return $await ? await($promise, Loop::get()) : $promise;
+
     }
 
     /**

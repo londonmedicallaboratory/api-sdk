@@ -18,8 +18,6 @@ use function Clue\React\Block\await;
  * @psalm-import-type S from TestLocationInterface
  *
  * @extends AbstractViewRepository<S, TestLocationInterface, array>
- *
- * @see TestLocationInterface
  */
 class TestLocationRepository extends AbstractViewRepository
 {
@@ -31,7 +29,7 @@ class TestLocationRepository extends AbstractViewRepository
         $url = sprintf('/test_location/%s/calender/%04d/%02d', $id, $when->format('Y'), $when->format('m'));
 
         /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
-        $promise = $this->getClient()->getAsync(url: $url);
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         return await($promise, Loop::get());
     }
@@ -41,10 +39,10 @@ class TestLocationRepository extends AbstractViewRepository
      */
     public function getSlots(string $id, DateTime $when)
     {
-        $url = sprintf('/test_location/%s/slots/%04d/%02d', $id, $when->format('Y'), $when->format('m'));
+        $url = sprintf('/test_location/%s/slots/%04d/%02d/%02d', $id, $when->format('Y'), $when->format('m'), $when->format('d'));
 
         /** @var PromiseInterface<list<string>> $promise */
-        $promise = $this->getClient()->getAsync(url: $url);
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $slots = await($promise, Loop::get());
 

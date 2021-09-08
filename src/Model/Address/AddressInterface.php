@@ -13,7 +13,7 @@ use LML\SDK\Model\ModelInterface;
  *      line2: ?string,
  *      line3: ?string,
  *      postal_code: string,
- *      country_name: ?string,
+ *      country_name: string,
  *      country_code: string,
  * }
  *
@@ -29,9 +29,9 @@ interface AddressInterface extends ModelInterface
 
     public function getAddressLine3(): ?string;
 
-    public function getCountryName(): string;
-
     public function getPostalCode(): string;
+
+    public function getCountryName(): string;
 
     public function getCountryCode(): string;
 }

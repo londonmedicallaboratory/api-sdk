@@ -24,10 +24,11 @@ class AddressRepository extends AbstractViewRepository
         return new Address(
             id: $id,
             line1: $entity['line1'],
-            postalCode: $entity['postal_code'],
-            countryCode: $entity['country_code'],
             line2: $entity['line2'],
             line3: $entity['line3'],
+            postalCode: $entity['postal_code'],
+            countryCode: $entity['country_code'],
+            countryName: $entity['country_name'],
         );
     }
 

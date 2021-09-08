@@ -16,6 +16,7 @@ class Address implements AddressInterface
         private string $line1,
         private string $postalCode,
         private string $countryCode,
+        private string $countryName,
         private ?string $line2 = null,
         private ?string $line3 = null,
     )
@@ -60,6 +61,11 @@ class Address implements AddressInterface
         return $this->countryCode;
     }
 
+    public function getCountryName(): string
+    {
+        return $this->countryName;
+    }
+
     public function getAddressLine1(): string
     {
         return $this->line1;
@@ -73,11 +79,6 @@ class Address implements AddressInterface
     public function getAddressLine3(): ?string
     {
         return $this->line3;
-    }
-
-    public function getCountryName(): string
-    {
-        return $this->countryCode;
     }
 
     public function getId(): string

@@ -16,7 +16,7 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *      address: array{
  *          id: string,
  *          country_code: string,
- *          country_name: null|string,
+ *          country_name: string,
  *          line1: string,
  *          line2: null|string,
  *          line3: null|string,
