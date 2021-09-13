@@ -14,7 +14,6 @@ use Omnipay\Common\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use LML\SDK\Service\Payment\Strategy\PaymentProcessorStrategyInterface;
 use function sscanf;
 use function sprintf;
 use function method_exists;
@@ -124,7 +123,6 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
     {
         if ($responseMessage->isRedirect() && method_exists($responseMessage, 'getRedirectResponse')) {
             /** @noinspection PhpUnnecessaryLocalVariableInspection */
-
 
             /** @var Response $redirectResponse */
             $redirectResponse = $responseMessage->getRedirectResponse();

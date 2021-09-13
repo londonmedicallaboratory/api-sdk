@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Customer;
 
+use function sprintf;
+
 class Customer implements CustomerInterface
 {
     public function __construct(
@@ -14,6 +16,11 @@ class Customer implements CustomerInterface
         private string $phoneNumber,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
     }
 
     public function getId(): string
@@ -69,11 +76,11 @@ class Customer implements CustomerInterface
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
-            'first_name' => $this->getFirstName(),
-            'last_name' => $this->getLastName(),
+            'id'           => $this->getId(),
+            'first_name'   => $this->getFirstName(),
+            'last_name'    => $this->getLastName(),
             'phone_number' => $this->getPhoneNumber(),
-            'email' => $this->getEmail(),
+            'email'        => $this->getEmail(),
         ];
     }
 }

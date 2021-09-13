@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace LML\SDK\Model\TestLocation;
 
 use LML\SDK\Attribute\Model;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
+use LML\SDK\Model\HealthcareProfessional\HealthcareProfessionalInterface;
 
 #[Model(repositoryClass: TestLocationRepository::class)]
 class TestLocation implements TestLocationInterface
 {
+    /**
+     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals,
+     */
     public function __construct(
-        private string $id,
-        private string $fullAddress,
-        private string $city,
-        private string $postalCode,
-        private string $name,
+        protected string $id,
+        protected string $fullAddress,
+        protected string $city,
+        protected string $postalCode,
+        protected string $name,
+        private LazyValueInterface $healthcareProfessionals,
     )
     {
     }
@@ -43,6 +49,11 @@ class TestLocation implements TestLocationInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getHealthcareProfessionals()
+    {
+        return $this->healthcareProfessionals->getValue();
     }
 
     public function toArray()

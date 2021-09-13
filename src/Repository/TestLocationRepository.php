@@ -6,10 +6,12 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use React\EventLoop\Loop;
+use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\TestLocation\TestLocation;
 use LML\SDK\ViewFactory\AbstractViewRepository;
 use LML\SDK\Model\TestLocation\TestLocationInterface;
+use LML\SDK\Model\HealthcareProfessional\HealthcareProfessional;
 use function sprintf;
 use function array_map;
 use function Clue\React\Block\await;
@@ -49,7 +51,7 @@ class TestLocationRepository extends AbstractViewRepository
         return array_map(fn(string $date) => new DateTime($date), $slots);
     }
 
-    protected function one($entity, $options, $optimizer)
+    protected function one($entity, $options, $optimizer): TestLocation
     {
         $id = $entity['id'];
 
@@ -59,11 +61,22 @@ class TestLocationRepository extends AbstractViewRepository
             fullAddress: $entity['full_address'],
             city: $entity['city'],
             postalCode: $entity['postal_code'],
+            healthcareProfessionals: new LazyPromise($this->getProfessionals($id)),
         );
     }
 
     protected function getBaseUrl(): string
     {
         return '/test_location';
+    }
+
+    /**
+     * @return PromiseInterface<list<HealthcareProfessional>>
+     */
+    private function getProfessionals(string $id)
+    {
+        $url = sprintf('/test_location/%s/professionals', $id);
+
+        return $this->get(HealthcareProfessionalRepository::class)->findBy(url: $url);
     }
 }
