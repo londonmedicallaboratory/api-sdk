@@ -33,4 +33,9 @@ class PageRepository extends AbstractViewRepository
     {
         return '/page';
     }
+
+    protected function getCacheTimeout(): ?int
+    {
+        return 500;
+    }
 }

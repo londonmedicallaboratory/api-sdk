@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\ArgumentValueResolver;
 
-use ReflectionClass;
 use RuntimeException;
-use ReflectionAttribute;
 use LML\SDK\Attribute\Model;
 use LML\SDK\Service\Model\ModelManager;
+use LML\SDK\Util\ReflectionAttributeReader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -17,6 +16,7 @@ use function sprintf;
 
 /**
  * Allows param conversion of model, similar to
+ *
  * @see https://github.com/sensiolabs/SensioFrameworkExtraBundle/blob/master/src/Request/ParamConverter/DoctrineParamConverter.php
  *
  * Only slug is supported, and no conversion.
@@ -35,7 +35,7 @@ class ModelParamConverter implements ParamConverterInterface
         if (!$class) {
             return false;
         }
-        $model = $this->getModelAttribute($class);
+        $model = ReflectionAttributeReader::getAttribute($class, Model::class);
 
         return (bool)$model;
     }
@@ -49,7 +49,7 @@ class ModelParamConverter implements ParamConverterInterface
             return false;
         }
         $class = $configuration->getClass() ?? throw new RuntimeException('This must never happen.');
-        $attribute = $this->getModelAttribute($class) ?? throw new RuntimeException('This must never happen.');
+        $attribute = ReflectionAttributeReader::getAttribute($class, Model::class) ?? throw new RuntimeException('This must never happen.');
         $repository = $this->modelManager->getRepository($attribute->getRepositoryClass());
 
         if ($id) {
@@ -64,17 +64,5 @@ class ModelParamConverter implements ParamConverterInterface
         $request->attributes->set($name, $model);
 
         return true;
-    }
-
-    /**
-     * @param class-string $className
-     */
-    private function getModelAttribute(string $className): ?Model
-    {
-        $reflection = new ReflectionClass($className);
-        $attributes = $reflection->getAttributes(Model::class, ReflectionAttribute::IS_INSTANCEOF);
-        $first = $attributes[0] ?? null;
-
-        return $first?->newInstance();
     }
 }

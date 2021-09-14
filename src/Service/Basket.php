@@ -8,6 +8,7 @@ use RuntimeException;
 use Brick\Money\Money;
 use LML\SDK\DTO\Payment;
 use React\EventLoop\Loop;
+use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Order\Order;
@@ -23,7 +24,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use function json_decode;
 use function array_filter;
 use function array_values;
-use function func_get_args;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
@@ -37,9 +37,9 @@ class Basket
     private ?array $items = null;
 
     public function __construct(
-        private RequestStack $requestStack,
+        private RequestStack      $requestStack,
         private ProductRepository $productRepository,
-        private OrderRepository $orderRepository,
+        private OrderRepository   $orderRepository,
     )
     {
     }
@@ -62,6 +62,7 @@ class Basket
             line1: $deliveryLine1 ?? throw new RuntimeException(),
             postalCode: $postalCode ?? throw new RuntimeException(),
             countryCode: 'GB',
+            countryName: 'GB',
             line2: $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
             line3: $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
         );
@@ -71,8 +72,8 @@ class Basket
             customer: $customer,
             address: $address,
             total: $this->getTotal() ?? throw new RuntimeException(),
-            items: $this->getItems(),
-            companyName: $payment->customersCompany ,
+            items: new LazyValue(fn() => $this->getItems()),
+            companyName: $payment->customersCompany,
             billingAddress: null,
         );
 
@@ -204,8 +205,7 @@ class Basket
             $promises[] = $repository->find((string)$id)
                 ->then(function (?ProductInterface $product) use ($quantity) {
                     return $product ? new BasketItem($product, $quantity) : null;
-                }, fn() => null)
-            ;
+                }, fn() => null);
         }
 
         /** @var list<?BasketItem> $responses */

@@ -128,7 +128,7 @@ class TestRegistrationType extends AbstractType
                 mobilePhoneNumber: $mobilePhoneNumber,
                 nhsNumber: $nhsNumber,
                 isVaccinated: $isVaccinated,
-                passportNumber: $passportNumber
+                passportNumber: $passportNumber,
             ));
     }
 }

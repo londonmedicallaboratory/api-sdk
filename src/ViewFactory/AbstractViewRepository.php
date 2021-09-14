@@ -47,7 +47,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
         $client = $this->getClient();
 
-        $promise = $client->getAsync($url)
+        $promise = $client->getAsync($url, cacheTimeout: $this->getCacheTimeout())
             ->then(function ($data) {
                 if (!$data) {
                     return null;
@@ -71,7 +71,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
         $client = $this->getClient();
 
-        $promise = $client->getAsync($url)
+        $promise = $client->getAsync($url, cacheTimeout: $this->getCacheTimeout())
             ->then(function ($data) {
                 if (!$data) {
                     throw new RuntimeException();
@@ -208,7 +208,7 @@ abstract class AbstractViewRepository extends AbstractViewFactory
         }
 
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
-        $promise = $client->getAsync($url, $filters, $page);
+        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: $this->getCacheTimeout());
 
         return $promise
             ->then(function (array $data) {
@@ -262,4 +262,12 @@ abstract class AbstractViewRepository extends AbstractViewFactory
     }
 
     abstract protected function getBaseUrl(): string;
+
+    /**
+     * Returning null means default timeout will be used, i.e. the one defined in ``lml_sdk.cache_expiration``
+     */
+    protected function getCacheTimeout(): ?int
+    {
+        return null;
+    }
 }

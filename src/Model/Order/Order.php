@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\Order;
 
+use LML\SDK\Attribute\Model;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
 use function array_map;
 
+#[Model(repositoryClass: OrderRepository::class)]
 class Order implements OrderInterface
 {
     /**
-     * @param list<ItemInterface> $items
+     * @param LazyValueInterface<list<ItemInterface>> $items
      *
      * @see OrderRepository::one
      */
     public function __construct(
-        private string $id,
-        private CustomerInterface $customer,
-        private AddressInterface $address,
-        private PriceInterface $total,
-        private array $items = [],
-        private ?string $companyName = null,
-        private ?AddressInterface $billingAddress = null,
+        private string             $id,
+        private CustomerInterface  $customer,
+        private AddressInterface   $address,
+        private PriceInterface     $total,
+        private LazyValueInterface $items,
+        private ?string            $companyName = null,
+        private ?AddressInterface  $billingAddress = null,
     )
     {
     }
@@ -54,9 +57,9 @@ class Order implements OrderInterface
         return $this->id;
     }
 
-    public function getItems(): array
+    public function getItems()
     {
-        return $this->items;
+        return $this->items->getValue();
     }
 
     public function getTotal(): PriceInterface
@@ -78,10 +81,7 @@ class Order implements OrderInterface
                 'currency'        => $price->getCurrency(),
                 'formatted_value' => $price->getFormattedValue(),
             ],
-            'items'    => array_map(fn(ItemInterface $item) => [
-                'product_id' => $item->getProduct()->getId(),
-                'quantity'   => $item->getQuantity(),
-            ], $this->getItems()),
+            'items'    => array_map(fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
     }
 }

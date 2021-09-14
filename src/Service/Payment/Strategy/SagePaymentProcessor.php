@@ -105,7 +105,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
     private function createGateway(): GatewayInterface
     {
         $info = $this->informationBooth->getWebsiteInfo();
-        $vendor = $info['sage_auth']['vendor'] ?? throw new RuntimeException();
+        $vendor = $info['sage_auth']['vendor'] ?? throw new RuntimeException('Vendor name must be defined');
         $encryptionKey = $info['sage_auth']['encryption_key'] ?? throw new RuntimeException();
 
         return Omnipay::create('SagePay\Direct')->initialize([
