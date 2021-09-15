@@ -6,8 +6,8 @@ namespace LML\SDK\Form;
 
 use DateTime;
 use LML\SDK\Enum\GenderEnum;
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Model\Address\Address;
 use Symfony\Component\Form\AbstractType;
 use LML\SDK\Repository\ProductRepository;
@@ -21,11 +21,10 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 
 /**
- * @extends AbstractType<TestRegistrationInterface>
+ * @extends AbstractType<TestRegistration>
  */
 class TestRegistrationType extends AbstractType
 {
@@ -40,58 +39,58 @@ class TestRegistrationType extends AbstractType
         $builder->add('product', ChoiceType::class, [
             'choices'      => $this->productRepository->findAll(true),
             'choice_label' => fn(ProductInterface $product) => $product->getName(),
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getProduct(),
-            'update_value' => fn(ProductInterface $product, TestRegistrationInterface $registration) => $registration->setProduct($product),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getProduct(),
+            'update_value' => fn(ProductInterface $product, TestRegistration $registration) => $registration->setProduct($product),
         ]);
 
         $builder->add('email', EmailType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getEmail(),
-            'update_value' => fn(string $email, TestRegistrationInterface $registration) => $registration->setEmail($email),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getEmail(),
+            'update_value' => fn(string $email, TestRegistration $registration) => $registration->setEmail($email),
             'constraints'  => [
                 new EmailConstraint(),
             ],
         ]);
 
         $builder->add('dateOfBirth', DateType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getDateOfBirth(),
-            'update_value' => fn(DateTime $dateOfBirth, TestRegistrationInterface $registration) => $registration->setDateOfBirth($dateOfBirth),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getDateOfBirth(),
+            'update_value' => fn(DateTime $dateOfBirth, TestRegistration $registration) => $registration->setDateOfBirth($dateOfBirth),
         ]);
 
         $builder->add('firstName', TextType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getFirstName(),
-            'update_value' => fn(string $name, TestRegistrationInterface $registration) => $registration->setFirstName($name),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getFirstName(),
+            'update_value' => fn(string $name, TestRegistration $registration) => $registration->setFirstName($name),
         ]);
 
         $builder->add('lastName', TextType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getLastName(),
-            'update_value' => fn(string $name, TestRegistrationInterface $registration) => $registration->setLastName($name),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getLastName(),
+            'update_value' => fn(string $name, TestRegistration $registration) => $registration->setLastName($name),
         ]);
 
         $builder->add('gender', ChoiceType::class, [
             'choices'      => GenderEnum::getAsFormChoices(),
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getGender(),
-            'update_value' => /** @param GenderEnum::* $gender */ fn(string $gender, TestRegistrationInterface $registration) => $registration->setGender($gender),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getGender(),
+            'update_value' => /** @param GenderEnum::* $gender */ fn(string $gender, TestRegistration $registration) => $registration->setGender($gender),
         ]);
 
         $builder->add('ethnicity', ChoiceType::class, [
             'choices'      => EthnicityEnum::getAsFormGroupChoices(),
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getEthnicity(),
-            'update_value' => /** @param EthnicityEnum::* $ethnicity */ fn(string $ethnicity, TestRegistrationInterface $registration) => $registration->setEthnicity($ethnicity),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getEthnicity(),
+            'update_value' => /** @param EthnicityEnum::* $ethnicity */ fn(string $ethnicity, TestRegistration $registration) => $registration->setEthnicity($ethnicity),
         ]);
 
         $builder->add('mobilePhoneNumber', TextType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getMobilePhoneNumber(),
-            'update_value' => fn(string $number, TestRegistrationInterface $registration) => $registration->setMobilePhoneNumber($number),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getMobilePhoneNumber(),
+            'update_value' => fn(string $number, TestRegistration $registration) => $registration->setMobilePhoneNumber($number),
         ]);
 
         $builder->add('passportNumber', TextType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getPassportNumber(),
-            'update_value' => fn(string $number, TestRegistrationInterface $registration) => $registration->setPassportNumber($number),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getPassportNumber(),
+            'update_value' => fn(string $number, TestRegistration $registration) => $registration->setPassportNumber($number),
         ]);
 
         $builder->add('nhsNumber', TextType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getNhsNumber(),
-            'update_value' => fn(?string $number, TestRegistrationInterface $registration) => $registration->setNhsNumber($number),
+            'get_value'    => fn(TestRegistration $registration) => $registration->getNhsNumber(),
+            'update_value' => fn(?string $number, TestRegistration $registration) => $registration->setNhsNumber($number),
         ]);
 
         $builder->add('isVaccinated', ChoiceType::class, [
@@ -100,12 +99,20 @@ class TestRegistrationType extends AbstractType
                 'Vaccinated'     => true,
                 'Not Vaccinated' => false,
             ],
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->isVaccinated(),
-            'update_value' => fn(bool $isVaccinated, TestRegistrationInterface $registration) => $registration->setIsVaccinated($isVaccinated),
+            'get_value'    => fn(TestRegistration $registration) => $registration->isVaccinated(),
+            'update_value' => fn(bool $isVaccinated, TestRegistration $registration) => $registration->setIsVaccinated($isVaccinated),
         ]);
 
-        $builder->add('address', AddressType::class, [
-            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getUkAddress(),
+        $builder->add('ukAddress', AddressType::class, [
+            'get_value'    => fn(TestRegistration $registration) => $registration->getUkAddress(),
+            'update_value' => fn(AddressInterface $address, TestRegistration $registration) => $registration->setUkAddress($address),
+            'constraints'  => [
+                new NotNull(message: 'You must create an address'),
+            ],
+        ]);
+
+        $builder->add('selfIsolatingAddress', AddressType::class, [
+            'get_value'    => fn(TestRegistration $registration) => $registration->getUkAddress(),
             'update_value' => fn(AddressInterface $address, TestRegistration $registration) => $registration->setUkAddress($address),
             'constraints'  => [
                 new NotNull(message: 'You must create an address'),
@@ -132,9 +139,9 @@ class TestRegistrationType extends AbstractType
                 string           $passportNumber,
                 ?string          $nhsNumber,
                 bool             $isVaccinated,
-                Address          $address,
+                Address          $ukAddress,
             ) => new TestRegistration(
-                product: new LazyValue(fn() => $product),
+                product: new ResolvedValue($product),
                 email: $email,
                 dateOfBirth: $dateOfBirth,
                 firstName: $firstName,
@@ -145,7 +152,7 @@ class TestRegistrationType extends AbstractType
                 nhsNumber: $nhsNumber,
                 isVaccinated: $isVaccinated,
                 passportNumber: $passportNumber,
-                ukAddress: new LazyValue(fn() => $address),
+                ukAddress: new ResolvedValue($ukAddress),
             ));
     }
 }

@@ -46,27 +46,15 @@ interface TestRegistrationInterface extends ModelInterface
 {
     public function getUkAddress(): ?AddressInterface;
 
-    public function setUkAddress(?AddressInterface $address): void;
-
     public function getProduct(): ProductInterface;
-
-    public function setProduct(ProductInterface $product): void;
 
     public function getEmail(): string;
 
-    public function setEmail(string $email): void;
-
     public function getDateOfBirth(): DateTime;
-
-    public function setDateOfBirth(DateTime $dateOfBirth): void;
 
     public function getFirstName(): string;
 
-    public function setFirstName(string $firstName): void;
-
     public function getLastName(): string;
-
-    public function setLastName(string $lastName): void;
 
     /**
      * @return GenderEnum::*
@@ -83,24 +71,11 @@ interface TestRegistrationInterface extends ModelInterface
      */
     public function getEthnicity(): string;
 
-    /**
-     * @param EthnicityEnum::* $ethnicity
-     */
-    public function setEthnicity(string $ethnicity): void;
-
     public function getMobilePhoneNumber(): string;
-
-    public function setMobilePhoneNumber(string $mobilePhoneNumber): void;
 
     public function getPassportNumber(): string;
 
-    public function setPassportNumber(string $passportNumber): void;
-
     public function getNhsNumber(): ?string;
 
-    public function setNhsNumber(?string $nhsNumber): void;
-
     public function isVaccinated(): bool;
-
-    public function setIsVaccinated(bool $isVaccinated): void;
 }

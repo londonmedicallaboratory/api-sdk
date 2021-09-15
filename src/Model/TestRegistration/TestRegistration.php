@@ -6,8 +6,8 @@ namespace LML\SDK\Model\TestRegistration;
 
 use DateTime;
 use LML\SDK\Enum\GenderEnum;
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\View\Lazy\ResolvedValue;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Address\AddressInterface;
@@ -21,19 +21,19 @@ class TestRegistration implements TestRegistrationInterface
      * @param EthnicityEnum::* $ethnicity
      */
     public function __construct(
-        protected LazyValueInterface $product,
-        protected string                              $email,
-        protected DateTime                            $dateOfBirth,
-        protected string                              $firstName,
-        protected string                              $lastName,
-        protected string                              $gender,
-        protected string                              $ethnicity,
-        protected string                              $mobilePhoneNumber,
-        protected string                              $passportNumber,
-        protected ?string                             $nhsNumber,
-        protected bool                                $isVaccinated,
-        protected ?LazyValueInterface                 $ukAddress = null,
-        protected string                              $id = '',
+        protected LazyValueInterface  $product,
+        protected string              $email,
+        protected DateTime            $dateOfBirth,
+        protected string              $firstName,
+        protected string              $lastName,
+        protected string              $gender,
+        protected string              $ethnicity,
+        protected string              $mobilePhoneNumber,
+        protected string              $passportNumber,
+        protected ?string             $nhsNumber,
+        protected bool                $isVaccinated,
+        protected ?LazyValueInterface $ukAddress = null,
+        protected string              $id = '',
     )
     {
     }
@@ -45,21 +45,17 @@ class TestRegistration implements TestRegistrationInterface
 
     public function setProduct(ProductInterface $product): void
     {
-        $this->product = new LazyValue(fn() => $product);
+        $this->product = new ResolvedValue($product);
     }
 
     public function getUkAddress(): ?AddressInterface
     {
-        if (!$promise = $this->ukAddress) {
-            return null;
-        }
-
-        return $promise->getValue();
+        return $this->ukAddress?->getValue();
     }
 
     public function setUkAddress(?AddressInterface $address): void
     {
-        $this->ukAddress = new LazyValue(fn() => $address);
+        $this->ukAddress = new ResolvedValue($address);
     }
 
     public function getEmail(): string
