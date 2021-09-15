@@ -23,7 +23,8 @@
         "twig/extra-bundle": "^2.12",
         "twig/string-extra": "^3.3",
         "symfony/framework-bundle": "^5.3",
-        "strictify/form-mapper-bundle": "dev-master"
+        "strictify/form-mapper-bundle": "dev-master",
+        "strictify/goodies-bundle": "dev-master"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -47,6 +48,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/benjam-es/omnipay-sagepay"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/strictify/goodies-bundle.git"
         }
     ],
     "autoload": {

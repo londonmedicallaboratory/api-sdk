@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace LML\SDK\Form\Extension;
 
-use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use function in_array;
 
-class CountryTypeExtension extends AbstractTypeExtension
+class CountryTypeLimited extends AbstractType
 {
-    public static function getExtendedTypes(): iterable
+    public function getParent(): string
     {
-        yield CountryType::class;
+        return CountryType::class;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

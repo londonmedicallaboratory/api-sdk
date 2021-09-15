@@ -17,6 +17,7 @@ class TestRegistration implements TestRegistrationInterface
     /**
      * @param LazyValueInterface<ProductInterface> $product
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
+     * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param GenderEnum::* $gender
      * @param EthnicityEnum::* $ethnicity
      */
@@ -33,6 +34,7 @@ class TestRegistration implements TestRegistrationInterface
         protected ?string             $nhsNumber,
         protected bool                $isVaccinated,
         protected ?LazyValueInterface $ukAddress = null,
+        protected ?LazyValueInterface $selfIsolatingAddress = null,
         protected string              $id = '',
     )
     {
@@ -175,6 +177,16 @@ class TestRegistration implements TestRegistrationInterface
         return $this->id;
     }
 
+    public function getSelfIsolatingAddress(): ?AddressInterface
+    {
+        return $this->selfIsolatingAddress?->getValue();
+    }
+
+    public function setSelfIsolatingAddress(?AddressInterface $selfIsolatingAddress): void
+    {
+        $this->selfIsolatingAddress = new ResolvedValue($selfIsolatingAddress);
+    }
+
     public function toArray()
     {
         $data = [
@@ -193,6 +205,9 @@ class TestRegistration implements TestRegistrationInterface
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();
+        }
+        if ($selfIsolatingAddress = $this->getSelfIsolatingAddress()) {
+            $data['self_isolating_address'] = $selfIsolatingAddress->toArray();
         }
 
         return $data;

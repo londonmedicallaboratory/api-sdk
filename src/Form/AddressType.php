@@ -7,11 +7,11 @@ namespace LML\SDK\Form;
 use LML\SDK\Model\Address\Address;
 use Symfony\Component\Form\AbstractType;
 use LML\SDK\Model\Address\AddressInterface;
+use LML\SDK\Form\Extension\CountryTypeLimited;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CountryType;
 
 /**
  * @extends AbstractType<AddressInterface>
@@ -59,8 +59,8 @@ class AddressType extends AbstractType
             ],
         ]);
 
-        $builder->add('country', CountryType::class, [
-            'get_value' => fn(Address $address) => $address->getCountryCode(),
+        $builder->add('country', CountryTypeLimited::class, [
+            'get_value'    => fn(Address $address) => $address->getCountryCode(),
             'update_value' => fn(string $country, Address $address) => $address->setCountryCode($country),
         ]);
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88ecec8bc8f83840a8fd122a8022225c",
+    "content-hash": "e176ab78a0660b30964400e22542e6c6",
     "packages": [
         {
             "name": "brick/math",
@@ -2842,6 +2842,58 @@
                 "issues": "https://github.com/strictify/form-mapper-bundle/issues"
             },
             "time": "2021-07-05T13:49:05+00:00"
+        },
+        {
+            "name": "strictify/goodies-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/strictify/goodies-bundle.git",
+                "reference": "1f37593263bf30533a2b1e35c511047a20d30eb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/strictify/goodies-bundle/zipball/1f37593263bf30533a2b1e35c511047a20d30eb0",
+                "reference": "1f37593263bf30533a2b1e35c511047a20d30eb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "8.*",
+                "symfony/form": "^5.2",
+                "symfony/framework-bundle": "^5.2"
+            },
+            "require-dev": {
+                "psalm/plugin-symfony": "dev-symfony-forms",
+                "vimeo/psalm": "dev-master"
+            },
+            "default-branch": true,
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Strictify\\Goodies\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Strictify\\Goodies\\Tests\\": "tests",
+                    "Strictify\\Goodies\\Tests\\Fixture\\": "tests\\fixtures"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zeljko Mitic",
+                    "email": "mitke013@gmail.com"
+                }
+            ],
+            "description": "Set of utilities",
+            "support": {
+                "source": "https://github.com/strictify/goodies-bundle/tree/master",
+                "issues": "https://github.com/strictify/goodies-bundle/issues"
+            },
+            "time": "2021-03-30T13:42:14+00:00"
         },
         {
             "name": "symfony/cache",
@@ -7910,6 +7962,7 @@
         "londonmedicallaboratory/view-bundle": 20,
         "omnipay/sagepay": 20,
         "strictify/form-mapper-bundle": 20,
+        "strictify/goodies-bundle": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

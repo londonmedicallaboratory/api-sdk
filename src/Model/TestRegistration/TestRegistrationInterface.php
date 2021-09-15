@@ -38,6 +38,16 @@ use LML\SDK\Model\Address\AddressInterface;
  *          country_code: string,
  *          city: string,
  *      },
+ *      self_isolating_address?: array{
+ *          id: string,
+ *          line1: string,
+ *          line2: ?string,
+ *          line3: ?string,
+ *          postal_code: string,
+ *          country_name: string,
+ *          country_code: string,
+ *          city: string,
+ *      },
  * }
  *
  * @extends ModelInterface<S>
