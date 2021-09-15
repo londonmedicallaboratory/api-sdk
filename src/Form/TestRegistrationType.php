@@ -20,7 +20,7 @@ use Symfony\Component\Form\Event\PreSubmitEvent;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use LML\SDK\Form\Extension\DateTypeExtendedYearsRange;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -93,8 +93,8 @@ class TestRegistrationType extends AbstractType
             ],
         ]);
 
-        $builder->add('dateOfBirth', DateType::class, [
-            'get_value'    => fn(?TestRegistration $registration) => $registration ? $registration->getDateOfBirth(): new DateTime('2000-10-10'),
+        $builder->add('dateOfBirth', DateTypeExtendedYearsRange::class, [
+            'get_value'    => fn(?TestRegistration $registration) => $registration ? $registration->getDateOfBirth() : new DateTime('2000-10-10'),
             'update_value' => fn(DateTime $dateOfBirth, TestRegistration $registration) => $registration->setDateOfBirth($dateOfBirth),
         ]);
 
@@ -154,8 +154,8 @@ class TestRegistrationType extends AbstractType
         ]);
 
         $builder->add('isSelfIsolating', CheckboxType::class, [
-            'dynamic' => true,
-            'get_value' => fn(TestRegistration $registration) => (bool)$registration->getSelfIsolatingAddress(),
+            'dynamic'      => true,
+            'get_value'    => fn(TestRegistration $registration) => (bool)$registration->getSelfIsolatingAddress(),
             'update_value' => fn() => null,
         ]);
 

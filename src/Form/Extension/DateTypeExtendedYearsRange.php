@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace LML\SDK\Form\Extension;
 
 use DateTime;
-use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use function range;
 
-class DateTypeExtendedYearsRange extends AbstractTypeExtension
+class DateTypeExtendedYearsRange extends AbstractType
 {
-    public static function getExtendedTypes(): iterable
+    public function getParent(): string
     {
-        yield DateType::class;
+        return DateType::class;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
