@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\ViewFactory;
+namespace LML\SDK\Service\Model;
 
 use RuntimeException;
 use React\EventLoop\Loop;
@@ -28,7 +28,7 @@ use function Clue\React\Block\await;
  *
  * @see ModelInterface
  */
-abstract class AbstractViewRepository extends AbstractViewFactory
+abstract class AbstractRepository extends AbstractViewFactory
 {
     /**
      * @var array<string, TView>

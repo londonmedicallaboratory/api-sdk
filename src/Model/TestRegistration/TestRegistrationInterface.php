@@ -9,6 +9,7 @@ use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\Product\ProductInterface;
+use LML\SDK\Model\Address\AddressInterface;
 
 /**
  * There is a bug in psalm that prevents `gender` and `ethnicity` to use Enums
@@ -27,12 +28,26 @@ use LML\SDK\Model\Product\ProductInterface;
  *      passport_number: string,
  *      nhs_number: ?string,
  *      is_vaccinated: bool,
+ *      uk_address?: array{
+ *          id: string,
+ *          line1: string,
+ *          line2: ?string,
+ *          line3: ?string,
+ *          postal_code: string,
+ *          country_name: string,
+ *          country_code: string,
+ *          city: string,
+ *      },
  * }
  *
  * @extends ModelInterface<S>
  */
 interface TestRegistrationInterface extends ModelInterface
 {
+    public function getUkAddress(): ?AddressInterface;
+
+    public function setUkAddress(?AddressInterface $address): void;
+
     public function getProduct(): ProductInterface;
 
     public function setProduct(ProductInterface $product): void;

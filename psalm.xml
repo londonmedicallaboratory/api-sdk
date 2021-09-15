@@ -38,5 +38,5 @@
 
     <plugins>
         <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>
-    </plugins>
+    <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/></plugins>
 </psalm>

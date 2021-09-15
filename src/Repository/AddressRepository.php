@@ -6,16 +6,16 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Address\Address;
 use LML\SDK\Model\Address\AddressInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from AddressInterface
  *
- * @extends AbstractViewRepository<S, AddressInterface, array>
+ * @extends AbstractRepository<S, AddressInterface, array>
  *
  * @see AddressInterface
  */
-class AddressRepository extends AbstractViewRepository
+class AddressRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

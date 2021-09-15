@@ -12,18 +12,18 @@ use LML\SDK\Model\File\FileInterface;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Category\CategoryInterface;
 use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**
  * @psalm-import-type S from ProductInterface
- * @extends AbstractViewRepository<S, Product, array>
+ * @extends AbstractRepository<S, Product, array>
  *
  * @see Product
  * @see ProductInterface
  */
-class ProductRepository extends AbstractViewRepository
+class ProductRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

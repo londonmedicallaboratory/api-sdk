@@ -6,15 +6,15 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Product\ProductFaq;
 use LML\SDK\Model\Product\ProductFaqInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from ProductFaqInterface
- * @extends AbstractViewRepository<S, ProductFaqInterface, array>
+ * @extends AbstractRepository<S, ProductFaqInterface, array>
  *
  * @see ProductFaqInterface
  */
-class ProductFaqRepository extends AbstractViewRepository
+class ProductFaqRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): ProductFaqInterface
     {

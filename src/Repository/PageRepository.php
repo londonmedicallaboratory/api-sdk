@@ -6,16 +6,16 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Page\Page;
 use LML\SDK\Model\Page\PageInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from PageInterface
  *
- * @extends AbstractViewRepository<S, PageInterface, array>
+ * @extends AbstractRepository<S, PageInterface, array>
  *
  * @see PageInterface
  */
-class PageRepository extends AbstractViewRepository
+class PageRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

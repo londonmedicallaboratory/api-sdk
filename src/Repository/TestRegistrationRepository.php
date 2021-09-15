@@ -10,16 +10,16 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Model\Product\Product;
 use React\Promise\PromiseInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
 
 /**
  * @psalm-import-type S from TestRegistrationInterface
  *
- * @extends AbstractViewRepository<S, TestRegistrationInterface, array>
+ * @extends AbstractRepository<S, TestRegistrationInterface, array>
  */
-class TestRegistrationRepository extends AbstractViewRepository
+class TestRegistrationRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): TestRegistration
     {

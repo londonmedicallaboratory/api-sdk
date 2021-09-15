@@ -6,16 +6,16 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Category\Category;
 use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from CategoryInterface
  *
- * @extends AbstractViewRepository<S, CategoryInterface, array{product_id?: string}>
+ * @extends AbstractRepository<S, CategoryInterface, array{product_id?: string}>
  *
  * @see CategoryInterface
  */
-class ProductCategoryRepository extends AbstractViewRepository
+class ProductCategoryRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): Category
     {

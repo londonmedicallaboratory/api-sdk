@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\HealthcareProfessional\HealthcareProfessional;
 use LML\SDK\Model\HealthcareProfessional\HealthcareProfessionalInterface;
 
 /**
  * @psalm-import-type S from HealthcareProfessionalInterface
- * @extends AbstractViewRepository<S, HealthcareProfessional, array>
+ * @extends AbstractRepository<S, HealthcareProfessional, array>
  *
  * @see HealthcareProfessionalInterface
  */
-class HealthcareProfessionalRepository extends AbstractViewRepository
+class HealthcareProfessionalRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): HealthcareProfessional
     {

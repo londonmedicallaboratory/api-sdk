@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use function sprintf;
-use function is_string;
 
 class QueryParamResolver implements ArgumentValueResolverInterface
 {
@@ -33,10 +32,7 @@ class QueryParamResolver implements ArgumentValueResolverInterface
             return;
         }
 
-        if (!is_string($value)) {
-            throw new RuntimeException('Malformed query param, only strings are allowed.');
-        }
-
+        // add support for other types, not just the date
         yield new DateTime($value);
     }
 

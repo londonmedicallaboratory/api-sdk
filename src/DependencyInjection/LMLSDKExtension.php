@@ -6,7 +6,7 @@ namespace LML\SDK\DependencyInjection;
 
 use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -35,7 +35,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
 
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
-        $container->registerForAutoconfiguration(AbstractViewRepository::class)
+        $container->registerForAutoconfiguration(AbstractRepository::class)
             ->addTag('lml_sdk.repository');
         $container->registerForAutoconfiguration(PaymentProcessorStrategyInterface::class)
             ->addTag('lml_sdk.payment_strategy');

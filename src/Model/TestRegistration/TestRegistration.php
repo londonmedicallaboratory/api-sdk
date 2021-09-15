@@ -6,19 +6,22 @@ namespace LML\SDK\Model\TestRegistration;
 
 use DateTime;
 use LML\SDK\Enum\GenderEnum;
+use LML\View\Lazy\LazyValue;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Model\Product\ProductInterface;
+use LML\SDK\Model\Address\AddressInterface;
 
 class TestRegistration implements TestRegistrationInterface
 {
     /**
-     * @param ProductInterface|LazyValueInterface<ProductInterface> $product
+     * @param LazyValueInterface<ProductInterface> $product
+     * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param GenderEnum::* $gender
      * @param EthnicityEnum::* $ethnicity
      */
     public function __construct(
-        protected ProductInterface|LazyValueInterface $product,
+        protected LazyValueInterface $product,
         protected string                              $email,
         protected DateTime                            $dateOfBirth,
         protected string                              $firstName,
@@ -29,6 +32,7 @@ class TestRegistration implements TestRegistrationInterface
         protected string                              $passportNumber,
         protected ?string                             $nhsNumber,
         protected bool                                $isVaccinated,
+        protected ?LazyValueInterface                 $ukAddress = null,
         protected string                              $id = '',
     )
     {
@@ -36,17 +40,26 @@ class TestRegistration implements TestRegistrationInterface
 
     public function getProduct(): ProductInterface
     {
-        $promise = $this->product;
-        if ($promise instanceof ProductInterface) {
-            return $promise;
+        return $this->product->getValue();
+    }
+
+    public function setProduct(ProductInterface $product): void
+    {
+        $this->product = new LazyValue(fn() => $product);
+    }
+
+    public function getUkAddress(): ?AddressInterface
+    {
+        if (!$promise = $this->ukAddress) {
+            return null;
         }
 
         return $promise->getValue();
     }
 
-    public function setProduct(ProductInterface $product): void
+    public function setUkAddress(?AddressInterface $address): void
     {
-        $this->product = $product;
+        $this->ukAddress = new LazyValue(fn() => $address);
     }
 
     public function getEmail(): string
@@ -168,7 +181,7 @@ class TestRegistration implements TestRegistrationInterface
 
     public function toArray()
     {
-        return [
+        $data = [
             'id'                  => $this->getId(),
             'product_id'          => $this->getProduct()->getId(),
             'email'               => $this->getEmail(),
@@ -181,7 +194,11 @@ class TestRegistration implements TestRegistrationInterface
             'passport_number'     => $this->getPassportNumber(),
             'nhs_number'          => $this->getNhsNumber(),
             'is_vaccinated'       => $this->isVaccinated(),
-
         ];
+        if ($ukAddress = $this->getUkAddress()) {
+            $data['uk_address'] = $ukAddress->toArray();
+        }
+
+        return $data;
     }
 }

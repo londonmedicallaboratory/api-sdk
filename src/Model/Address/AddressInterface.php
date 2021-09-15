@@ -15,6 +15,7 @@ use LML\SDK\Model\ModelInterface;
  *      postal_code: string,
  *      country_name: string,
  *      country_code: string,
+ *      city: string,
  * }
  *
  * @extends ModelInterface<S>
@@ -34,4 +35,6 @@ interface AddressInterface extends ModelInterface
     public function getCountryName(): string;
 
     public function getCountryCode(): string;
+
+    public function getCity(): string;
 }

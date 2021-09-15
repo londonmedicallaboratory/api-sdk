@@ -9,8 +9,10 @@ use React\EventLoop\Loop;
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\TestLocation\TestLocation;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Model\TestLocation\TimeBlock\TimeBlock;
 use LML\SDK\Model\TestLocation\TestLocationInterface;
+use LML\SDK\Model\TestLocation\TimeBlock\TimeBlockInterface;
 use LML\SDK\Model\HealthcareProfessional\HealthcareProfessional;
 use function sprintf;
 use function array_map;
@@ -18,10 +20,13 @@ use function Clue\React\Block\await;
 
 /**
  * @psalm-import-type S from TestLocationInterface
+ * @psalm-import-type S from TimeBlockInterface as TH
  *
- * @extends AbstractViewRepository<S, TestLocationInterface, array>
+ * @extends AbstractRepository<S, TestLocationInterface, array>
+ *
+ * @see TimeBlockInterface
  */
-class TestLocationRepository extends AbstractViewRepository
+class TestLocationRepository extends AbstractRepository
 {
     /**
      * @return array{availability: array<string, bool>, id: string}
@@ -34,6 +39,26 @@ class TestLocationRepository extends AbstractViewRepository
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         return await($promise, Loop::get());
+    }
+
+    /**
+     * @psalm-return ($await is true ? list<TimeBlock> : PromiseInterface<list<TimeBlock>>)
+     */
+    public function getTimeBlocks(string $id, bool $await = false)
+    {
+        $url = sprintf('/test_location/%s/timeblocks', $id);
+
+        /** @var PromiseInterface<list<TH>> $promise */
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+
+        $resolvedPromise = $promise->then(fn($data) => array_map(fn($datum) => new TimeBlock(
+            id: $datum['id'],
+            startsAt: new DateTime($datum['starts_at']),
+            endsAt: new DateTime($datum['ends_at']),
+            description: $datum['description'],
+        ), $data));
+
+        return $await ? await($resolvedPromise, Loop::get()) : $resolvedPromise;
     }
 
     /**

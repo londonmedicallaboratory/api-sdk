@@ -21,7 +21,13 @@ interface TimeBlockInterface extends ModelInterface
 {
     public function getStartsAt(): DateTimeInterface;
 
+    public function setStartsAt(DateTimeInterface $startsAt): void;
+
     public function getEndsAt(): DateTimeInterface;
 
+    public function setEndsAt(DateTimeInterface $endsAt): void;
+
     public function getDescription(): ?string;
+
+    public function setDescription(?string $description): void;
 }

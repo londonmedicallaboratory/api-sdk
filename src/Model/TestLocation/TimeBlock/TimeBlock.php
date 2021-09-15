@@ -8,6 +8,9 @@ use DateTimeInterface;
 
 class TimeBlock implements TimeBlockInterface
 {
+    /**
+     * @see \LML\SDK\Repository\TestLocationRepository::getTimeBlocks
+     */
     public function __construct(
         protected string            $id,
         protected DateTimeInterface $startsAt,
@@ -16,6 +19,22 @@ class TimeBlock implements TimeBlockInterface
     )
     {
     }
+
+    public function setStartsAt(DateTimeInterface $startsAt): void
+    {
+        $this->startsAt = $startsAt;
+    }
+
+    public function setEndsAt(DateTimeInterface $endsAt): void
+    {
+        $this->endsAt = $endsAt;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
 
     public function getId(): string
     {

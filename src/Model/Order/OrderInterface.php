@@ -15,11 +15,12 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *      company: ?string,
  *      address: array{
  *          id: string,
+ *          city: string,
  *          country_code: string,
  *          country_name: string,
  *          line1: string,
- *          line2: null|string,
- *          line3: null|string,
+ *          line2: ?string,
+ *          line3: ?string,
  *          postal_code: string
  *      },
  *      customer: array{

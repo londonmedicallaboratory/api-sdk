@@ -9,16 +9,16 @@ use LML\SDK\Model\Order\Order;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Order\BasketItem;
 use LML\SDK\Model\Order\OrderInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from OrderInterface
- * @extends AbstractViewRepository<S, OrderInterface, array>
+ * @extends AbstractRepository<S, OrderInterface, array>
  *
  * @see Order
  * @see OrderInterface
  */
-class OrderRepository extends AbstractViewRepository
+class OrderRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

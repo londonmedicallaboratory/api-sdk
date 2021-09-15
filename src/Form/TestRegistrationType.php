@@ -6,12 +6,16 @@ namespace LML\SDK\Form;
 
 use DateTime;
 use LML\SDK\Enum\GenderEnum;
+use LML\View\Lazy\LazyValue;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\SDK\Model\Address\Address;
 use Symfony\Component\Form\AbstractType;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Model\Product\ProductInterface;
+use LML\SDK\Model\Address\AddressInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use LML\SDK\Model\TestRegistration\TestRegistration;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +24,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 
+/**
+ * @extends AbstractType<TestRegistrationInterface>
+ */
 class TestRegistrationType extends AbstractType
 {
     public function __construct(
@@ -96,6 +103,14 @@ class TestRegistrationType extends AbstractType
             'get_value'    => fn(TestRegistrationInterface $registration) => $registration->isVaccinated(),
             'update_value' => fn(bool $isVaccinated, TestRegistrationInterface $registration) => $registration->setIsVaccinated($isVaccinated),
         ]);
+
+        $builder->add('address', AddressType::class, [
+            'get_value'    => fn(TestRegistrationInterface $registration) => $registration->getUkAddress(),
+            'update_value' => fn(AddressInterface $address, TestRegistration $registration) => $registration->setUkAddress($address),
+            'constraints'  => [
+                new NotNull(message: 'You must create an address'),
+            ],
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -117,8 +132,9 @@ class TestRegistrationType extends AbstractType
                 string           $passportNumber,
                 ?string          $nhsNumber,
                 bool             $isVaccinated,
+                Address          $address,
             ) => new TestRegistration(
-                product: $product,
+                product: new LazyValue(fn() => $product),
                 email: $email,
                 dateOfBirth: $dateOfBirth,
                 firstName: $firstName,
@@ -129,6 +145,7 @@ class TestRegistrationType extends AbstractType
                 nhsNumber: $nhsNumber,
                 isVaccinated: $isVaccinated,
                 passportNumber: $passportNumber,
+                ukAddress: new LazyValue(fn() => $address),
             ));
     }
 }

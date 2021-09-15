@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Model;
 
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 class ModelManager
 {
     /**
-     * @param ServiceLocator<class-string, AbstractViewRepository> $repositories
+     * @param ServiceLocator<class-string, AbstractRepository> $repositories
      */
     public function __construct(
         private ServiceLocator $repositories,
@@ -24,7 +24,7 @@ class ModelManager
     /**
      * @param class-string $className
      */
-    public function getRepository(string $className): AbstractViewRepository
+    public function getRepository(string $className): AbstractRepository
     {
         return $this->repositories->get($className);
     }

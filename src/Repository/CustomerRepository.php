@@ -6,16 +6,16 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Customer\Customer;
 use LML\SDK\Model\Customer\CustomerInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from CustomerInterface
  *
- * @extends AbstractViewRepository<S, CustomerInterface, array{product_id?: string}>
+ * @extends AbstractRepository<S, CustomerInterface, array{product_id?: string}>
  *
  * @see CustomerInterface
  */
-class CustomerRepository extends AbstractViewRepository
+class CustomerRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

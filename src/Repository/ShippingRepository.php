@@ -6,15 +6,15 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Model\Shipping\Shipping;
 use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 
 /**
  * @psalm-import-type S from ShippingInterface
- * @extends AbstractViewRepository<S, ShippingInterface, array>
+ * @extends AbstractRepository<S, ShippingInterface, array>
  *
  * @see ShippingInterface
  */
-class ShippingRepository extends AbstractViewRepository
+class ShippingRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): ShippingInterface
     {

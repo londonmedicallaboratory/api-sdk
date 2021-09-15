@@ -8,18 +8,18 @@ use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Model\Biomarker\Biomarker;
 use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\ViewFactory\AbstractViewRepository;
+use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**
  * @psalm-import-type S from BiomarkerInterface
  *
- * @extends AbstractViewRepository<S, BiomarkerInterface, array{product_id?: string}>
+ * @extends AbstractRepository<S, BiomarkerInterface, array{product_id?: string}>
  *
  * @see BiomarkerInterface
  */
-class BiomarkerRepository extends AbstractViewRepository
+class BiomarkerRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer)
     {

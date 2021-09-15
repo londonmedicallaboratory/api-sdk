@@ -6,76 +6,79 @@
 
     <services>
 
-        <defaults autoconfigure="true" autowire="true" />
+        <defaults autoconfigure="true" autowire="true"/>
         <service id="lml_sdk.client" class="LML\SDK\Service\Client\Client"/>
 
         <service id="LML\SDK\Repository\ProductRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
+        </service>
+        <service id="LML\SDK\Repository\TestRegistrationRepository">
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\BiomarkerRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\BiomarkerCategoryRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\ProductCategoryRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\ShippingRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\FileRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\OrderRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\AddressRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\CustomerRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\PageRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\TestLocationRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\HealthcareProfessionalRepository">
-            <tag name="lml_sdk.repository" />
+            <tag name="lml_sdk.repository"/>
         </service>
 
         <service id="LML\SDK\Twig\AwaitFilter">
-            <tag name="twig.extension" />
+            <tag name="twig.extension"/>
         </service>
 
         <service id="LML\SDK\Service\InformationBooth">
-            <argument type="service" id="lml_sdk.client" />
+            <argument type="service" id="lml_sdk.client"/>
         </service>
 
         <service id="LML\SDK\Service\Payment\Strategy\SagePaymentProcessor">
-            <argument id="LML\SDK\Service\InformationBooth" />
-<!--            <tag name="lml_sdk.payment_strategy"/>-->
+            <argument id="LML\SDK\Service\InformationBooth"/>
+            <!--            <tag name="lml_sdk.payment_strategy"/>-->
         </service>
 
         <service id="LML\SDK\Service\Payment\PaymentProcessor">
-            <argument type="tagged_locator" tag="lml_sdk.payment_strategy" default-index-method="getName" />
-            <argument type="service" id="LML\SDK\Repository\OrderRepository" />
+            <argument type="tagged_locator" tag="lml_sdk.payment_strategy" default-index-method="getName"/>
+            <argument type="service" id="LML\SDK\Repository\OrderRepository"/>
         </service>
 
         <service id="LML\SDK\Service\Basket">
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="LML\SDK\Repository\ProductRepository" />
-            <argument type="service" id="LML\SDK\Repository\OrderRepository" />
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="LML\SDK\Repository\ProductRepository"/>
+            <argument type="service" id="LML\SDK\Repository\OrderRepository"/>
         </service>
 
         <service id="LML\SDK\Service\Model\ModelManager">
-            <argument type="tagged_locator" tag="lml_sdk.repository" default-index-method="getDefaultName" />
+            <argument type="tagged_locator" tag="lml_sdk.repository" default-index-method="getDefaultName"/>
         </service>
 
         <service id="LML\SDK\ArgumentValueResolver\ModelParamConverter">
-            <argument type="service" id="LML\SDK\Service\Model\ModelManager" />
+            <argument type="service" id="LML\SDK\Service\Model\ModelManager"/>
         </service>
 
         <service id="LML\SDK\ArgumentValueResolver\QueryParamResolver">
@@ -83,8 +86,11 @@
         </service>
 
         <service id="LML\SDK\Form\TestRegistrationType">
-            <argument type="service" id="LML\SDK\Repository\ProductRepository" />
+            <argument type="service" id="LML\SDK\Repository\ProductRepository"/>
         </service>
+
+        <service id="LML\SDK\Form\AddressType"/>
+        <service id="LML\SDK\Form\Extension\CountryTypeExtension"/>
 
     </services>
 </container>

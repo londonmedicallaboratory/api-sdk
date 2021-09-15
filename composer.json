@@ -28,7 +28,7 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "vimeo/psalm": "^4.9",
-        "psalm/plugin-symfony": "^2.4",
+        "psalm/plugin-symfony": "^3.0",
         "symfony/phpunit-bridge": "^5.3",
         "symfony/yaml": "^5.3",
         "symfony/stopwatch": "^5.3",
