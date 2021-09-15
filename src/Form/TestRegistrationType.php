@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Form;
 
 use DateTime;
+use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
@@ -19,13 +20,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use LML\SDK\Form\Extension\DateTypeExtendedYearsRange;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
+use function range;
 
 /**
  * @extends AbstractType<TestRegistration>
@@ -46,19 +51,20 @@ class TestRegistrationType extends AbstractType
              * @param EthnicityEnum::* $ethnicity
              */
             fn(
-                ProductInterface $product,
-                string           $email,
-                DateTime         $dateOfBirth,
-                string           $firstName,
-                string           $lastName,
-                string           $gender,
-                string           $ethnicity,
-                string           $mobilePhoneNumber,
-                string           $passportNumber,
-                ?string          $nhsNumber,
-                bool             $isVaccinated,
-                Address          $ukAddress,
-                ?Address         $selfIsolatingAddress,
+                ProductInterface  $product,
+                string            $email,
+                DateTime          $dateOfBirth,
+                string            $firstName,
+                string            $lastName,
+                string            $gender,
+                string            $ethnicity,
+                string            $mobilePhoneNumber,
+                string            $passportNumber,
+                ?string           $nhsNumber,
+                bool              $isVaccinated,
+                Address           $ukAddress,
+                ?Address          $selfIsolatingAddress,
+                DateTimeInterface $dateOfArrival,
             ) => new TestRegistration(
                 product: new ResolvedValue($product),
                 email: $email,
@@ -73,6 +79,7 @@ class TestRegistrationType extends AbstractType
                 passportNumber: $passportNumber,
                 ukAddress: new ResolvedValue($ukAddress),
                 selfIsolatingAddress: new ResolvedValue($selfIsolatingAddress),
+                dateOfArrival: $dateOfArrival,
             ));
     }
 
@@ -153,17 +160,67 @@ class TestRegistrationType extends AbstractType
             ],
         ]);
 
-        $builder->add('isSelfIsolating', CheckboxType::class, [
+        $builder->add('isSelfIsolating', ChoiceType::class, [
+            'label'        => 'Are you self-isolating at a different address?',
             'dynamic'      => true,
-            'get_value'    => fn(TestRegistration $registration) => (bool)$registration->getSelfIsolatingAddress(),
+            'expanded'     => true,
+            'choices'      => [
+                'No'  => false,
+                'Yes' => true,
+            ],
+            'get_value'    => fn(?TestRegistration $registration) => $registration && $registration->getSelfIsolatingAddress(),
             'update_value' => fn() => null,
         ]);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (PreSubmitEvent $event) {
             /** @var array{isSelfIsolating?: '1'} $data */
             $data = $event->getData();
-            $this->addSelfIsolatingAddressField($event->getForm(), isset($data['isSelfIsolating']));
+            $this->addSelfIsolatingAddressField($event->getForm(), isset($data['isSelfIsolating']) && $data['isSelfIsolating'] === '1');
         });
+
+        $now = new DateTime();
+        $year = (int)$now->format('Y');
+        $builder->add('dateOfArrival', DateType::class, [
+            'widget' => 'text',
+            'label'       => 'Date of Arrival In The UK',
+            'mapped'      => false,
+            'get_value'   => fn(?TestRegistration $registration) => $registration ? $registration->getDayOfArrival() : $now,
+            'years'       => range($year, $year + 2),
+            'constraints' => [
+                new GreaterThan(value: $now),
+            ],
+        ]);
+
+        $builder->add('travellingFromCountry', CountryType::class, [
+            'label'       => 'Country Travelling From',
+            'placeholder' => 'Select country',
+            'mapped'      => false,
+            'constraints' => [
+                new NotNull(),
+            ],
+        ]);
+
+        $builder->add('travelNumber', TextType::class, [
+            'label'  => 'Coach number, flight number or vessel name (as appropriate)',
+            'mapped' => false,
+        ]);
+
+        $builder->add('nonExemptDay', DateType::class, [
+            'required'    => false,
+            'placeholder' => '',
+            'label'       => 'Date on which you last departed from or transited through a country or territory outside the common travel area (optional)',
+            'mapped'      => false,
+            'get_value'   => fn(?TestRegistration $registration) => $registration?->getDayOfArrival(),
+            'years'       => range($year - 1, $year),
+            'constraints' => [
+                new LessThan(value: $now),
+            ],
+        ]);
+
+        $builder->add('transitCountries', CountryType::class, [
+            'mapped' => false,
+            'multiple' => true,
+        ]);
     }
 
     private function addSelfIsolatingAddressField(FormInterface $form, bool $add): void

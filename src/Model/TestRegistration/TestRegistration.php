@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Model\TestRegistration;
 
 use DateTime;
+use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
@@ -33,11 +34,22 @@ class TestRegistration implements TestRegistrationInterface
         protected string              $passportNumber,
         protected ?string             $nhsNumber,
         protected bool                $isVaccinated,
+        protected DateTimeInterface   $dateOfArrival,
         protected ?LazyValueInterface $ukAddress = null,
         protected ?LazyValueInterface $selfIsolatingAddress = null,
         protected string              $id = '',
     )
     {
+    }
+
+    public function getDayOfArrival(): DateTimeInterface
+    {
+        return $this->dateOfArrival;
+    }
+
+    public function setDateOfArrival(DateTimeInterface $date): void
+    {
+        $this->dateOfArrival = $date;
     }
 
     public function getProduct(): ProductInterface
