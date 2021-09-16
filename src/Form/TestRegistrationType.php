@@ -11,6 +11,7 @@ use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Model\Address\Address;
 use Symfony\Component\Form\FormEvents;
+use LML\SDK\Enum\VaccinationStatusEnum;
 use Symfony\Component\Form\AbstractType;
 use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Form\FormInterface;
@@ -45,10 +46,14 @@ class TestRegistrationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        $resolver->setDefaults([
+            'show_factory_error' => true,
+        ]);
         $resolver->setDefault('factory',
             /**
              * @param GenderEnum::* $gender
              * @param EthnicityEnum::* $ethnicity
+             * @param VaccinationStatusEnum::* $vaccinationStatus
              */
             fn(
                 ProductInterface  $product,
@@ -61,9 +66,8 @@ class TestRegistrationType extends AbstractType
                 string            $mobilePhoneNumber,
                 string            $passportNumber,
                 ?string           $nhsNumber,
-                bool              $isVaccinated,
+                string            $vaccinationStatus,
                 Address           $ukAddress,
-                ?Address          $selfIsolatingAddress,
                 DateTimeInterface $dateOfArrival,
             ) => new TestRegistration(
                 product: new ResolvedValue($product),
@@ -75,10 +79,9 @@ class TestRegistrationType extends AbstractType
                 ethnicity: $ethnicity,
                 mobilePhoneNumber: $mobilePhoneNumber,
                 nhsNumber: $nhsNumber,
-                isVaccinated: $isVaccinated,
+                vaccinationStatus: $vaccinationStatus,
                 passportNumber: $passportNumber,
                 ukAddress: new ResolvedValue($ukAddress),
-                selfIsolatingAddress: new ResolvedValue($selfIsolatingAddress),
                 dateOfArrival: $dateOfArrival,
             ));
     }
@@ -142,14 +145,14 @@ class TestRegistrationType extends AbstractType
             'update_value' => fn(?string $number, TestRegistration $registration) => $registration->setNhsNumber($number),
         ]);
 
-        $builder->add('isVaccinated', ChoiceType::class, [
+        $builder->add('vaccinationStatus', ChoiceType::class, [
             'placeholder'  => 'Select status',
             'choices'      => [
-                'Vaccinated'     => true,
-                'Not Vaccinated' => false,
+                'Vaccinated'     => VaccinationStatusEnum::VACCINATED,
+                'Not Vaccinated' => VaccinationStatusEnum::NOT_VACCINATED,
             ],
             'get_value'    => fn(TestRegistration $registration) => $registration->isVaccinated(),
-            'update_value' => fn(bool $isVaccinated, TestRegistration $registration) => $registration->setIsVaccinated($isVaccinated),
+            'update_value' => /** @param VaccinationStatusEnum::* $vaccinationStatus */ fn(string $vaccinationStatus, TestRegistration $registration) => $registration->setVaccinationStatus($vaccinationStatus),
         ]);
 
         $builder->add('ukAddress', AddressType::class, [
@@ -178,18 +181,31 @@ class TestRegistrationType extends AbstractType
             $this->addSelfIsolatingAddressField($event->getForm(), isset($data['isSelfIsolating']) && $data['isSelfIsolating'] === '1');
         });
 
+        // START: date-based fields
         $now = new DateTime();
         $year = (int)$now->format('Y');
         $builder->add('dateOfArrival', DateType::class, [
-            'widget' => 'text',
-            'label'       => 'Date of Arrival In The UK',
-            'mapped'      => false,
-            'get_value'   => fn(?TestRegistration $registration) => $registration ? $registration->getDayOfArrival() : $now,
-            'years'       => range($year, $year + 2),
-            'constraints' => [
+            'label'        => 'Date of Arrival In The UK',
+            'get_value'    => fn(?TestRegistration $registration) => $registration ? $registration->getDayOfArrival() : $now,
+            'update_value' => fn(DateTimeInterface $date, TestRegistration $registration) => $registration->setDateOfArrival($date),
+            'years'        => range($year, $year + 2),
+            'constraints'  => [
                 new GreaterThan(value: $now),
             ],
         ]);
+
+        $builder->add('nonExemptDay', DateType::class, [
+            'required'     => false,
+            'placeholder'  => '',
+            'label'        => 'Date on which you last departed from or transited through a country or territory outside the common travel area (optional)',
+            'get_value'    => fn(?TestRegistration $registration) => $registration?->getNonExemptDay(),
+            'update_value' => fn(?DateTimeInterface $date, TestRegistration $registration) => $registration->setNonExemptDay($date),
+            'years'        => range($year - 1, $year),
+            'constraints'  => [
+                new LessThan(value: $now),
+            ],
+        ]);
+        // END: date-based fields
 
         $builder->add('travellingFromCountry', CountryType::class, [
             'label'       => 'Country Travelling From',
@@ -205,21 +221,13 @@ class TestRegistrationType extends AbstractType
             'mapped' => false,
         ]);
 
-        $builder->add('nonExemptDay', DateType::class, [
-            'required'    => false,
-            'placeholder' => '',
-            'label'       => 'Date on which you last departed from or transited through a country or territory outside the common travel area (optional)',
-            'mapped'      => false,
-            'get_value'   => fn(?TestRegistration $registration) => $registration?->getDayOfArrival(),
-            'years'       => range($year - 1, $year),
-            'constraints' => [
-                new LessThan(value: $now),
-            ],
-        ]);
-
         $builder->add('transitCountries', CountryType::class, [
-            'mapped' => false,
-            'multiple' => true,
+            'required'     => false,
+            'label'        => 'any countries or territories you transited through as part of this journey (optional)',
+            'multiple'     => true,
+            'get_value'    => fn(?TestRegistration $registration) => $registration?->getTransitCountryCodes() ?? [],
+            'add_value'    => fn(string $code, TestRegistration $registration) => $registration->addTransitCountry($code),
+            'remove_value' => fn(string $code, TestRegistration $registration) => $registration->removeTransitCountry($code),
         ]);
     }
 

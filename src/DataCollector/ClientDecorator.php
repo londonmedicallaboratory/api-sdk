@@ -16,7 +16,10 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
 {
     /**
      * @psalm-suppress NonInvariantDocblockPropertyType
-     * @var array{requests: list<array{url: string, cached: bool, method: string, filters: array}>}
+     *
+     * @var array{
+     *     requests: list<array{url: string, cached: bool, method: string, filters: array}>,
+     * }
      */
     protected $data = [
         'requests' => [],
@@ -50,11 +53,15 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
 
     public function post(string $url, array $data)
     {
+        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'POST', 'filters' => []];
+
         return $this->client->post($url, $data);
     }
 
     public function patch(string $url, array $data): PromiseInterface
     {
+        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'PATCH', 'filters' => []];
+
         return $this->client->patch($url, $data);
     }
 
@@ -66,5 +73,4 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
     {
         return 'lml_sdk.client_collector';
     }
-
 }

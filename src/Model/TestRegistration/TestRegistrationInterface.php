@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\TestRegistration;
 
-use DateTime;
+use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Model\ModelInterface;
+use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Address\AddressInterface;
 
@@ -27,7 +28,10 @@ use LML\SDK\Model\Address\AddressInterface;
  *      mobile_phone_number: string,
  *      passport_number: string,
  *      nhs_number: ?string,
- *      is_vaccinated: bool,
+ *      vaccination_status: string,
+ *      non_exempt_date: ?string,
+ *      transit_countries: list<string>,
+ *
  *      uk_address?: array{
  *          id: string,
  *          line1: string,
@@ -54,13 +58,18 @@ use LML\SDK\Model\Address\AddressInterface;
  */
 interface TestRegistrationInterface extends ModelInterface
 {
+    /**
+     * @return list<string>
+     */
+    public function getTransitCountryCodes(): array;
+
     public function getUkAddress(): ?AddressInterface;
 
     public function getProduct(): ProductInterface;
 
     public function getEmail(): string;
 
-    public function getDateOfBirth(): DateTime;
+    public function getDateOfBirth(): DateTimeInterface;
 
     public function getFirstName(): string;
 
@@ -88,4 +97,9 @@ interface TestRegistrationInterface extends ModelInterface
     public function getNhsNumber(): ?string;
 
     public function isVaccinated(): bool;
+
+    /**
+     * @return VaccinationStatusEnum::*
+     */
+    public function getVaccinationStatus(): string;
 }

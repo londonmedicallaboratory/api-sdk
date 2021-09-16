@@ -29,6 +29,7 @@ class AddressRepository extends AbstractRepository
             postalCode: $entity['postal_code'],
             countryCode: $entity['country_code'],
             countryName: $entity['country_name'],
+            city: $entity['city'],
         );
     }
 

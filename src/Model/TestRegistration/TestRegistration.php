@@ -10,8 +10,10 @@ use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Address\AddressInterface;
+use function array_search;
 
 class TestRegistration implements TestRegistrationInterface
 {
@@ -21,11 +23,13 @@ class TestRegistration implements TestRegistrationInterface
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param GenderEnum::* $gender
      * @param EthnicityEnum::* $ethnicity
+     * @param VaccinationStatusEnum::* $vaccinationStatus
+     * @param list<string> $transitCountries
      */
     public function __construct(
         protected LazyValueInterface  $product,
         protected string              $email,
-        protected DateTime            $dateOfBirth,
+        protected DateTimeInterface   $dateOfBirth,
         protected string              $firstName,
         protected string              $lastName,
         protected string              $gender,
@@ -33,10 +37,12 @@ class TestRegistration implements TestRegistrationInterface
         protected string              $mobilePhoneNumber,
         protected string              $passportNumber,
         protected ?string             $nhsNumber,
-        protected bool                $isVaccinated,
+        protected string              $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
+        protected ?DateTimeInterface  $nonExemptDay = null,
         protected ?LazyValueInterface $ukAddress = null,
         protected ?LazyValueInterface $selfIsolatingAddress = null,
+        protected array               $transitCountries = [],
         protected string              $id = '',
     )
     {
@@ -82,12 +88,12 @@ class TestRegistration implements TestRegistrationInterface
         $this->email = $email;
     }
 
-    public function getDateOfBirth(): DateTime
+    public function getDateOfBirth(): DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(DateTime $dateOfBirth): void
+    public function setDateOfBirth(DateTimeInterface $dateOfBirth): void
     {
         $this->dateOfBirth = $dateOfBirth;
     }
@@ -176,12 +182,23 @@ class TestRegistration implements TestRegistrationInterface
 
     public function isVaccinated(): bool
     {
-        return $this->isVaccinated;
+        return $this->vaccinationStatus === VaccinationStatusEnum::VACCINATED;
     }
 
-    public function setIsVaccinated(bool $isVaccinated): void
+    /**
+     * @return VaccinationStatusEnum::*
+     */
+    public function getVaccinationStatus(): string
     {
-        $this->isVaccinated = $isVaccinated;
+        return $this->vaccinationStatus;
+    }
+
+    /**
+     * @param VaccinationStatusEnum::* $vaccinationStatus
+     */
+    public function setVaccinationStatus(string $vaccinationStatus): void
+    {
+        $this->vaccinationStatus = $vaccinationStatus;
     }
 
     public function getId(): string
@@ -213,7 +230,9 @@ class TestRegistration implements TestRegistrationInterface
             'mobile_phone_number' => $this->getMobilePhoneNumber(),
             'passport_number'     => $this->getPassportNumber(),
             'nhs_number'          => $this->getNhsNumber(),
-            'is_vaccinated'       => $this->isVaccinated(),
+            'vaccination_status'  => $this->getVaccinationStatus(),
+            'transit_countries'   => $this->transitCountries,
+            'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();
@@ -223,5 +242,36 @@ class TestRegistration implements TestRegistrationInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getTransitCountryCodes(): array
+    {
+        return $this->transitCountries;
+    }
+
+    public function addTransitCountry(string $code): void
+    {
+        $this->transitCountries[] = $code;
+    }
+
+    public function removeTransitCountry(string $code): void
+    {
+        $key = array_search($code, $this->transitCountries, true);
+        if (false !== $key) {
+            unset($this->transitCountries[$key]);
+        }
+    }
+
+    public function getNonExemptDay(): ?DateTimeInterface
+    {
+        return $this->nonExemptDay;
+    }
+
+    public function setNonExemptDay(?DateTimeInterface $nonExemptDay): void
+    {
+        $this->nonExemptDay = $nonExemptDay;
     }
 }

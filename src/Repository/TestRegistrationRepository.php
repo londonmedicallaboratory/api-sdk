@@ -10,6 +10,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Model\Product\Product;
 use React\Promise\PromiseInterface;
+use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
@@ -27,6 +28,8 @@ class TestRegistrationRepository extends AbstractRepository
         $gender = $entity['gender'];
         /** @var EthnicityEnum::* $ethnicity */
         $ethnicity = $entity['ethnicity'];
+        /** @var  VaccinationStatusEnum::* */
+        $vaccinationStatus = $entity['vaccination_status'];
 
         return new TestRegistration(
             id: $entity['id'],
@@ -40,7 +43,8 @@ class TestRegistrationRepository extends AbstractRepository
             mobilePhoneNumber: $entity['mobile_phone_number'],
             passportNumber: $entity['email'],
             nhsNumber: $entity['nhs_number'],
-            isVaccinated: $entity['is_vaccinated'],
+            vaccinationStatus: $vaccinationStatus,
+            dateOfArrival: new DateTime(),
         );
     }
 
