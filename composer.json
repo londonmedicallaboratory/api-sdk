@@ -55,7 +55,7 @@
         }
     ],
     "autoload": {
-        "files": ["functions.php"],
+        "files": ["src/functions.php"],
         "psr-4": {
             "LML\\SDK\\": "src"
         }
