@@ -14,7 +14,7 @@ use Closure;
  * @param Closure(TValue, TKey): void $callback
  */
 function each(iterable $input, Closure $callback): void {
-    foreach ($input as $key => $datum) {
-        $callback($datum, $key);
+    foreach ($input as $key => $value) {
+        $callback($value, $key);
     }
 }
