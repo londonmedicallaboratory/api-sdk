@@ -10,8 +10,8 @@ use LML\SDK\Model\Product\ProductInterface;
 class BasketItem implements ItemInterface
 {
     public function __construct(
-        protected ProductInterface $product,
-        protected int              $quantity,
+        private ProductInterface $product,
+        private int              $quantity,
     )
     {
     }
