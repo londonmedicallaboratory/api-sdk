@@ -10,15 +10,15 @@ use LML\SDK\Model\Product\ProductInterface;
 class BasketItem implements ItemInterface
 {
     public function __construct(
-        private ProductInterface $product,
-        private int $quantity,
+        protected ProductInterface $product,
+        protected int              $quantity,
     )
     {
     }
 
-    public function __toString(): string
+    public function getTotal(): PriceInterface
     {
-        return $this->getProduct()->getName();
+        return $this->getProduct()->getPrice()->multiply($this->getQuantity());
     }
 
     public function getProduct(): ProductInterface
@@ -31,11 +31,6 @@ class BasketItem implements ItemInterface
         return $this->quantity;
     }
 
-    public function getTotal(): PriceInterface
-    {
-        return $this->getProduct()->getPrice()->multiply($this->quantity);
-    }
-
     public function setQuantity(int $quantity): void
     {
         if ($quantity < 0) {
@@ -44,16 +39,21 @@ class BasketItem implements ItemInterface
         $this->quantity = $quantity;
     }
 
-    public function getId(): string
-    {
-        return $this->__toString();
-    }
-
     public function toArray()
     {
         return [
             'product_id' => $this->getProduct()->getId(),
             'quantity' => $this->getQuantity(),
         ];
+    }
+
+    public function getId(): string
+    {
+        return $this->__toString();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getProduct()->getName();
     }
 }
