@@ -18,7 +18,7 @@ class BasketItem implements ItemInterface
 
     public function __toString(): string
     {
-        return $this->product->getName();
+        return $this->getProduct()->getName();
     }
 
     public function getProduct(): ProductInterface
@@ -33,7 +33,7 @@ class BasketItem implements ItemInterface
 
     public function getTotal(): PriceInterface
     {
-        return $this->product->getPrice()->multiply($this->quantity);
+        return $this->getProduct()->getPrice()->multiply($this->quantity);
     }
 
     public function setQuantity(int $quantity): void
