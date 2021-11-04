@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\TestRegistration;
 
-use DateTime;
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
@@ -22,7 +21,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param GenderEnum::* $gender
-     * @param EthnicityEnum::* $ethnicity
+     * @param null|EthnicityEnum::* $ethnicity
      * @param VaccinationStatusEnum::* $vaccinationStatus
      * @param list<string> $transitCountries
      */
@@ -33,9 +32,9 @@ class TestRegistration implements TestRegistrationInterface
         protected string              $firstName,
         protected string              $lastName,
         protected string              $gender,
-        protected string              $ethnicity,
+        protected ?string             $ethnicity,
         protected string              $mobilePhoneNumber,
-        protected string              $passportNumber,
+        protected ?string             $passportNumber,
         protected ?string             $nhsNumber,
         protected string              $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
@@ -118,34 +117,25 @@ class TestRegistration implements TestRegistrationInterface
         $this->lastName = $lastName;
     }
 
-    /**
-     * @return GenderEnum::*
-     */
     public function getGender(): string
     {
         return $this->gender;
     }
 
-    /**
-     * @param GenderEnum::* $gender
-     */
     public function setGender(string $gender): void
     {
         $this->gender = $gender;
     }
 
-    /**
-     * @return EthnicityEnum::*
-     */
-    public function getEthnicity(): string
+    public function getEthnicity(): ?string
     {
         return $this->ethnicity;
     }
 
     /**
-     * @param EthnicityEnum::* $ethnicity
+     * @param null|EthnicityEnum::* $ethnicity
      */
-    public function setEthnicity(string $ethnicity): void
+    public function setEthnicity(?string $ethnicity): void
     {
         $this->ethnicity = $ethnicity;
     }
@@ -160,12 +150,12 @@ class TestRegistration implements TestRegistrationInterface
         $this->mobilePhoneNumber = $mobilePhoneNumber;
     }
 
-    public function getPassportNumber(): string
+    public function getPassportNumber(): ?string
     {
         return $this->passportNumber;
     }
 
-    public function setPassportNumber(string $passportNumber): void
+    public function setPassportNumber(?string $passportNumber): void
     {
         $this->passportNumber = $passportNumber;
     }

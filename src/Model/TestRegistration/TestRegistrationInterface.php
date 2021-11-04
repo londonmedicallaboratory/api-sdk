@@ -24,9 +24,9 @@ use LML\SDK\Model\Address\AddressInterface;
  *      first_name: string,
  *      last_name: string,
  *      gender: string,
- *      ethnicity: string,
+ *      ethnicity: ?string,
  *      mobile_phone_number: string,
- *      passport_number: string,
+ *      passport_number: ?string,
  *      nhs_number: ?string,
  *      vaccination_status: string,
  *      non_exempt_date: ?string,
@@ -86,13 +86,13 @@ interface TestRegistrationInterface extends ModelInterface
     public function setGender(string $gender): void;
 
     /**
-     * @return EthnicityEnum::*
+     * @return null|EthnicityEnum::*
      */
-    public function getEthnicity(): string;
+    public function getEthnicity(): ?string;
 
     public function getMobilePhoneNumber(): string;
 
-    public function getPassportNumber(): string;
+    public function getPassportNumber(): ?string;
 
     public function getNhsNumber(): ?string;
 

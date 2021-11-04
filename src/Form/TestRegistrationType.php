@@ -52,7 +52,7 @@ class TestRegistrationType extends AbstractType
         $resolver->setDefault('factory',
             /**
              * @param GenderEnum::* $gender
-             * @param EthnicityEnum::* $ethnicity
+             * @param null|EthnicityEnum::* $ethnicity
              * @param VaccinationStatusEnum::* $vaccinationStatus
              */
             fn(
@@ -62,7 +62,7 @@ class TestRegistrationType extends AbstractType
                 string            $firstName,
                 string            $lastName,
                 string            $gender,
-                string            $ethnicity,
+                ?string           $ethnicity,
                 string            $mobilePhoneNumber,
                 string            $passportNumber,
                 ?string           $nhsNumber,
@@ -127,7 +127,7 @@ class TestRegistrationType extends AbstractType
         $builder->add('ethnicity', ChoiceType::class, [
             'choices'      => EthnicityEnum::getAsFormGroupChoices(),
             'get_value'    => fn(TestRegistration $registration) => $registration->getEthnicity(),
-            'update_value' => /** @param EthnicityEnum::* $ethnicity */ fn(string $ethnicity, TestRegistration $registration) => $registration->setEthnicity($ethnicity),
+            'update_value' => /** @param null|EthnicityEnum::* $ethnicity */ fn(?string $ethnicity, TestRegistration $registration) => $registration->setEthnicity($ethnicity),
         ]);
 
         $builder->add('mobilePhoneNumber', TextType::class, [
