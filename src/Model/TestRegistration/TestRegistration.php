@@ -22,7 +22,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param GenderEnum::* $gender
      * @param null|EthnicityEnum::* $ethnicity
-     * @param VaccinationStatusEnum::* $vaccinationStatus
+     * @param ?VaccinationStatusEnum::* $vaccinationStatus
      * @param list<string> $transitCountries
      */
     public function __construct(
@@ -36,7 +36,7 @@ class TestRegistration implements TestRegistrationInterface
         protected string              $mobilePhoneNumber,
         protected ?string             $passportNumber,
         protected ?string             $nhsNumber,
-        protected string              $vaccinationStatus,
+        protected ?string             $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
         protected ?DateTimeInterface  $nonExemptDay = null,
         protected ?LazyValueInterface $ukAddress = null,
@@ -176,17 +176,17 @@ class TestRegistration implements TestRegistrationInterface
     }
 
     /**
-     * @return VaccinationStatusEnum::*
+     * @return ?VaccinationStatusEnum::*
      */
-    public function getVaccinationStatus(): string
+    public function getVaccinationStatus(): ?string
     {
         return $this->vaccinationStatus;
     }
 
     /**
-     * @param VaccinationStatusEnum::* $vaccinationStatus
+     * @param ?VaccinationStatusEnum::* $vaccinationStatus
      */
-    public function setVaccinationStatus(string $vaccinationStatus): void
+    public function setVaccinationStatus(?string $vaccinationStatus): void
     {
         $this->vaccinationStatus = $vaccinationStatus;
     }

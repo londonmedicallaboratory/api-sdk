@@ -28,7 +28,7 @@ use LML\SDK\Model\Address\AddressInterface;
  *      mobile_phone_number: string,
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
- *      vaccination_status: string,
+ *      vaccination_status?: ?string,
  *      non_exempt_date: ?string,
  *      transit_countries: list<string>,
  *
@@ -99,7 +99,7 @@ interface TestRegistrationInterface extends ModelInterface
     public function isVaccinated(): bool;
 
     /**
-     * @return VaccinationStatusEnum::*
+     * @return ?VaccinationStatusEnum::*
      */
-    public function getVaccinationStatus(): string;
+    public function getVaccinationStatus(): ?string;
 }

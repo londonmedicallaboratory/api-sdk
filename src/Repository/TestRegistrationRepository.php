@@ -28,8 +28,8 @@ class TestRegistrationRepository extends AbstractRepository
         $gender = $entity['gender'];
         /** @var null|EthnicityEnum::* $ethnicity */
         $ethnicity = $entity['ethnicity'] ?? null;
-        /** @var  VaccinationStatusEnum::* */
-        $vaccinationStatus = $entity['vaccination_status'];
+        /** @var ?VaccinationStatusEnum::* */
+        $vaccinationStatus = $entity['vaccination_status'] ?? null;
 
         return new TestRegistration(
             id: $entity['id'],
