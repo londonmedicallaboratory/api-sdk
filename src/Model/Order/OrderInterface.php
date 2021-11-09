@@ -17,10 +17,10 @@ use LML\SDK\Model\Customer\CustomerInterface;
  *          id: string,
  *          city: string,
  *          country_code: string,
- *          country_name: string,
+ *          country_name?: string,
  *          line1: string,
- *          line2: ?string,
- *          line3: ?string,
+ *          line2?: ?string,
+ *          line3?: ?string,
  *          postal_code: string
  *      },
  *      customer: array{

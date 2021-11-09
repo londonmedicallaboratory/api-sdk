@@ -10,10 +10,10 @@ use LML\SDK\Model\ModelInterface;
  * @psalm-type S=array{
  *      id: string,
  *      line1: string,
- *      line2: ?string,
- *      line3: ?string,
+ *      line2?: ?string,
+ *      line3?: ?string,
  *      postal_code: string,
- *      country_name: string,
+ *      country_name?: string,
  *      country_code: string,
  *      city: string,
  * }

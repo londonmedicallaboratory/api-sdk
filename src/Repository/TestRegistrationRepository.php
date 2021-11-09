@@ -27,7 +27,7 @@ class TestRegistrationRepository extends AbstractRepository
         /** @var GenderEnum::* $gender */
         $gender = $entity['gender'];
         /** @var null|EthnicityEnum::* $ethnicity */
-        $ethnicity = $entity['ethnicity'];
+        $ethnicity = $entity['ethnicity'] ?? null;
         /** @var  VaccinationStatusEnum::* */
         $vaccinationStatus = $entity['vaccination_status'];
 
@@ -42,7 +42,7 @@ class TestRegistrationRepository extends AbstractRepository
             ethnicity: $ethnicity,
             mobilePhoneNumber: $entity['mobile_phone_number'],
             passportNumber: $entity['email'],
-            nhsNumber: $entity['nhs_number'],
+            nhsNumber: $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
             dateOfArrival: new DateTime(),
         );
