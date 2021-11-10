@@ -30,21 +30,25 @@ class TestRegistrationRepository extends AbstractRepository
         $ethnicity = $entity['ethnicity'] ?? null;
         /** @var ?VaccinationStatusEnum::* */
         $vaccinationStatus = $entity['vaccination_status'] ?? null;
+        $createdAt = $entity['created_at'] ?? null;
+        $completedAt = $entity['completed_at'] ?? null;
 
         return new TestRegistration(
-            id: $entity['id'],
-            product: new LazyPromise($this->getProduct($entity['product_id'])),
-            email: $entity['email'],
-            dateOfBirth: new DateTime($entity['date_of_birth']),
-            firstName: $entity['first_name'],
-            lastName: $entity['last_name'],
-            gender: $gender,
-            ethnicity: $ethnicity,
+            id:                $entity['id'],
+            product:           new LazyPromise($this->getProduct($entity['product_id'])),
+            email:             $entity['email'],
+            dateOfBirth:       new DateTime($entity['date_of_birth']),
+            firstName:         $entity['first_name'],
+            lastName:          $entity['last_name'],
+            gender:            $gender,
+            ethnicity:         $ethnicity,
             mobilePhoneNumber: $entity['mobile_phone_number'],
-            passportNumber: $entity['email'],
-            nhsNumber: $entity['nhs_number'] ?? null,
+            passportNumber:    $entity['email'],
+            nhsNumber:         $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
-            dateOfArrival: new DateTime(),
+            dateOfArrival:     new DateTime(),
+            createdAt:         $createdAt ? new DateTime($createdAt) : new DateTime(),
+            completedAt:       $completedAt ? new DateTime($completedAt) : null,
         );
     }
 

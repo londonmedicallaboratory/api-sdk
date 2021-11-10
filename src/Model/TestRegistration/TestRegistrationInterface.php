@@ -31,6 +31,8 @@ use LML\SDK\Model\Address\AddressInterface;
  *      vaccination_status?: ?string,
  *      non_exempt_date: ?string,
  *      transit_countries: list<string>,
+ *      created_at?: ?string,
+ *      completed_at?: ?string,
  *
  *      uk_address?: array{
  *          id: string,
@@ -58,6 +60,10 @@ use LML\SDK\Model\Address\AddressInterface;
  */
 interface TestRegistrationInterface extends ModelInterface
 {
+    public function getCreatedAt(): DateTimeInterface;
+
+    public function getCompletedAt(): ?DateTimeInterface;
+
     /**
      * @return list<string>
      */
@@ -79,6 +85,8 @@ interface TestRegistrationInterface extends ModelInterface
      * @return GenderEnum::*
      */
     public function getGender(): string;
+
+    public function getGenderName(): string;
 
     /**
      * @param GenderEnum::* $gender

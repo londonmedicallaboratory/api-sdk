@@ -38,6 +38,8 @@ class TestRegistration implements TestRegistrationInterface
         protected ?string             $nhsNumber,
         protected ?string             $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
+        protected DateTimeInterface   $createdAt,
+        protected ?DateTimeInterface  $completedAt = null,
         protected ?DateTimeInterface  $nonExemptDay = null,
         protected ?LazyValueInterface $ukAddress = null,
         protected ?LazyValueInterface $selfIsolatingAddress = null,
@@ -120,6 +122,13 @@ class TestRegistration implements TestRegistrationInterface
     public function getGender(): string
     {
         return $this->gender;
+    }
+
+    public function getGenderName(): string
+    {
+        $gender = $this->getGender();
+
+        return GenderEnum::getViewFormat($gender);
     }
 
     public function setGender(string $gender): void
@@ -223,6 +232,8 @@ class TestRegistration implements TestRegistrationInterface
             'vaccination_status'  => $this->getVaccinationStatus(),
             'transit_countries'   => $this->transitCountries,
             'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
+            'created_at'          => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at'        => $this->getCompletedAt()?->format('Y-m-d'),
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();
@@ -263,5 +274,15 @@ class TestRegistration implements TestRegistrationInterface
     public function setNonExemptDay(?DateTimeInterface $nonExemptDay): void
     {
         $this->nonExemptDay = $nonExemptDay;
+    }
+
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getCompletedAt(): ?DateTimeInterface
+    {
+        return $this->completedAt;
     }
 }
