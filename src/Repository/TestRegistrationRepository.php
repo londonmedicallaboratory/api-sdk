@@ -35,6 +35,7 @@ class TestRegistrationRepository extends AbstractRepository
 
         return new TestRegistration(
             id:                $entity['id'],
+            resultsReady:      $entity['results_ready'],
             product:           new LazyPromise($this->getProduct($entity['product_id'])),
             email:             $entity['email'],
             dateOfBirth:       new DateTime($entity['date_of_birth']),

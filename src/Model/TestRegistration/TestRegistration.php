@@ -39,6 +39,7 @@ class TestRegistration implements TestRegistrationInterface
         protected ?string             $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
         protected DateTimeInterface   $createdAt,
+        protected bool                $resultsReady = false,
         protected ?DateTimeInterface  $completedAt = null,
         protected ?DateTimeInterface  $nonExemptDay = null,
         protected ?LazyValueInterface $ukAddress = null,
@@ -234,6 +235,7 @@ class TestRegistration implements TestRegistrationInterface
             'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
             'created_at'          => $this->getCreatedAt()->format('Y-m-d'),
             'completed_at'        => $this->getCompletedAt()?->format('Y-m-d'),
+            'results_ready'       => $this->resultsReady,
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();
@@ -284,5 +286,10 @@ class TestRegistration implements TestRegistrationInterface
     public function getCompletedAt(): ?DateTimeInterface
     {
         return $this->completedAt;
+    }
+
+    public function hasResults(): bool
+    {
+        return $this->resultsReady;
     }
 }

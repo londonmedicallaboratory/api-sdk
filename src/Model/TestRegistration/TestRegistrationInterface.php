@@ -18,6 +18,7 @@ use LML\SDK\Model\Address\AddressInterface;
  *
  * @psalm-type S=array{
  *      id: string,
+ *      results_ready: bool,
  *      product_id: string,
  *      email: string,
  *      date_of_birth: string,
@@ -30,10 +31,9 @@ use LML\SDK\Model\Address\AddressInterface;
  *      nhs_number?: ?string,
  *      vaccination_status?: ?string,
  *      non_exempt_date: ?string,
- *      transit_countries: list<string>,
+ *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
- *
  *      uk_address?: array{
  *          id: string,
  *          line1: string,
@@ -60,6 +60,8 @@ use LML\SDK\Model\Address\AddressInterface;
  */
 interface TestRegistrationInterface extends ModelInterface
 {
+    public function hasResults(): bool;
+
     public function getCreatedAt(): DateTimeInterface;
 
     public function getCompletedAt(): ?DateTimeInterface;
