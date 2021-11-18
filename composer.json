@@ -2,6 +2,8 @@
     "name": "londonmedicallaboratory/api-sdk",
     "type": "symfony-bundle",
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [
         {
             "name": "zmitic",
@@ -9,6 +11,7 @@
         }
     ],
     "require": {
+        "php": "^8.1",
         "symfony/http-kernel": "^5.3",
         "symfony/http-client": "^5.3",
         "endroid/installer": "^1.3",

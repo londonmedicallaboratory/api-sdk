@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model\TestRegistration;
 
+use DateTime;
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
@@ -38,8 +39,8 @@ class TestRegistration implements TestRegistrationInterface
         protected ?string             $nhsNumber,
         protected ?string             $vaccinationStatus,
         protected DateTimeInterface   $dateOfArrival,
-        protected DateTimeInterface   $createdAt,
         protected bool                $resultsReady = false,
+        protected DateTimeInterface   $createdAt = new DateTime(),
         protected ?DateTimeInterface  $completedAt = null,
         protected ?DateTimeInterface  $nonExemptDay = null,
         protected ?LazyValueInterface $ukAddress = null,
