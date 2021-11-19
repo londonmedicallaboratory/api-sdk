@@ -28,7 +28,14 @@
         <file name="stubs/Sensio/Bundle/FrameworkExtraBundle/Configuration/ParamConverter.stubphp"/>
     </stubs>
 
+    <!-- Remove once full support for enums is released -->
     <issueHandlers>
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="*::from"/>
+            </errorLevel>
+        </UndefinedMethod>
+
         <MethodSignatureMismatch>
             <errorLevel type="suppress">
                 <file name="src/Promise/CachedItemPromise.php"/>
@@ -38,5 +45,6 @@
 
     <plugins>
         <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>
-    <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/></plugins>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
+    </plugins>
 </psalm>
