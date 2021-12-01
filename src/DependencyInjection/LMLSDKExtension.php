@@ -19,7 +19,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
 {
     use PriorityTaggedServiceTrait;
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'lml_sdk';
     }
@@ -28,7 +28,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
     {
         $repos = $container->findTaggedServiceIds('lml_sdk.repository');
         foreach ($repos as $id => $_repo) {
-            $definition = $container->getDefinition((string)$id);
+            $definition = $container->getDefinition($id);
             $definition->addMethodCall('setClient', [new Reference('lml_sdk.client')]);
         }
     }

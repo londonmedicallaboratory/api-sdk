@@ -116,7 +116,6 @@ abstract class AbstractRepository extends AbstractViewFactory
         return new LazyPromise($promise);
     }
 
-
     /**
      * Finding one by slug is mostly used query so this method is just a shortcut.
      *

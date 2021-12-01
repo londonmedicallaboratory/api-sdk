@@ -34,6 +34,11 @@ use LML\SDK\Model\Address\AddressInterface;
  *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
+ *      client_code?: ?string,
+ *      country_from?: ?string,
+ *      transport_type?: ?string,
+ *      date_of_arrival?: ?string,
+ *      travel_number?: ?string,
  *      uk_address?: array{
  *          id: string,
  *          line1: string,

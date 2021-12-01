@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace LML\SDK\Enum;
 
-use RuntimeException;
+use ReflectionClass;
 use InvalidArgumentException;
+use LML\SDK\Exception\InvalidEnumException;
 use function sprintf;
+use function implode;
 use function array_slice;
+use function str_replace;
 
 /**
  * @todo Remove in PHP 8.1
@@ -30,15 +33,32 @@ abstract class AbstractEnum
     /**
      * @psalm-assert static::* $name
      */
-    public static function assertValidEnum(string $name): void
+    public static function assertValidEnum(?string $name, bool $allowNull = false, ?string $message = null): void
     {
+        if (null === $name) {
+            if ($allowNull) {
+                return;
+            }
+            throw new InvalidEnumException('Value not provided.');
+        }
+
         foreach (static::getDefinitions() as [$const]) {
             if ($const === $name) {
                 return;
             }
         }
 
-        throw new RuntimeException(sprintf('Unknown type "%s".', $name));
+        // if message is not provided, create one; use class name and remove `Enum` word from it
+        if (!$message) {
+            $rc = new ReflectionClass(static::class);
+            $shortName = $rc->getShortName();
+            $shortName = str_replace('Enum', '', $shortName);
+
+            $acceptedValues = implode(', ', self::getAsFormChoices());
+            $message = sprintf('%s \'%s\' is not allowed. Allowed values are: %s', $shortName, $name, $acceptedValues);
+        }
+
+        throw new InvalidEnumException($message);
     }
 
     /**

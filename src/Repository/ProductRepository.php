@@ -70,7 +70,7 @@ class ProductRepository extends AbstractRepository
     /**
      * @return PromiseInterface<list<FileInterface>>
      */
-    private function getFiles(string $id)
+    private function getFiles(string $id): PromiseInterface
     {
         $url = sprintf('/product/%s/files', $id);
 
@@ -80,7 +80,7 @@ class ProductRepository extends AbstractRepository
     /**
      * @return PromiseInterface<list<BiomarkerInterface>>
      */
-    private function getBiomarkers(string $id)
+    private function getBiomarkers(string $id): PromiseInterface
     {
         $url = sprintf('/product/%s/biomarkers', $id);
 
