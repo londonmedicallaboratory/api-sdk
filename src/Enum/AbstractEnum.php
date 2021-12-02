@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use LML\SDK\Exception\InvalidEnumException;
 use function sprintf;
 use function implode;
+use function strtolower;
 use function array_slice;
 use function str_replace;
 
@@ -39,7 +40,8 @@ abstract class AbstractEnum
             if ($allowNull) {
                 return;
             }
-            throw new InvalidEnumException('Value not provided.');
+            $shortName = self::getShortName();
+            throw new InvalidEnumException(sprintf('Value for \'%s\' has not been provided.', $shortName));
         }
 
         foreach (static::getDefinitions() as [$const]) {
@@ -50,9 +52,7 @@ abstract class AbstractEnum
 
         // if message is not provided, create one; use class name and remove `Enum` word from it
         if (!$message) {
-            $rc = new ReflectionClass(static::class);
-            $shortName = $rc->getShortName();
-            $shortName = str_replace('Enum', '', $shortName);
+            $shortName = self::getShortName();
 
             $acceptedValues = implode(', ', self::getAsFormChoices());
             $message = sprintf('%s \'%s\' is not allowed. Allowed values are: %s', $shortName, $name, $acceptedValues);
@@ -98,4 +98,14 @@ abstract class AbstractEnum
      * @return iterable<array-key, array{0: string|int, 1: string}>
      */
     abstract protected static function getDefinitions(): iterable;
+
+    private static function getShortName(): string
+    {
+        $rc = new ReflectionClass(static::class);
+        $shortName = $rc->getShortName();
+
+        $shortName = str_replace('Enum', '', $shortName);
+
+        return strtolower($shortName);
+    }
 }

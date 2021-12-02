@@ -30,25 +30,26 @@ class ProductRepository extends AbstractRepository
         $priceData = $entity['price'];
 
         $price = new Price(
-            amount: $priceData['amount_minor'],
-            currency: $priceData['currency'],
+            amount        : $priceData['amount_minor'],
+            currency      : $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
 
         $id = $entity['id'];
 
         return new Product(
-            id: $id,
-            name: $entity['name'],
-            slug: $entity['slug'],
-            description: $entity['description'],
+            id              : $id,
+            name            : $entity['name'],
+            slug            : $entity['slug'],
+            description     : $entity['description'],
             shortDescription: $entity['short_description'],
-            previewImageUrl: $entity['preview_image_url'],
-            price: $price,
-            biomarkers: new LazyPromise($this->getBiomarkers($id)),
-            shippingTypes: new LazyPromise($this->getShippingTypes($id)),
-            files: new LazyPromise($this->getFiles($id)),
-            categories: new LazyPromise($this->getCategories($id)),
+            previewImageUrl : $entity['preview_image_url'],
+            testToRelease   : $entity['test_to_release'],
+            price           : $price,
+            biomarkers      : new LazyPromise($this->getBiomarkers($id)),
+            shippingTypes   : new LazyPromise($this->getShippingTypes($id)),
+            files           : new LazyPromise($this->getFiles($id)),
+            categories      : new LazyPromise($this->getCategories($id)),
         );
     }
 

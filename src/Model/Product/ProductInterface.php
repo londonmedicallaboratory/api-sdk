@@ -19,6 +19,7 @@ use LML\SDK\Model\Biomarker\BiomarkerInterface;
  *      slug: string,
  *      description: string,
  *      short_description: string,
+ *      test_to_release: bool,
  *      preview_image_url: ?string,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
  * }
@@ -63,4 +64,6 @@ interface ProductInterface extends ModelInterface, SluggableInterface
      * @return list<CategoryInterface>
      */
     public function getCategories();
+
+    public function isTestToRelease(): bool;
 }

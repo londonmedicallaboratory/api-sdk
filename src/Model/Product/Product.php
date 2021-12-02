@@ -23,13 +23,14 @@ class Product implements ProductInterface
      * @param LazyValueInterface<list<CategoryInterface>> $categories
      */
     public function __construct(
-        protected string $id,
-        protected string $name,
-        protected string $slug,
-        protected string $description,
-        protected string $shortDescription,
-        protected ?string $previewImageUrl,
-        protected PriceInterface $price,
+        protected string             $id,
+        protected string             $name,
+        protected string             $slug,
+        protected string             $description,
+        protected string             $shortDescription,
+        protected ?string            $previewImageUrl,
+        protected bool               $testToRelease,
+        protected PriceInterface     $price,
         protected LazyValueInterface $biomarkers,
         protected LazyValueInterface $shippingTypes,
         protected LazyValueInterface $files,
@@ -98,20 +99,26 @@ class Product implements ProductInterface
         return $this->categories->getValue();
     }
 
+    public function isTestToRelease(): bool
+    {
+        return $this->testToRelease;
+    }
+
     public function toArray()
     {
         $price = $this->getPrice();
 
         return [
-            'id'                => $this->getId(),
-            'name'              => $this->getName(),
-            'slug'              => $this->getSlug(),
-            'description'       => $this->getLongDescription(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'slug' => $this->getSlug(),
+            'description' => $this->getLongDescription(),
             'short_description' => $this->getShortDescription(),
             'preview_image_url' => $this->getPreviewImageUrl(),
-            'price'             => [
-                'amount_minor'    => $price->getAmount(),
-                'currency'        => $price->getCurrency(),
+            'test_to_release' => $this->isTestToRelease(),
+            'price' => [
+                'amount_minor' => $price->getAmount(),
+                'currency' => $price->getCurrency(),
                 'formatted_value' => $price->getFormattedValue(),
             ],
         ];
