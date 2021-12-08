@@ -13,12 +13,13 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Model\Product\ProductInterface;
 use LML\SDK\Model\Address\AddressInterface;
+use function array_map;
 use function array_search;
 
 class TestRegistration implements TestRegistrationInterface
 {
     /**
-     * @param LazyValueInterface<ProductInterface> $product
+     * @param LazyValueInterface<list<ProductInterface>> $products
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param GenderEnum::* $gender
@@ -27,7 +28,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param list<string> $transitCountries
      */
     public function __construct(
-        protected LazyValueInterface  $product,
+        protected LazyValueInterface  $products,
         protected string              $email,
         protected DateTimeInterface   $dateOfBirth,
         protected string              $firstName,
@@ -61,14 +62,9 @@ class TestRegistration implements TestRegistrationInterface
         $this->dateOfArrival = $date;
     }
 
-    public function getProduct(): ProductInterface
+    public function getProducts(): array
     {
-        return $this->product->getValue();
-    }
-
-    public function setProduct(ProductInterface $product): void
-    {
-        $this->product = new ResolvedValue($product);
+        return $this->products->getValue();
     }
 
     public function getUkAddress(): ?AddressInterface
@@ -220,23 +216,23 @@ class TestRegistration implements TestRegistrationInterface
     public function toArray()
     {
         $data = [
-            'id'                  => $this->getId(),
-            'product_id'          => $this->getProduct()->getId(),
-            'email'               => $this->getEmail(),
-            'date_of_birth'       => $this->getDateOfBirth()->format('Y-m-d'),
-            'first_name'          => $this->getFirstName(),
-            'last_name'           => $this->getLastName(),
-            'gender'              => $this->getGender(),
-            'ethnicity'           => $this->getEthnicity(),
+            'id' => $this->getId(),
+            'product_ids' => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
+            'email' => $this->getEmail(),
+            'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'gender' => $this->getGender(),
+            'ethnicity' => $this->getEthnicity(),
             'mobile_phone_number' => $this->getMobilePhoneNumber(),
-            'passport_number'     => $this->getPassportNumber(),
-            'nhs_number'          => $this->getNhsNumber(),
-            'vaccination_status'  => $this->getVaccinationStatus(),
-            'transit_countries'   => $this->transitCountries,
-            'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
-            'created_at'          => $this->getCreatedAt()->format('Y-m-d'),
-            'completed_at'        => $this->getCompletedAt()?->format('Y-m-d'),
-            'results_ready'       => $this->resultsReady,
+            'passport_number' => $this->getPassportNumber(),
+            'nhs_number' => $this->getNhsNumber(),
+            'vaccination_status' => $this->getVaccinationStatus(),
+            'transit_countries' => $this->transitCountries,
+            'non_exempt_date' => $this->getNonExemptDay()?->format('Y-m-d'),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at' => $this->getCompletedAt()?->format('Y-m-d'),
+            'results_ready' => $this->resultsReady,
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();

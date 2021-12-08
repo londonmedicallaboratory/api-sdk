@@ -19,7 +19,7 @@ use LML\SDK\Model\Address\AddressInterface;
  * @psalm-type S=array{
  *      id: string,
  *      results_ready: bool,
- *      product_id: string,
+ *      product_ids: list<string>,
  *      email: string,
  *      date_of_birth: string,
  *      first_name: string,
@@ -78,7 +78,10 @@ interface TestRegistrationInterface extends ModelInterface
 
     public function getUkAddress(): ?AddressInterface;
 
-    public function getProduct(): ProductInterface;
+    /**
+     * @return list<ProductInterface>
+     */
+    public function getProducts(): array;
 
     public function getEmail(): string;
 

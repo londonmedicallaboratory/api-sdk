@@ -14,6 +14,7 @@ use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Service\Model\AbstractRepository;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
+use function sprintf;
 
 /**
  * @psalm-import-type S from TestRegistrationInterface
@@ -34,22 +35,22 @@ class TestRegistrationRepository extends AbstractRepository
         $completedAt = $entity['completed_at'] ?? null;
 
         return new TestRegistration(
-            id:                $entity['id'],
-            resultsReady:      $entity['results_ready'],
-            product:           new LazyPromise($this->getProduct($entity['product_id'])),
-            email:             $entity['email'],
-            dateOfBirth:       new DateTime($entity['date_of_birth']),
-            firstName:         $entity['first_name'],
-            lastName:          $entity['last_name'],
-            gender:            $gender,
-            ethnicity:         $ethnicity,
+            id               : $entity['id'],
+            resultsReady     : $entity['results_ready'],
+            products         : new LazyPromise($this->getProducts($entity['id'])),
+            email            : $entity['email'],
+            dateOfBirth      : new DateTime($entity['date_of_birth']),
+            firstName        : $entity['first_name'],
+            lastName         : $entity['last_name'],
+            gender           : $gender,
+            ethnicity        : $ethnicity,
             mobilePhoneNumber: $entity['mobile_phone_number'],
-            passportNumber:    $entity['email'],
-            nhsNumber:         $entity['nhs_number'] ?? null,
+            passportNumber   : $entity['email'],
+            nhsNumber        : $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
-            dateOfArrival:     new DateTime(),
-            createdAt:         $createdAt ? new DateTime($createdAt) : new DateTime(),
-            completedAt:       $completedAt ? new DateTime($completedAt) : null,
+            dateOfArrival    : new DateTime(),
+            createdAt        : $createdAt ? new DateTime($createdAt) : new DateTime(),
+            completedAt      : $completedAt ? new DateTime($completedAt) : null,
         );
     }
 
@@ -59,10 +60,12 @@ class TestRegistrationRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<Product>
+     * @return PromiseInterface<list<Product>>
      */
-    private function getProduct(string $productId): PromiseInterface
+    private function getProducts(string $id): PromiseInterface
     {
-        return $this->get(ProductRepository::class)->findOrThrowException($productId);
+        $url = sprintf('/test_registration/%s/products', $id);
+
+        return $this->get(ProductRepository::class)->findBy(url: $url);
     }
 }
