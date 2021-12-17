@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace LML\SDK\Enum;
 
-class AgeCategoryEnum extends AbstractEnum
-{
-    public const YEARS = 'years';
-    public const MONTHS = 'months';
+use LML\SDK\Enum\Model\NameableInterface;
 
-    protected static function getDefinitions(): iterable
+enum AgeCategoryEnum: string implements NameableInterface
+{
+    case YEARS = 'years';
+    case MONTHS = 'months';
+
+    public function getName(): string
     {
-        yield [self::YEARS, 'Years'];
-        yield [self::MONTHS, 'Months'];
+        return match ($this) {
+            self::YEARS => 'Years',
+            self::MONTHS => 'Months',
+        };
     }
 }

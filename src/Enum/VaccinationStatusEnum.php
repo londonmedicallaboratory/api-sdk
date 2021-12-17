@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace LML\SDK\Enum;
 
-class VaccinationStatusEnum extends AbstractEnum
-{
-    public const VACCINATED = 'vaccinated';
-    public const NOT_VACCINATED = 'not_vaccinated';
+use LML\SDK\Enum\Model\NameableInterface;
 
-    protected static function getDefinitions(): iterable
+enum VaccinationStatusEnum: string implements NameableInterface
+{
+    case VACCINATED = 'vaccinated';
+    case NOT_VACCINATED = 'not_vaccinated';
+
+    public function getName(): string
     {
-        yield [self::VACCINATED, 'Vaccinated'];
-        yield [self::NOT_VACCINATED, 'Not vaccinated'];
+        return match ($this) {
+            self::VACCINATED => 'Vaccinated',
+            self::NOT_VACCINATED => 'Not vaccinated',
+        };
     }
 }

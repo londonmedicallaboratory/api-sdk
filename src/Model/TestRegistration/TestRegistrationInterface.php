@@ -91,22 +91,13 @@ interface TestRegistrationInterface extends ModelInterface
 
     public function getLastName(): string;
 
-    /**
-     * @return GenderEnum::*
-     */
-    public function getGender(): string;
+    public function getGender(): GenderEnum;
 
     public function getGenderName(): string;
 
-    /**
-     * @param GenderEnum::* $gender
-     */
-    public function setGender(string $gender): void;
+    public function setGender(GenderEnum $gender): void;
 
-    /**
-     * @return null|EthnicityEnum::*
-     */
-    public function getEthnicity(): ?string;
+    public function getEthnicity(): ?EthnicityEnum;
 
     public function getMobilePhoneNumber(): string;
 
@@ -116,8 +107,5 @@ interface TestRegistrationInterface extends ModelInterface
 
     public function isVaccinated(): bool;
 
-    /**
-     * @return ?VaccinationStatusEnum::*
-     */
-    public function getVaccinationStatus(): ?string;
+    public function getVaccinationStatus(): ?VaccinationStatusEnum;
 }

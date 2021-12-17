@@ -27,30 +27,29 @@ class TestRegistrationRepository extends AbstractRepository
     {
         /** @var GenderEnum::* $gender */
         $gender = $entity['gender'];
-        /** @var null|EthnicityEnum::* $ethnicity */
-        $ethnicity = $entity['ethnicity'] ?? null;
+        $ethnicity = $entity['ethnicity'] ?? '';
         /** @var ?VaccinationStatusEnum::* */
-        $vaccinationStatus = $entity['vaccination_status'] ?? null;
+        $vaccinationStatus = $entity['vaccination_status'] ?? '';
         $createdAt = $entity['created_at'] ?? null;
         $completedAt = $entity['completed_at'] ?? null;
 
         return new TestRegistration(
-            id               : $entity['id'],
-            resultsReady     : $entity['results_ready'],
             products         : new LazyPromise($this->getProducts($entity['id'])),
             email            : $entity['email'],
             dateOfBirth      : new DateTime($entity['date_of_birth']),
             firstName        : $entity['first_name'],
             lastName         : $entity['last_name'],
             gender           : $gender,
-            ethnicity        : $ethnicity,
+            ethnicity        : EthnicityEnum::from($ethnicity),
             mobilePhoneNumber: $entity['mobile_phone_number'],
             passportNumber   : $entity['email'],
             nhsNumber        : $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
             dateOfArrival    : new DateTime(),
+            resultsReady     : $entity['results_ready'],
             createdAt        : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt      : $completedAt ? new DateTime($completedAt) : null,
+            id               : $entity['id'],
         );
     }
 

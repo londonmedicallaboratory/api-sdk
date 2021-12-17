@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace LML\SDK\Enum;
 
-class GenderEnum extends AbstractEnum
-{
-    public const MALE = 'male';
-    public const FEMALE = 'female';
-    public const EITHER = 'either';
+use LML\SDK\Enum\Model\NameableInterface;
 
-    protected static function getDefinitions(): iterable
+enum GenderEnum: string implements NameableInterface
+{
+    case MALE = 'male';
+    case FEMALE = 'female';
+    case EITHER = 'either';
+
+    public function getName(): string
     {
-        yield [self::MALE, 'Male'];
-        yield [self::FEMALE, 'Female'];
-        yield [self::EITHER, 'Prefer not to answer'];
+        return match ($this) {
+            self::MALE => 'Male',
+            self::FEMALE => 'Female',
+            self::EITHER => 'Prefer not to answer',
+        };
     }
 }

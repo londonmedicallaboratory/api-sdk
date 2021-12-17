@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace LML\SDK\Enum;
 
-class TransportTypeEnum extends AbstractEnum
-{
-    public const PLANE = 'plane';
-    public const TRAIN = 'train';
-    public const VESSEL = 'vessel';
+use LML\SDK\Enum\Model\NameableInterface;
 
-    protected static function getDefinitions(): iterable
+enum TransportTypeEnum: string implements NameableInterface
+{
+    case PLANE = 'plane';
+    case TRAIN = 'train';
+    case VESSEL = 'vessel';
+
+    public function getName(): string
     {
-        yield [self::PLANE, 'Plane'];
-        yield [self::TRAIN, 'Train'];
-        yield [self::VESSEL, 'Vessel'];
+        return match ($this) {
+            self::PLANE => 'Plane',
+            self::TRAIN => 'Train',
+            self::VESSEL => 'Vessel',
+        };
     }
 }

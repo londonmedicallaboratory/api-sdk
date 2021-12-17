@@ -7,6 +7,8 @@
     <services>
 
         <defaults autoconfigure="true" autowire="true"/>
+
+        <service id="lml_sdk.form.extension.named_enum_type_extension" class="LML\SDK\Form\Extension\NamedEnumTypeExtension" />
         <service id="lml_sdk.client" class="LML\SDK\Service\Client\Client"/>
 
         <service id="LML\SDK\Repository\ProductRepository">

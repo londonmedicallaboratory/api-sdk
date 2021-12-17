@@ -5,78 +5,81 @@ declare(strict_types=1);
 namespace LML\SDK\Enum;
 
 use RuntimeException;
+use LML\SDK\Enum\Model\NameableInterface;
 use function sprintf;
 use function str_starts_with;
 
-class EthnicityEnum extends AbstractEnum
+enum EthnicityEnum: string implements NameableInterface
 {
     // list all possible ethnicities here
-    public const WHITE_ENGLISH = 'white_english';
-    public const WHITE_IRISH = 'white_irish';
-    public const WHITE_GYPSY = 'white_gypsy';
-    public const WHITE_OTHER = 'white_other';
+    case WHITE_ENGLISH = 'white_english';
+    case WHITE_IRISH = 'white_irish';
+    case WHITE_GYPSY = 'white_gypsy';
+    case WHITE_OTHER = 'white_other';
 
-    public const MIXED_WHITE_AND_BLACK_CARIBBEAN = 'mixed_white_and_black_caribbean';
-    public const MIXED_WHITE_AND_BLACK_AFRICAN = 'mixed_white_and_black_african';
-    public const MIXED_WHITE_AND_ASIAN = 'mixed_white_and_asian';
-    public const MIXED_OTHER = 'mixed_other';
+    case MIXED_WHITE_AND_BLACK_CARIBBEAN = 'mixed_white_and_black_caribbean';
+    case MIXED_WHITE_AND_BLACK_AFRICAN = 'mixed_white_and_black_african';
+    case MIXED_WHITE_AND_ASIAN = 'mixed_white_and_asian';
+    case MIXED_OTHER = 'mixed_other';
 
-    public const ASIAN_INDIAN = 'asian_indian';
-    public const ASIAN_PAKISTANI = 'asian_pakistani';
-    public const ASIAN_BANGLADESHI = 'asian_bangladeshi';
-    public const ASIAN_CHINESE = 'asian_chinese';
-    public const ASIAN_OTHER = 'asian_other';
+    case ASIAN_INDIAN = 'asian_indian';
+    case ASIAN_PAKISTANI = 'asian_pakistani';
+    case ASIAN_BANGLADESHI = 'asian_bangladeshi';
+    case ASIAN_CHINESE = 'asian_chinese';
+    case ASIAN_OTHER = 'asian_other';
 
-    public const BLACK_AFRICAN = 'black_african';
-    public const BLACK_CARIBBEAN = 'black_caribbean';
-    public const BLACK_OTHER = 'black_other';
+    case BLACK_AFRICAN = 'black_african';
+    case BLACK_CARIBBEAN = 'black_caribbean';
+    case BLACK_OTHER = 'black_other';
 
-    public const OTHER_ARAB = 'other_arab';
-    public const OTHER_UNDEFINED = 'other_undefined';
+    case OTHER_ARAB = 'other_arab';
+    case OTHER_UNDEFINED = 'other_undefined';
+
+    public function getName(): string
+    {
+        return match ($this) {
+            self::WHITE_ENGLISH => 'English / Welsh / Scottish / Northern Irish / British',
+            self::WHITE_IRISH => 'Irish',
+            self::WHITE_GYPSY => 'Gypsy or Irish Traveller',
+            self::WHITE_OTHER => 'Any other White background',
+
+            self::MIXED_WHITE_AND_BLACK_CARIBBEAN => 'White and Black Caribbean',
+            self::MIXED_WHITE_AND_BLACK_AFRICAN => 'White and Black African',
+            self::MIXED_WHITE_AND_ASIAN => 'White and Asian',
+            self::MIXED_OTHER => 'Any other Mixed / Multiple ethnic background',
+
+            self::ASIAN_INDIAN => 'Indian',
+            self::ASIAN_PAKISTANI => 'Pakistani',
+            self::ASIAN_BANGLADESHI => 'Bangladeshi',
+            self::ASIAN_CHINESE => 'Chinese',
+            self::ASIAN_OTHER => 'Any other Asian background',
+
+            self::BLACK_AFRICAN => 'African',
+            self::BLACK_CARIBBEAN => 'Caribbean',
+            self::BLACK_OTHER => 'Any other Black / African / Caribbean background',
+
+            self::OTHER_ARAB => 'Arab',
+            self::OTHER_UNDEFINED => 'Any other ethnic group',
+        };
+    }
 
     /**
-     * @return array<string, array<string, int|string>>
+     * @return array<string, array<string, string>>
      */
-    public static function getAsFormGroupChoices()
+    public static function getAsFormGroupChoices(): array
     {
         $groups = [];
-        foreach (self::getDefinitions() as [$const, $label]) {
-            $groupName = self::getGroupName($const);
-            $groups[$groupName][$label] = $const;
+        foreach (self::cases() as $enum) {
+            $groupName = self::getGroupName($enum->name);
+            $groups[$groupName][$enum->value] = $enum->getName();
         }
 
         return $groups;
     }
 
-    protected static function getDefinitions(): iterable
+    private static function getGroupName(string $enum): string
     {
-        yield [self::WHITE_ENGLISH, 'English / Welsh / Scottish / Northern Irish / British'];
-        yield [self::WHITE_IRISH, 'Irish'];
-        yield [self::WHITE_GYPSY, 'Gypsy or Irish Traveller'];
-        yield [self::WHITE_OTHER, 'Any other White background'];
-
-        yield [self::MIXED_WHITE_AND_BLACK_CARIBBEAN, 'White and Black Caribbean'];
-        yield [self::MIXED_WHITE_AND_BLACK_AFRICAN, 'White and Black African'];
-        yield [self::MIXED_WHITE_AND_ASIAN, 'White and Asian'];
-        yield [self::MIXED_OTHER, 'Any other Mixed / Multiple ethnic background'];
-
-        yield [self::ASIAN_INDIAN, 'Indian'];
-        yield [self::ASIAN_PAKISTANI, 'Pakistani'];
-        yield [self::ASIAN_BANGLADESHI, 'Bangladeshi'];
-        yield [self::ASIAN_CHINESE, 'Chinese'];
-        yield [self::ASIAN_OTHER, 'Any other Asian background'];
-
-        yield [self::BLACK_AFRICAN, 'African'];
-        yield [self::BLACK_CARIBBEAN, 'Caribbean'];
-        yield [self::BLACK_OTHER, 'Any other Black / African / Caribbean background'];
-
-        yield [self::OTHER_ARAB, 'Arab'];
-        yield [self::OTHER_UNDEFINED, 'Any other ethnic group'];
-    }
-
-    private static function getGroupName(int|string $enum): string
-    {
-        $enum = (string)$enum;
+        $enum = strtolower($enum);
 
         return match (true) {
             str_starts_with($enum, 'white_') => 'White',

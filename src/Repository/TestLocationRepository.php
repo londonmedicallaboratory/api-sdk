@@ -31,7 +31,7 @@ class TestLocationRepository extends AbstractRepository
     /**
      * @return array{availability: array<string, bool>, id: string}
      */
-    public function getMonthlyCalender(string $id, DateTime $when)
+    public function getMonthlyCalender(string $id, DateTime $when): array
     {
         $url = sprintf('/test_location/%s/calender/%04d/%02d', $id, $when->format('Y'), $when->format('m'));
 
@@ -52,9 +52,9 @@ class TestLocationRepository extends AbstractRepository
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $resolvedPromise = $promise->then(fn($data) => array_map(fn($datum) => new TimeBlock(
-            id: $datum['id'],
-            startsAt: new DateTime($datum['starts_at']),
-            endsAt: new DateTime($datum['ends_at']),
+            id         : $datum['id'],
+            startsAt   : new DateTime($datum['starts_at']),
+            endsAt     : new DateTime($datum['ends_at']),
             description: $datum['description'],
         ), $data));
 
@@ -81,11 +81,11 @@ class TestLocationRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new TestLocation(
-            id: $id,
-            name: $entity['name'],
-            fullAddress: $entity['full_address'],
-            city: $entity['city'],
-            postalCode: $entity['postal_code'],
+            id                     : $id,
+            fullAddress            : $entity['full_address'],
+            city                   : $entity['city'],
+            postalCode             : $entity['postal_code'],
+            name                   : $entity['name'],
             healthcareProfessionals: new LazyPromise($this->getProfessionals($id)),
         );
     }
@@ -98,7 +98,7 @@ class TestLocationRepository extends AbstractRepository
     /**
      * @return PromiseInterface<list<HealthcareProfessional>>
      */
-    private function getProfessionals(string $id)
+    private function getProfessionals(string $id): PromiseInterface
     {
         $url = sprintf('/test_location/%s/professionals', $id);
 

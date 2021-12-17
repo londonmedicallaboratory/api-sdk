@@ -22,32 +22,29 @@ class TestRegistration implements TestRegistrationInterface
      * @param LazyValueInterface<list<ProductInterface>> $products
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
-     * @param GenderEnum::* $gender
-     * @param null|EthnicityEnum::* $ethnicity
-     * @param ?VaccinationStatusEnum::* $vaccinationStatus
      * @param list<string> $transitCountries
      */
     public function __construct(
-        protected LazyValueInterface  $products,
-        protected string              $email,
-        protected DateTimeInterface   $dateOfBirth,
-        protected string              $firstName,
-        protected string              $lastName,
-        protected string              $gender,
-        protected ?string             $ethnicity,
-        protected string              $mobilePhoneNumber,
-        protected ?string             $passportNumber,
-        protected ?string             $nhsNumber,
-        protected ?string             $vaccinationStatus,
-        protected DateTimeInterface   $dateOfArrival,
-        protected bool                $resultsReady = false,
-        protected DateTimeInterface   $createdAt = new DateTime(),
-        protected ?DateTimeInterface  $completedAt = null,
-        protected ?DateTimeInterface  $nonExemptDay = null,
-        protected ?LazyValueInterface $ukAddress = null,
-        protected ?LazyValueInterface $selfIsolatingAddress = null,
-        protected array               $transitCountries = [],
-        protected string              $id = '',
+        protected LazyValueInterface     $products,
+        protected string                 $email,
+        protected DateTimeInterface      $dateOfBirth,
+        protected string                 $firstName,
+        protected string                 $lastName,
+        protected GenderEnum             $gender,
+        protected ?EthnicityEnum         $ethnicity,
+        protected string                 $mobilePhoneNumber,
+        protected ?string                $passportNumber,
+        protected ?string                $nhsNumber,
+        protected ?VaccinationStatusEnum $vaccinationStatus,
+        protected DateTimeInterface      $dateOfArrival,
+        protected bool                   $resultsReady = false,
+        protected DateTimeInterface      $createdAt = new DateTime(),
+        protected ?DateTimeInterface     $completedAt = null,
+        protected ?DateTimeInterface     $nonExemptDay = null,
+        protected ?LazyValueInterface    $ukAddress = null,
+        protected ?LazyValueInterface    $selfIsolatingAddress = null,
+        protected array                  $transitCountries = [],
+        protected string                 $id = '',
     )
     {
     }
@@ -117,32 +114,27 @@ class TestRegistration implements TestRegistrationInterface
         $this->lastName = $lastName;
     }
 
-    public function getGender(): string
+    public function getGender(): GenderEnum
     {
         return $this->gender;
     }
 
     public function getGenderName(): string
     {
-        $gender = $this->getGender();
-
-        return GenderEnum::getViewFormat($gender);
+        return $this->getGender()->getName();
     }
 
-    public function setGender(string $gender): void
+    public function setGender(GenderEnum $gender): void
     {
         $this->gender = $gender;
     }
 
-    public function getEthnicity(): ?string
+    public function getEthnicity(): ?EthnicityEnum
     {
         return $this->ethnicity;
     }
 
-    /**
-     * @param null|EthnicityEnum::* $ethnicity
-     */
-    public function setEthnicity(?string $ethnicity): void
+    public function setEthnicity(?EthnicityEnum $ethnicity): void
     {
         $this->ethnicity = $ethnicity;
     }
@@ -182,18 +174,12 @@ class TestRegistration implements TestRegistrationInterface
         return $this->vaccinationStatus === VaccinationStatusEnum::VACCINATED;
     }
 
-    /**
-     * @return ?VaccinationStatusEnum::*
-     */
-    public function getVaccinationStatus(): ?string
+    public function getVaccinationStatus(): ?VaccinationStatusEnum
     {
         return $this->vaccinationStatus;
     }
 
-    /**
-     * @param ?VaccinationStatusEnum::* $vaccinationStatus
-     */
-    public function setVaccinationStatus(?string $vaccinationStatus): void
+    public function setVaccinationStatus(?VaccinationStatusEnum $vaccinationStatus): void
     {
         $this->vaccinationStatus = $vaccinationStatus;
     }
@@ -213,26 +199,26 @@ class TestRegistration implements TestRegistrationInterface
         $this->selfIsolatingAddress = new ResolvedValue($selfIsolatingAddress);
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
-            'id' => $this->getId(),
-            'product_ids' => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
-            'email' => $this->getEmail(),
-            'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
-            'first_name' => $this->getFirstName(),
-            'last_name' => $this->getLastName(),
-            'gender' => $this->getGender(),
-            'ethnicity' => $this->getEthnicity(),
+            'id'                  => $this->getId(),
+            'product_ids'         => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
+            'email'               => $this->getEmail(),
+            'date_of_birth'       => $this->getDateOfBirth()->format('Y-m-d'),
+            'first_name'          => $this->getFirstName(),
+            'last_name'           => $this->getLastName(),
+            'gender'              => $this->getGender()->value,
+            'ethnicity'           => $this->getEthnicity()?->value,
             'mobile_phone_number' => $this->getMobilePhoneNumber(),
-            'passport_number' => $this->getPassportNumber(),
-            'nhs_number' => $this->getNhsNumber(),
-            'vaccination_status' => $this->getVaccinationStatus(),
-            'transit_countries' => $this->transitCountries,
-            'non_exempt_date' => $this->getNonExemptDay()?->format('Y-m-d'),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d'),
-            'completed_at' => $this->getCompletedAt()?->format('Y-m-d'),
-            'results_ready' => $this->resultsReady,
+            'passport_number'     => $this->getPassportNumber(),
+            'nhs_number'          => $this->getNhsNumber(),
+            'vaccination_status'  => $this->getVaccinationStatus()?->value,
+            'transit_countries'   => $this->transitCountries,
+            'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
+            'created_at'          => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at'        => $this->getCompletedAt()?->format('Y-m-d'),
+            'results_ready'       => $this->resultsReady,
         ];
         if ($ukAddress = $this->getUkAddress()) {
             $data['uk_address'] = $ukAddress->toArray();
