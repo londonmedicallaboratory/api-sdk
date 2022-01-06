@@ -30,16 +30,16 @@ use LML\SDK\Model\Address\AddressInterface;
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
  *      vaccination_status?: ?string,
- *      non_exempt_date: ?string,
+ *      departure_start_date?: ?string,
  *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
  *      client_code?: string,
  *      country_from?: string,
  *      transport_type?: string,
- *      date_of_arrival?: string,
+ *      date_of_arrival?: ?string,
  *      travel_number?: string,
- *      uk_address?: array{
+ *      uk_address?: null|array{
  *          id: string,
  *          line1: string,
  *          line2?: ?string,
@@ -49,7 +49,7 @@ use LML\SDK\Model\Address\AddressInterface;
  *          country_code: string,
  *          city: string,
  *      },
- *      self_isolating_address?: array{
+ *      self_isolating_address?: null|array{
  *          id: string,
  *          line1: string,
  *          line2?: ?string,
@@ -108,4 +108,7 @@ interface TestRegistrationInterface extends ModelInterface
     public function isVaccinated(): bool;
 
     public function getVaccinationStatus(): ?VaccinationStatusEnum;
+
+    public function getSelfIsolatingAddress(): ?AddressInterface;
+
 }

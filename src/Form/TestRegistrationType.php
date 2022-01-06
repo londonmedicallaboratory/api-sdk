@@ -196,8 +196,8 @@ class TestRegistrationType extends AbstractType
             'required'     => false,
             'placeholder'  => '',
             'label'        => 'Date on which you last departed from or transited through a country or territory outside the common travel area (optional)',
-            'get_value'    => fn(?TestRegistration $registration) => $registration?->getNonExemptDay(),
-            'update_value' => fn(?DateTimeInterface $date, TestRegistration $registration) => $registration->setNonExemptDay($date),
+            'get_value'    => fn(?TestRegistration $registration) => $registration?->getDepartureStartDate(),
+            'update_value' => fn(?DateTimeInterface $date, TestRegistration $registration) => $registration->setDepartureStartDate($date),
             'years'        => range($year - 1, $year),
             'constraints'  => [
                 new LessThan(value: $now),

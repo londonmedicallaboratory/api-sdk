@@ -19,10 +19,12 @@ use function array_search;
 class TestRegistration implements TestRegistrationInterface
 {
     /**
-     * @param LazyValueInterface<list<ProductInterface>> $products
-     * @param ?LazyValueInterface<?AddressInterface> $ukAddress
+     * @see \LML\SDK\Repository\TestRegistrationRepository::one
+     *
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param list<string> $transitCountries
+     * @param LazyValueInterface<list<ProductInterface>> $products
+     * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      */
     public function __construct(
         protected LazyValueInterface     $products,
@@ -36,11 +38,11 @@ class TestRegistration implements TestRegistrationInterface
         protected ?string                $passportNumber,
         protected ?string                $nhsNumber,
         protected ?VaccinationStatusEnum $vaccinationStatus,
-        protected DateTimeInterface      $dateOfArrival,
+        protected ?DateTimeInterface     $dateOfArrival,
         protected bool                   $resultsReady = false,
         protected DateTimeInterface      $createdAt = new DateTime(),
         protected ?DateTimeInterface     $completedAt = null,
-        protected ?DateTimeInterface     $nonExemptDay = null,
+        protected ?DateTimeInterface     $departureStartDate = null,
         protected ?LazyValueInterface    $ukAddress = null,
         protected ?LazyValueInterface    $selfIsolatingAddress = null,
         protected array                  $transitCountries = [],
@@ -49,12 +51,12 @@ class TestRegistration implements TestRegistrationInterface
     {
     }
 
-    public function getDayOfArrival(): DateTimeInterface
+    public function getDayOfArrival(): ?DateTimeInterface
     {
         return $this->dateOfArrival;
     }
 
-    public function setDateOfArrival(DateTimeInterface $date): void
+    public function setDateOfArrival(?DateTimeInterface $date): void
     {
         $this->dateOfArrival = $date;
     }
@@ -199,37 +201,6 @@ class TestRegistration implements TestRegistrationInterface
         $this->selfIsolatingAddress = new ResolvedValue($selfIsolatingAddress);
     }
 
-    public function toArray(): array
-    {
-        $data = [
-            'id'                  => $this->getId(),
-            'product_ids'         => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
-            'email'               => $this->getEmail(),
-            'date_of_birth'       => $this->getDateOfBirth()->format('Y-m-d'),
-            'first_name'          => $this->getFirstName(),
-            'last_name'           => $this->getLastName(),
-            'gender'              => $this->getGender()->value,
-            'ethnicity'           => $this->getEthnicity()?->value,
-            'mobile_phone_number' => $this->getMobilePhoneNumber(),
-            'passport_number'     => $this->getPassportNumber(),
-            'nhs_number'          => $this->getNhsNumber(),
-            'vaccination_status'  => $this->getVaccinationStatus()?->value,
-            'transit_countries'   => $this->transitCountries,
-            'non_exempt_date'     => $this->getNonExemptDay()?->format('Y-m-d'),
-            'created_at'          => $this->getCreatedAt()->format('Y-m-d'),
-            'completed_at'        => $this->getCompletedAt()?->format('Y-m-d'),
-            'results_ready'       => $this->resultsReady,
-        ];
-        if ($ukAddress = $this->getUkAddress()) {
-            $data['uk_address'] = $ukAddress->toArray();
-        }
-        if ($selfIsolatingAddress = $this->getSelfIsolatingAddress()) {
-            $data['self_isolating_address'] = $selfIsolatingAddress->toArray();
-        }
-
-        return $data;
-    }
-
     /**
      * @return list<string>
      */
@@ -251,14 +222,14 @@ class TestRegistration implements TestRegistrationInterface
         }
     }
 
-    public function getNonExemptDay(): ?DateTimeInterface
+    public function getDepartureStartDate(): ?DateTimeInterface
     {
-        return $this->nonExemptDay;
+        return $this->departureStartDate;
     }
 
-    public function setNonExemptDay(?DateTimeInterface $nonExemptDay): void
+    public function setDepartureStartDate(?DateTimeInterface $departureStartDate): void
     {
-        $this->nonExemptDay = $nonExemptDay;
+        $this->departureStartDate = $departureStartDate;
     }
 
     public function getCreatedAt(): DateTimeInterface
@@ -274,5 +245,31 @@ class TestRegistration implements TestRegistrationInterface
     public function hasResults(): bool
     {
         return $this->resultsReady;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id'                     => $this->getId(),
+            'product_ids'            => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
+            'email'                  => $this->getEmail(),
+            'date_of_birth'          => $this->getDateOfBirth()->format('Y-m-d'),
+            'first_name'             => $this->getFirstName(),
+            'last_name'              => $this->getLastName(),
+            'gender'                 => $this->getGender()->value,
+            'ethnicity'              => $this->getEthnicity()?->value,
+            'mobile_phone_number'    => $this->getMobilePhoneNumber(),
+            'passport_number'        => $this->getPassportNumber(),
+            'nhs_number'             => $this->getNhsNumber(),
+            'transit_countries'      => $this->transitCountries,
+            'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
+            'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at'           => $this->getCompletedAt()?->format('Y-m-d'),
+            'results_ready'          => $this->resultsReady,
+            'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
+            'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
+            'uk_address'             => $this->getUkAddress()?->toArray(),
+            'vaccination_status'     => $this->getVaccinationStatus()?->value,
+        ];
     }
 }
