@@ -21,9 +21,6 @@ class TestRegistration implements TestRegistrationInterface
     /**
      * @see \LML\SDK\Repository\TestRegistrationRepository::one
      *
-     * @internal
-     * @psalm-internal \LML\SDK\Repository
-     *
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
