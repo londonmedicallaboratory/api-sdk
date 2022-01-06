@@ -42,7 +42,7 @@ class TestRegistrationRepository extends AbstractRepository
             lastName         : $entity['last_name'],
             gender           : $gender,
             ethnicity        : EthnicityEnum::from($ethnicity),
-            mobilePhoneNumber: $entity['mobile_phone_number'],
+            mobilePhoneNumber: $entity['mobile_phone_number'] ?? null,
             passportNumber   : $entity['email'],
             nhsNumber        : $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,

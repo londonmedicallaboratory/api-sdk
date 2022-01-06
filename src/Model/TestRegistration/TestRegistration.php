@@ -34,7 +34,7 @@ class TestRegistration implements TestRegistrationInterface
         protected string                 $lastName,
         protected GenderEnum             $gender,
         protected ?EthnicityEnum         $ethnicity,
-        protected string                 $mobilePhoneNumber,
+        protected ?string                $mobilePhoneNumber,
         protected ?string                $passportNumber,
         protected ?string                $nhsNumber,
         protected ?VaccinationStatusEnum $vaccinationStatus,
@@ -141,12 +141,12 @@ class TestRegistration implements TestRegistrationInterface
         $this->ethnicity = $ethnicity;
     }
 
-    public function getMobilePhoneNumber(): string
+    public function getMobilePhoneNumber(): ?string
     {
         return $this->mobilePhoneNumber;
     }
 
-    public function setMobilePhoneNumber(string $mobilePhoneNumber): void
+    public function setMobilePhoneNumber(?string $mobilePhoneNumber): void
     {
         $this->mobilePhoneNumber = $mobilePhoneNumber;
     }

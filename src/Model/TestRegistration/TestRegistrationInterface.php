@@ -26,7 +26,7 @@ use LML\SDK\Model\Address\AddressInterface;
  *      last_name: string,
  *      gender: string,
  *      ethnicity?: ?string,
- *      mobile_phone_number: string,
+ *      mobile_phone_number?: ?string,
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
  *      vaccination_status?: ?string,
@@ -99,7 +99,7 @@ interface TestRegistrationInterface extends ModelInterface
 
     public function getEthnicity(): ?EthnicityEnum;
 
-    public function getMobilePhoneNumber(): string;
+    public function getMobilePhoneNumber(): ?string;
 
     public function getPassportNumber(): ?string;
 
