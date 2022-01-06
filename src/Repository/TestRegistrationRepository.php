@@ -32,6 +32,7 @@ class TestRegistrationRepository extends AbstractRepository
         $vaccinationStatus = $entity['vaccination_status'] ?? '';
         $createdAt = $entity['created_at'] ?? null;
         $completedAt = $entity['completed_at'] ?? null;
+        $dateOfArrival = $entity['date_of_arrival'] ?? null;
 
         return new TestRegistration(
             products         : new LazyPromise($this->getProducts($entity['id'])),
@@ -45,7 +46,7 @@ class TestRegistrationRepository extends AbstractRepository
             passportNumber   : $entity['email'],
             nhsNumber        : $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
-            dateOfArrival    : new DateTime(),
+            dateOfArrival    : $dateOfArrival ? new DateTime($dateOfArrival) : null,
             resultsReady     : $entity['results_ready'],
             createdAt        : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt      : $completedAt ? new DateTime($completedAt) : null,

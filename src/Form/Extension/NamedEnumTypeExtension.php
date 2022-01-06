@@ -25,6 +25,7 @@ class NamedEnumTypeExtension extends AbstractTypeExtension
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->addNormalizer('choice_label', function (Options $options, Closure $default) {
+
             /** @var class-string $class */
             $class = $options['class'];
             if (is_a($class, NameableInterface::class, true)) {
