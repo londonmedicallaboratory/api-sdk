@@ -36,7 +36,7 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
      *
      * Used in client_collector.html.twig
      */
-    public function getRequests()
+    public function getRequests(): array
     {
         return $this->data['requests'];
     }
@@ -51,7 +51,7 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
         return $promise;
     }
 
-    public function post(string $url, array $data)
+    public function post(string $url, array $data): PromiseInterface
     {
         $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'POST', 'filters' => []];
 
