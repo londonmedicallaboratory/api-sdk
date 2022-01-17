@@ -21,6 +21,7 @@ use LML\SDK\Model\Address\AddressInterface;
  *      results_ready: bool,
  *      product_ids?: list<string>,
  *      product_skus?: list<string>,
+ *      biomarker_ids?: list<string>,
  *      email: string,
  *      date_of_birth: string,
  *      first_name: string,
