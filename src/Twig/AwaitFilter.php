@@ -12,7 +12,7 @@ use function Clue\React\Block\await;
 
 class AwaitFilter extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('await', [$this, 'await']),
