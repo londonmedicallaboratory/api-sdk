@@ -7,11 +7,12 @@ namespace LML\SDK;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use LML\SDK\DependencyInjection\LMLSDKExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class LMLSDKBundle extends Bundle implements CompilerPassInterface
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         return $this->extension ?? new LMLSDKExtension();
     }

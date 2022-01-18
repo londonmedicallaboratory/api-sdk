@@ -19,7 +19,7 @@ class QueryParamResolver implements ArgumentValueResolverInterface
         return (bool)$this->getAttribute($argument);
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument)
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         $argument->getType() ?? throw new RuntimeException('You must typehint parameter when using QueryParam attribute.');
         $attribute = $this->getAttribute($argument) ?? throw new RuntimeException('This should never happen.');
