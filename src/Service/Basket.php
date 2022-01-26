@@ -12,6 +12,7 @@ use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Order\Order;
+use RingCentral\Psr7\Response;
 use LML\SDK\Model\Address\Address;
 use LML\SDK\Model\Order\BasketItem;
 use LML\SDK\Model\Customer\Customer;
@@ -61,6 +62,7 @@ class Basket
             id: '',
             line1: $deliveryLine1 ?? throw new RuntimeException(),
             postalCode: $postalCode ?? throw new RuntimeException(),
+            city: '',
             countryCode: 'GB',
             countryName: 'GB',
             line2: $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
@@ -78,7 +80,7 @@ class Basket
         );
 
         $promise = $this->orderRepository->persist($order);
-        /** @var \RingCentral\Psr7\Response $value */
+        /** @var Response $value */
         $value = await($promise, Loop::get());
 
         /** @var StreamInterface $stream */
@@ -121,7 +123,7 @@ class Basket
     /**
      * @return list<BasketItem>
      */
-    public function getItems()
+    public function getItems(): array
     {
         $items = $this->items ??= $this->doGetItems();
         $filtered = array_filter($items, fn(BasketItem $item) => $item->getQuantity() > 0);
@@ -193,7 +195,7 @@ class Basket
     /**
      * @return list<BasketItem>
      */
-    private function doGetItems()
+    private function doGetItems(): array
     {
         $repository = $this->productRepository;
         $session = $this->requestStack->getSession();
@@ -202,10 +204,9 @@ class Basket
 
         $promises = [];
         foreach ($values as $id => $quantity) {
+            /** @noinspection NullPointerExceptionInspection psalm takes care of this */
             $promises[] = $repository->find((string)$id)
-                ->then(function (?ProductInterface $product) use ($quantity) {
-                    return $product ? new BasketItem($product, $quantity) : null;
-                }, fn() => null);
+                ->then(fn(?ProductInterface $product) => $product ? new BasketItem($product, $quantity) : null, fn() => null);
         }
 
         /** @var list<?BasketItem> $responses */

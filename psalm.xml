@@ -30,6 +30,8 @@
 
     <!-- Remove once full support for enums is released -->
     <issueHandlers>
+
+        <UnusedMethodCall errorLevel="suppress" />
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <referencedMethod name="*::from"/>
