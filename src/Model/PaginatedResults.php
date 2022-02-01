@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Model;
 
+use Traversable;
 use IteratorAggregate;
 
 /**
@@ -16,11 +17,11 @@ class PaginatedResults implements IteratorAggregate
      * @param list<T> $items
      */
     public function __construct(
-        protected int $currentPage,
-        protected int $nrOfPages,
-        protected int $resultsPerPage,
-        protected ?int $nextPage,
-        protected $items,
+        protected int   $currentPage,
+        protected int   $nrOfPages,
+        protected int   $resultsPerPage,
+        protected ?int  $nextPage,
+        protected array $items,
     )
     {
     }
@@ -30,7 +31,9 @@ class PaginatedResults implements IteratorAggregate
      */
     public function first()
     {
-        return reset($this->items);
+        $first = reset($this->items);
+
+        return $first ?: null;
     }
 
     public function getCurrentPage(): int
@@ -56,12 +59,12 @@ class PaginatedResults implements IteratorAggregate
     /**
      * @return list<T>
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         yield from $this->getItems();
     }

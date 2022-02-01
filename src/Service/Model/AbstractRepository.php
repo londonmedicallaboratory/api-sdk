@@ -13,7 +13,6 @@ use LML\SDK\Model\PaginatedResults;
 use LML\View\Lazy\LazyValueInterface;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
-use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function rtrim;
 use function sprintf;
@@ -97,7 +96,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * @return PromiseInterface<ResponseInterface>
      */
-    public function persist($model)
+    public function persist(ModelInterface $model): PromiseInterface
     {
         $client = $this->getClient();
 
@@ -109,7 +108,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * @return LazyValueInterface<?TView>
      */
-    public function findLazy(array $filters, ?string $url = null)
+    public function findLazy(array $filters, ?string $url = null): LazyValueInterface
     {
         $promise = $this->findOneBy($filters, $url);
 
@@ -155,13 +154,22 @@ abstract class AbstractRepository extends AbstractViewFactory
 
     /**
      * @return PromiseInterface<TView>
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgumentTypeCoercion
+     * @psalm-suppress InvalidArgument
      */
-    public function findOneByOrException(array $filters = [], ?string $url = null)
+    public function findOneByOrException(string $url, array $filters = []): PromiseInterface
     {
-        $paginated = $this->findPaginated($filters, $url);
+        $client = $this->getClient();
 
-        return $paginated->then(function (PaginatedResults $results) {
-            return $results->first() ?? throw new DataNotFoundException();
+        /** @var PromiseInterface<TData> $promise */
+        $promise = $client->getAsync($url, $filters, 1, cacheTimeout: $this->getCacheTimeout());
+
+        return $promise->then(function (array $data) {
+            $id = $data['id'] ?? throw new RuntimeException();
+
+            return $this->cache[(string)$id] ??= $this->buildOne($data);
         });
     }
 
@@ -179,7 +187,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * @todo Fix this mess
      */
-    public function findBy(array $filters = [], ?string $url = null, int $page = 1, &$stored = []): PromiseInterface
+    public function findBy(array $filters = [], ?string $url = null, int $page = 1, array &$stored = []): PromiseInterface
     {
         $promise = $this->findPaginated($filters, $url, $page);
 
@@ -212,7 +220,7 @@ abstract class AbstractRepository extends AbstractViewFactory
         return $promise
             ->then(function (array $data) {
                 $views = [];
-                $items = $data['items'];
+                $items = $data['items'] ?? [];
                 foreach ($items as $item) {
                     /** @var ?string $id */
                     $id = $item['id'] ?? throw new RuntimeException();
@@ -222,11 +230,11 @@ abstract class AbstractRepository extends AbstractViewFactory
                 }
 
                 return new PaginatedResults(
-                    currentPage: $data['current_page'],
-                    nrOfPages: $data['nr_of_pages'],
-                    resultsPerPage: $data['results_per_page'],
-                    nextPage: $data['next_page'],
-                    items: $views,
+                    currentPage   : $data['current_page'] ?? 1,
+                    nrOfPages     : $data['nr_of_pages'] ?? 1,
+                    resultsPerPage: $data['results_per_page'] ?? 10,
+                    nextPage      : $data['next_page'] ?? null,
+                    items         : $views,
                 );
             });
     }
@@ -234,7 +242,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @return PaginatedResults<TView>
      */
-    public function awaitPaginated(array $filters = [], ?string $url = null, int $page = 1)
+    public function awaitPaginated(array $filters = [], ?string $url = null, int $page = 1): PaginatedResults
     {
         $promise = $this->findPaginated($filters, $url, $page);
         $lazy = new LazyPromise($promise);

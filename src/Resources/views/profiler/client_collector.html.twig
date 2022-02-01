@@ -39,12 +39,14 @@
                                 {% endif %}
 
                             </td>
-                            <td>{{ request.method }}</td>
+                            <td>
+                                {{ request.method }}
+                            </td>
                             <td>
                                 {% if request.cached %}
-                                    <i class="fa fa-check" style="float: right"></i>
+                                    <i class="fa fa-check" style="float: right">Y</i>
                                 {% else %}
-                                    <i class="fa fa-times" style="float: right"></i>
+                                    <i class="fa fa-times" style="float: right">N</i>
                                 {% endif %}
                             </td>
                         </tr>

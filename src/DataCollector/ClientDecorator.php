@@ -46,7 +46,12 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
         $promise = $this->client->getAsync($url, $filters, $page, $cacheTimeout);
 
         $isCached = $promise instanceof CachedItemPromise;
-        $this->data['requests'][] = ['url' => $url, 'cached' => $isCached, 'method' => 'GET', 'filters' => $filters];
+        $this->data['requests'][] = [
+            'url' => $url,
+            'cached' => $isCached,
+            'method' => 'GET',
+            'filters' => $filters,
+        ];
 
         return $promise;
     }
