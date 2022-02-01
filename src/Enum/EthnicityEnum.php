@@ -64,7 +64,7 @@ enum EthnicityEnum: string implements NameableInterface
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @return array<string, array<string, EthnicityEnum>>
      */
     public static function getAsFormGroupChoices(): array
     {
