@@ -153,13 +153,15 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
+     * Retrieve one entity, and throw Exception if none found.
+     *
      * @return PromiseInterface<TView>
      *
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedArgumentTypeCoercion
      * @psalm-suppress InvalidArgument
      */
-    public function findOneByOrException(string $url, array $filters = []): PromiseInterface
+    public function fetchOneBy(string $url, array $filters = []): PromiseInterface
     {
         $client = $this->getClient();
 

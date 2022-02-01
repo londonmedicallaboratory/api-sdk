@@ -47,6 +47,6 @@ class BiomarkerRepository extends AbstractRepository
     {
         $url = sprintf('/biomarker/%s/category', $id);
 
-        return $this->get(BiomarkerCategoryRepository::class)->findOneByOrException(url: $url);
+        return $this->get(BiomarkerCategoryRepository::class)->fetchOneBy(url: $url);
     }
 }
