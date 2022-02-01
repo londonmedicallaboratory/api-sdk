@@ -89,6 +89,7 @@
 
         <service id="LML\SDK\Form\TestRegistrationType">
             <argument type="service" id="LML\SDK\Repository\ProductRepository"/>
+            <argument type="service" id="LML\SDK\Repository\TestRegistrationRepository" />
         </service>
 
         <service id="LML\SDK\Form\AddressType"/>

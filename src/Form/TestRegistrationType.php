@@ -16,10 +16,12 @@ use Symfony\Component\Form\FormInterface;
 use LML\SDK\Model\Address\AddressInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Event\PreSubmitEvent;
+use LML\SDK\Repository\TestRegistrationRepository;
 use LML\SDK\Model\TestRegistration\TestRegistration;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\LessThan;
 use LML\SDK\Form\Extension\DateTypeExtendedYearsRange;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Validator\Constraints\GreaterThan;
@@ -36,62 +38,23 @@ use function range;
 class TestRegistrationType extends AbstractType
 {
     public function __construct(
-        private ProductRepository $productRepository,
+        private ProductRepository          $productRepository,
+        private TestRegistrationRepository $testRegistrationRepository,
     )
     {
     }
 
-//    public function configureOptions(OptionsResolver $resolver): void
-//    {
-//        $resolver->setDefaults([
-//            'show_factory_error' => true,
-//        ]);
-//        $resolver->setDefault('factory',
-//            /**
-//             * @param GenderEnum::* $gender
-//             * @param null|EthnicityEnum::* $ethnicity
-//             * @param VaccinationStatusEnum::* $vaccinationStatus
-//             */
-//            fn(
-//                ProductInterface  $product,
-//                string            $email,
-//                DateTime          $dateOfBirth,
-//                string            $firstName,
-//                string            $lastName,
-//                string            $gender,
-//                ?string           $ethnicity,
-//                string            $mobilePhoneNumber,
-//                string            $passportNumber,
-//                ?string           $nhsNumber,
-//                string            $vaccinationStatus,
-//                Address           $ukAddress,
-//                DateTimeInterface $dateOfArrival,
-//            ) => new TestRegistration(
-//                product: new ResolvedValue($product),
-//                email: $email,
-//                dateOfBirth: $dateOfBirth,
-//                firstName: $firstName,
-//                lastName: $lastName,
-//                gender: $gender,
-//                ethnicity: $ethnicity,
-//                mobilePhoneNumber: $mobilePhoneNumber,
-//                nhsNumber: $nhsNumber,
-//                vaccinationStatus: $vaccinationStatus,
-//                passportNumber: $passportNumber,
-//                ukAddress: new ResolvedValue($ukAddress),
-//                dateOfArrival: $dateOfArrival,
-//            ));
-//    }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'show_factory_error' => true,
+        ]);
+
+        $resolver->setDefault('factory', $this->testRegistrationRepository->create(...));
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-//        $builder->add('product', ChoiceType::class, [
-//            'choices'      => $this->productRepository->findAll(true),
-//            'choice_label' => fn(ProductInterface $product) => $product->getName(),
-//            'get_value'    => fn(TestRegistration $registration) => $registration->getProduct(),
-//            'update_value' => fn(ProductInterface $product, TestRegistration $registration) => $registration->setProduct($product),
-//        ]);
-
         $builder->add('email', EmailType::class, [
             'get_value'    => fn(TestRegistration $registration) => $registration->getEmail(),
             'update_value' => fn(string $email, TestRegistration $registration) => $registration->setEmail($email),
@@ -124,7 +87,6 @@ class TestRegistrationType extends AbstractType
 
         $builder->add('ethnicity', EnumType::class, [
             'class'        => EthnicityEnum::class,
-            'choice_label' => fn(?EthnicityEnum $enum) => $enum?->getName(),
             'choices'      => EthnicityEnum::getAsFormGroupChoices(),
             'get_value'    => fn(TestRegistration $registration) => $registration->getEthnicity(),
             'update_value' => fn(?EthnicityEnum $ethnicity, TestRegistration $registration) => $registration->setEthnicity($ethnicity),

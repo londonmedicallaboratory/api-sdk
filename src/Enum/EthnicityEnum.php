@@ -71,7 +71,7 @@ enum EthnicityEnum: string implements NameableInterface
         $groups = [];
         foreach (self::cases() as $enum) {
             $groupName = self::getGroupName($enum->name);
-            $groups[$groupName][$enum->value] = $enum->getName();
+            $groups[$groupName][$enum->value] = $enum;
         }
 
         return $groups;

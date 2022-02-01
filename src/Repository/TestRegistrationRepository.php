@@ -8,6 +8,7 @@ use DateTime;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Model\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Enum\VaccinationStatusEnum;
@@ -23,6 +24,18 @@ use function sprintf;
  */
 class TestRegistrationRepository extends AbstractRepository
 {
+    public function create(string $email, DateTime $dateOfBirth, string $firstName, string $lastName, GenderEnum $gender): TestRegistration
+    {
+        return new TestRegistration(
+            products         : new ResolvedValue([]),
+            email            : $email,
+            dateOfBirth      : $dateOfBirth,
+            firstName        : $firstName,
+            lastName         : $lastName,
+            gender           : $gender,
+        );
+    }
+
     protected function one($entity, $options, $optimizer): TestRegistration
     {
         /** @var GenderEnum::* $gender */
