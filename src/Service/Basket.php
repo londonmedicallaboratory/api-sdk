@@ -13,6 +13,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Order\Order;
 use RingCentral\Psr7\Response;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Model\Address\Address;
 use LML\SDK\Model\Order\BasketItem;
 use LML\SDK\Model\Customer\Customer;
@@ -20,6 +21,7 @@ use Psr\Http\Message\StreamInterface;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Model\Order\OrderInterface;
 use LML\SDK\Repository\ProductRepository;
+use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Model\Product\ProductInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function json_decode;
@@ -38,20 +40,24 @@ class Basket
     private ?array $items = null;
 
     public function __construct(
-        private RequestStack      $requestStack,
-        private ProductRepository $productRepository,
-        private OrderRepository   $orderRepository,
+        private RequestStack       $requestStack,
+        private ProductRepository  $productRepository,
+        private OrderRepository    $orderRepository,
+        private ShippingRepository $shippingRepository,
     )
     {
     }
 
+    /**
+     * @todo Refactor to use OrderRepository::create()
+     */
     public function createOrder(Payment $payment): OrderInterface
     {
         $customer = new Customer(
-            id: '',
-            firstName: $payment->customersFirstName ?? throw new RuntimeException(),
-            lastName: $payment->customersLastName ?? throw new RuntimeException(),
-            email: $payment->customersEmail ?? throw new RuntimeException(),
+            id         : '',
+            firstName  : $payment->customersFirstName ?? throw new RuntimeException(),
+            lastName   : $payment->customersLastName ?? throw new RuntimeException(),
+            email      : $payment->customersEmail ?? throw new RuntimeException(),
             phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
         );
 
@@ -59,24 +65,25 @@ class Basket
         $postalCode = $payment->deliveryPostalCode ?? $payment->customersPostalCode;
 
         $address = new Address(
-            id: '',
-            line1: $deliveryLine1 ?? throw new RuntimeException(),
-            postalCode: $postalCode ?? throw new RuntimeException(),
-            city: '',
+            id         : '',
+            line1      : $deliveryLine1 ?? throw new RuntimeException(),
+            postalCode : $postalCode ?? throw new RuntimeException(),
+            city       : '',
             countryCode: 'GB',
             countryName: 'GB',
-            line2: $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
-            line3: $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
+            line2      : $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
+            line3      : $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
         );
 
         $order = new Order(
-            id: '',
-            customer: $customer,
-            address: $address,
-            total: $this->getTotal() ?? throw new RuntimeException(),
-            items: new LazyValue(fn() => $this->getItems()),
-            companyName: $payment->customersCompany,
+            id            : '',
+            customer      : $customer,
+            address       : $address,
+            total         : $this->getTotal() ?? throw new RuntimeException(),
+            items         : new LazyValue(fn() => $this->getItems()),
+            companyName   : $payment->customersCompany,
             billingAddress: null,
+            shipping: new ResolvedValue(null),
         );
 
         $promise = $this->orderRepository->persist($order);

@@ -31,7 +31,7 @@ class BiomarkerRepository extends AbstractRepository
             slug: $entity['slug'],
             code: $entity['code'],
             description: $entity['description'],
-            category: new LazyPromise($this->getCategory($id))
+            category: new LazyPromise($this->getCategory($id)),
         );
     }
 

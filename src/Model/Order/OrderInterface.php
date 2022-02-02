@@ -8,11 +8,13 @@ use LML\SDK\Model\ModelInterface;
 use LML\SDK\Model\Money\PriceInterface;
 use LML\SDK\Model\Address\AddressInterface;
 use LML\SDK\Model\Customer\CustomerInterface;
+use LML\SDK\Model\Shipping\ShippingInterface;
 
 /**
  * @psalm-type S=array{
  *      id: string,
  *      company: ?string,
+ *      shipping_id?: ?string,
  *      address: array{
  *          id: string,
  *          city: string,
@@ -40,6 +42,8 @@ use LML\SDK\Model\Customer\CustomerInterface;
  */
 interface OrderInterface extends ModelInterface
 {
+    public function getShipping(): ?ShippingInterface;
+
     public function getCustomer(): CustomerInterface;
 
     public function getCompanyName(): ?string;
@@ -51,7 +55,7 @@ interface OrderInterface extends ModelInterface
     /**
      * @return list<ItemInterface>
      */
-    public function getItems();
+    public function getItems(): array;
 
     public function getTotal(): PriceInterface;
 }

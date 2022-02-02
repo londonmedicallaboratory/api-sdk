@@ -26,22 +26,22 @@ class CreateOrderTest extends KernelTestCase
             phoneNumber: '123123123',
         );
 
-        $address = new Address(
-            id         : '2',
-            line1      : 'First line 42',
-            postalCode : 'test',
-            countryCode: 'GB',
-            countryName: 'GB',
+//        $address = new Address(
+//            id         : '2',
+//            line1      : 'First line 42',
+//            postalCode : 'test',
+//            countryCode: 'GB',
+//            countryName: 'GB',
+//
+//        );
+//        $order = new Order(
+//            id         : '1',
+//            customer   : $customer,
+//            address    : $address,
+//            companyName: 'LML',
+//        );
 
-        );
-        $order = new Order(
-            id         : '1',
-            customer   : $customer,
-            address    : $address,
-            companyName: 'LML',
-        );
-
-        $response = $repo->persist($order);
+//        $response = $repo->persist($order);
 
 //        dd($response->getValue());
 

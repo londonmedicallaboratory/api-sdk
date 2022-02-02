@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\View\Lazy\LazyValue;
+use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Model\Order\Order;
 use LML\SDK\Model\Money\Price;
 use LML\SDK\Model\Order\BasketItem;
+use React\Promise\PromiseInterface;
+use LML\SDK\Model\Shipping\Shipping;
 use LML\SDK\Model\Order\OrderInterface;
 use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Model\Shipping\ShippingInterface;
+use function sprintf;
 
 /**
  * @psalm-import-type S from OrderInterface
@@ -20,7 +25,7 @@ use LML\SDK\Service\Model\AbstractRepository;
  */
 class OrderRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer)
+    protected function one($entity, $options, $optimizer): Order
     {
         $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
         $address = $this->get(AddressRepository::class)->buildOne($entity['address']);
@@ -32,13 +37,16 @@ class OrderRepository extends AbstractRepository
             formattedValue: $priceData['formatted_value'],
         );
 
+        $id = $entity['id'];
+
         return new Order(
-            id: $entity['id'],
+            id: $id,
             customer: $customer,
             address: $address,
             total: $price,
             companyName: $entity['company'],
             items: new LazyValue(fn() => $this->createItems($entity['items'])),
+            shipping: new LazyPromise($this->getShipping($id)),
         );
     }
 
@@ -48,11 +56,21 @@ class OrderRepository extends AbstractRepository
     }
 
     /**
+     * @return PromiseInterface<?ShippingInterface>
+     */
+    private function getShipping(string $id)
+    {
+        $url = sprintf('/order/%s/shipping', $id);
+
+        return $this->get(ShippingRepository::class)->findOneByUrl(url: $url);
+    }
+
+    /**
      * @param list<array{product_id: string, quantity: int}> $items
      *
      * @return list<BasketItem>
      */
-    private function createItems(array $items)
+    private function createItems(array $items): array
     {
         $list = [];
         foreach ($items as ['product_id' => $productId, 'quantity' => $quantity]) {

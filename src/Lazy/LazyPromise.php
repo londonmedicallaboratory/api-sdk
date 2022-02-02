@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Lazy;
 
+use Traversable;
 use IteratorAggregate;
 use React\EventLoop\Loop;
 use React\Promise\PromiseInterface;
@@ -30,7 +31,7 @@ class LazyPromise implements LazyValueInterface, IteratorAggregate
         return await($this->promise, Loop::get());
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         yield from $this->getValue();
     }

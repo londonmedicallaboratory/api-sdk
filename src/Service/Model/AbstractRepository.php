@@ -13,6 +13,7 @@ use LML\SDK\Model\PaginatedResults;
 use LML\View\Lazy\LazyValueInterface;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
+use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function rtrim;
 use function sprintf;
@@ -58,6 +59,53 @@ abstract class AbstractRepository extends AbstractViewFactory
             });
 
         return $await ? await($promise, Loop::get()) : $promise;
+    }
+
+
+    /**
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress InvalidArgument
+     */
+    public function findOneByUrl(string $url, array $filters = [], bool $await = false)
+    {
+        $client = $this->getClient();
+
+        $promise = $client->getAsync($url, $filters, cacheTimeout: $this->getCacheTimeout())
+            ->then(/** @param TData $data */ function (array $data) {
+                $id = $data['id'] ?? null;
+                if (!$id) {
+                    return null;
+                }
+
+                return $this->cache[(string)$id] ??= $this->buildOne($data);
+            });
+
+        return $await ? await($promise, Loop::get()) : $promise;
+    }
+
+    /**
+     * Retrieve one entity, and throw Exception if none found.
+     *
+     * @return PromiseInterface<TView>
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgumentTypeCoercion
+     * @psalm-suppress InvalidArgument
+     */
+    public function fetchOneBy(string $url, array $filters = []): PromiseInterface
+    {
+        $client = $this->getClient();
+
+        /** @var PromiseInterface<TData> $promise */
+        $promise = $client->getAsync($url, $filters, 1, cacheTimeout: $this->getCacheTimeout());
+
+        return $promise->then(function (array $data) {
+            $id = $data['id'] ?? throw new DataNotFoundException();
+
+            return $this->cache[(string)$id] ??= $this->buildOne($data);
+        });
     }
 
     /**
@@ -110,7 +158,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findLazy(array $filters, ?string $url = null): LazyValueInterface
     {
-        $promise = $this->findOneBy($filters, $url);
+        $promise = $this->findOneByDeprecated($filters, $url);
 
         return new LazyPromise($promise);
     }
@@ -122,7 +170,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findOneBySlug(string $slug, bool $await = false)
     {
-        $promise = $this->findOneBy(['slug' => $slug]);
+        $promise = $this->findOneByDeprecated(['slug' => $slug]);
 
         return $await ? await($promise, Loop::get()) : $promise;
     }
@@ -130,7 +178,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function findOneBy(array $filters = [], ?string $url = null, bool $await = false)
+    public function findOneByDeprecated(array $filters = [], ?string $url = null, bool $await = false)
     {
         $paginated = $this->findPaginated($filters, $url);
 
@@ -150,29 +198,6 @@ abstract class AbstractRepository extends AbstractViewFactory
 
         return $await ? await($promise, Loop::get()) : $promise;
 
-    }
-
-    /**
-     * Retrieve one entity, and throw Exception if none found.
-     *
-     * @return PromiseInterface<TView>
-     *
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedArgumentTypeCoercion
-     * @psalm-suppress InvalidArgument
-     */
-    public function fetchOneBy(string $url, array $filters = []): PromiseInterface
-    {
-        $client = $this->getClient();
-
-        /** @var PromiseInterface<TData> $promise */
-        $promise = $client->getAsync($url, $filters, 1, cacheTimeout: $this->getCacheTimeout());
-
-        return $promise->then(function (array $data) {
-            $id = $data['id'] ?? throw new RuntimeException();
-
-            return $this->cache[(string)$id] ??= $this->buildOne($data);
-        });
     }
 
     /**
