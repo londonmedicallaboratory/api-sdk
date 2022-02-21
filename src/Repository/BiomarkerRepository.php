@@ -6,10 +6,10 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
-use LML\SDK\Model\Biomarker\Biomarker;
-use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\Service\Model\AbstractRepository;
-use LML\SDK\Model\Biomarker\BiomarkerInterface;
+use LML\SDK\Entity\Biomarker\Biomarker;
+use LML\SDK\Entity\Category\CategoryInterface;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**

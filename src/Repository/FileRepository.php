@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\File\File;
-use LML\SDK\Model\File\FileInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\File\File;
+use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from FileInterface

@@ -1,0 +1,69 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LML\SDK\Entity\Product;
+
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\SluggableInterface;
+use LML\SDK\Entity\Money\PriceInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
+use LML\SDK\Entity\Category\CategoryInterface;
+use LML\SDK\Entity\Biomarker\BiomarkerInterface;
+
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      slug: string,
+ *      description: string,
+ *      short_description: string,
+ *      test_to_release: bool,
+ *      preview_image_url: ?string,
+ *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ * }
+ *
+ * @extends ModelInterface<S>
+ */
+interface ProductInterface extends ModelInterface, SluggableInterface
+{
+    public function getName(): string;
+
+    public function getSlug(): string;
+
+    public function getShortDescription(): string;
+
+    public function getLongDescription(): string;
+
+    public function getPrice(): PriceInterface;
+
+    public function getPreviewImageUrl(): ?string;
+
+    /**
+     * @return list<ShippingInterface>
+     */
+    public function getShippingTypes();
+
+    /**
+     * @return list<FileInterface>
+     */
+    public function getFiles();
+
+    /**
+     * @return list<BiomarkerInterface>
+     */
+    public function getBiomarkers();
+
+    /**
+     * @return list<ProductFaqInterface>
+     */
+    public function getFaqs();
+
+    /**
+     * @return list<CategoryInterface>
+     */
+    public function getCategories();
+
+    public function isTestToRelease(): bool;
+}

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
-use LML\SDK\Model\Order\Order;
-use LML\SDK\Model\Address\Address;
-use LML\SDK\Model\Customer\Customer;
+use LML\SDK\Entity\Order\Order;
+use LML\SDK\Entity\Address\Address;
+use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Repository\OrderRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

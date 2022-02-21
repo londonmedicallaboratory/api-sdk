@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
-use LML\SDK\Model\File\FileInterface;
+use LML\SDK\Entity\File\FileInterface;
 
 /**
  * @psalm-import-type S from FileInterface

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
-use LML\SDK\Model\Product\ProductInterface;
+use LML\SDK\Entity\Product\ProductInterface;
 
 /**
  * @psalm-import-type S from ProductInterface

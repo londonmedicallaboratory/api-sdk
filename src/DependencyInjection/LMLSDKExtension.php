@@ -6,7 +6,7 @@ namespace LML\SDK\DependencyInjection;
 
 use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Service\API\AbstractRepository;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;

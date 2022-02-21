@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Model\Money\Price;
-use LML\SDK\Model\Product\Product;
+use LML\SDK\Entity\Money\Price;
+use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
-use LML\SDK\Model\File\FileInterface;
-use LML\SDK\Model\Product\ProductInterface;
-use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\Service\Model\AbstractRepository;
-use LML\SDK\Model\Biomarker\BiomarkerInterface;
+use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\Product\ProductInterface;
+use LML\SDK\Entity\Category\CategoryInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**

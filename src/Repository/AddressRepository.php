@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\Address\Address;
-use LML\SDK\Model\Address\AddressInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\Address\Address;
+use LML\SDK\Entity\Address\AddressInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from AddressInterface

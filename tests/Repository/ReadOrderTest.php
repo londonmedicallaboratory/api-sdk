@@ -6,7 +6,7 @@ namespace LML\SDK\Tests\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Repository\OrderRepository;
-use LML\SDK\Model\Order\OrderInterface;
+use LML\SDK\Entity\Order\OrderInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ReadOrderTest extends KernelTestCase

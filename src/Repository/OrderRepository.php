@@ -6,14 +6,13 @@ namespace LML\SDK\Repository;
 
 use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Model\Order\Order;
-use LML\SDK\Model\Money\Price;
-use LML\SDK\Model\Order\BasketItem;
+use LML\SDK\Entity\Order\Order;
+use LML\SDK\Entity\Money\Price;
 use React\Promise\PromiseInterface;
-use LML\SDK\Model\Shipping\Shipping;
-use LML\SDK\Model\Order\OrderInterface;
-use LML\SDK\Service\Model\AbstractRepository;
-use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Order\OrderInterface;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Shipping\ShippingInterface;
 use function sprintf;
 
 /**
@@ -32,21 +31,21 @@ class OrderRepository extends AbstractRepository
 
         $priceData = $entity['price'];
         $price = new Price(
-            amount: $priceData['amount_minor'],
-            currency: $priceData['currency'],
+            amount        : $priceData['amount_minor'],
+            currency      : $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
 
         $id = $entity['id'];
 
         return new Order(
-            id: $id,
-            customer: $customer,
-            address: $address,
-            total: $price,
+            id         : $id,
+            customer   : $customer,
+            address    : $address,
+            total      : $price,
             companyName: $entity['company'],
-            items: new LazyValue(fn() => $this->createItems($entity['items'])),
-            shipping: new LazyPromise($this->getShipping($id)),
+            items      : new LazyValue(fn() => $this->createItems($entity['items'])),
+            shipping   : new LazyPromise($this->getShipping($id)),
         );
     }
 

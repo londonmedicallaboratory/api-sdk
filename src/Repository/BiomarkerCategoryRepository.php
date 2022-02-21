@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\Category\Category;
-use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\Category\Category;
+use LML\SDK\Entity\Category\CategoryInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from CategoryInterface

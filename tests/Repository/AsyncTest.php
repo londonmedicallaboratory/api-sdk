@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
-use LML\SDK\Model\Product\Product;
-use LML\SDK\Model\File\FileInterface;
+use LML\SDK\Entity\Product\Product;
+use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Stopwatch\Stopwatch;
-use LML\SDK\Model\Product\ProductInterface;
-use LML\SDK\Model\Category\CategoryInterface;
-use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\Model\Biomarker\BiomarkerInterface;
+use LML\SDK\Entity\Product\ProductInterface;
+use LML\SDK\Entity\Category\CategoryInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
+use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function count;
 

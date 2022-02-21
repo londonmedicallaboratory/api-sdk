@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\Page\Page;
-use LML\SDK\Model\Page\PageInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\Page\Page;
+use LML\SDK\Entity\Page\PageInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from PageInterface

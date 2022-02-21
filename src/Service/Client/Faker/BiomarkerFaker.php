@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
-use LML\SDK\Model\Biomarker\BiomarkerInterface;
+use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 
 /**
  * @psalm-import-type S from BiomarkerInterface

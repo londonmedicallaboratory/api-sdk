@@ -9,12 +9,12 @@ use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Model\Product\Product;
+use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Enum\VaccinationStatusEnum;
-use LML\SDK\Service\Model\AbstractRepository;
-use LML\SDK\Model\TestRegistration\TestRegistration;
-use LML\SDK\Model\TestRegistration\TestRegistrationInterface;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\TestRegistration\TestRegistration;
+use LML\SDK\Entity\TestRegistration\TestRegistrationInterface;
 use function sprintf;
 
 /**

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LML\SDK\DTO;
 
 use Closure;
-use LML\SDK\Model\Money\PriceInterface;
-use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Entity\Money\PriceInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\Response;
 

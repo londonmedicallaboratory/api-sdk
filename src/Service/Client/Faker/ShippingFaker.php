@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
-use LML\SDK\Model\Shipping\ShippingInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
 
 /**
  * @psalm-import-type S from ShippingInterface

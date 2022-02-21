@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\Shipping\Shipping;
-use LML\SDK\Model\Shipping\ShippingInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\Shipping\ShippingInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from ShippingInterface

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Model\Customer\Customer;
-use LML\SDK\Model\Customer\CustomerInterface;
-use LML\SDK\Service\Model\AbstractRepository;
+use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Entity\Customer\CustomerInterface;
+use LML\SDK\Service\API\AbstractRepository;
 
 /**
  * @psalm-import-type S from CustomerInterface

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Form;
 
-use LML\SDK\Model\Address\Address;
+use LML\SDK\Entity\Address\Address;
 use Symfony\Component\Form\AbstractType;
-use LML\SDK\Model\Address\AddressInterface;
+use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Form\Extension\CountryTypeLimited;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotNull;

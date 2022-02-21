@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
-use LML\SDK\Model\Category\CategoryInterface;
+use LML\SDK\Entity\Category\CategoryInterface;
 
 /**
  * @psalm-import-type S from CategoryInterface
