@@ -14,9 +14,9 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('lml_sdk');
         $treeBuilder->getRootNode()
             ->children()
-            ->scalarNode('base_url')->defaultNull()->end()
-            ?->scalarNode('api_token')->defaultNull()->end()
-            ?->scalarNode('cache_pool')->defaultNull()->end()
+            ->scalarNode('base_url')->defaultValue('')->end()
+            ?->scalarNode('api_token')->defaultValue('')->end()
+            ?->scalarNode('cache_pool')->defaultValue(null)->end()
             ?->integerNode('cache_expiration')->defaultValue(0)->end()
             ?->booleanNode('faker')->defaultValue(false)->end()
             ?->end();
