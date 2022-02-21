@@ -26,11 +26,10 @@ class Client implements ClientInterface
     private Browser $browser;
 
     public function __construct(
-        private string $baseUrl,
-        private string $username,
-        private string $password,
+        private string                  $baseUrl,
+        private string                  $apiToken,
         private ?CacheItemPoolInterface $cache,
-        private int $cacheExpiration,
+        private int                     $cacheExpiration,
     )
     {
         $this->browser = new Browser();
@@ -117,10 +116,9 @@ class Client implements ClientInterface
      */
     private function getAuthHeaders(): array
     {
-        $token = sprintf('%s:%s', $this->username, $this->password);
 
         return [
-            'Authorization' => 'Basic ' . base64_encode($token),
+            'Authorization' => 'Bearer ' . $this->apiToken,
         ];
     }
 }

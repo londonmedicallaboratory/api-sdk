@@ -62,9 +62,8 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
 
         $definition
             ->setArgument(0, $mergedConfig['base_url'])
-            ->setArgument(1, $mergedConfig['username'])
-            ->setArgument(2, $mergedConfig['password'])
-            ->setArgument(3, $mergedConfig['cache_pool'] ? new Reference($mergedConfig['cache_pool']) : null)
-            ->setArgument(4, $mergedConfig['cache_expiration']);
+            ->setArgument(1, $mergedConfig['api_token'])
+            ->setArgument(2, $mergedConfig['cache_pool'] ? new Reference($mergedConfig['cache_pool']) : null)
+            ->setArgument(3, $mergedConfig['cache_expiration']);
     }
 }

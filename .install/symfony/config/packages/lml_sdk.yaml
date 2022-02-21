@@ -7,8 +7,7 @@ framework:
 
 lml_sdk:
     base_url: 'base_url_or_env'
-    username: 'username_or_env'
-    password: 'password_or_env'
+    api_token: 'api_token_value_or_env'
     cache_pool: cache.app       # use default cache pool or create your own
     cache_expiration: 3600
     faker: false
