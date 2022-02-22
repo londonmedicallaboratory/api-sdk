@@ -8,6 +8,7 @@ use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
 use LML\SDK\Entity\Money\Price;
+use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Order\OrderInterface;
@@ -40,8 +41,8 @@ class OrderRepository extends AbstractRepository
 
         return new Order(
             id         : $id,
-            customer   : $customer,
-            address    : $address,
+            customer   : new ResolvedValue($customer),
+            address    : new ResolvedValue($address),
             total      : $price,
             companyName: $entity['company'],
             items      : new LazyValue(fn() => $this->createItems($entity['items'])),

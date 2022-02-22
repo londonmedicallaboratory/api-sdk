@@ -6,8 +6,8 @@ namespace LML\SDK\Entity\Order;
 
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\OrderRepository;
+use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Entity\Customer\CustomerInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
@@ -19,13 +19,15 @@ class Order implements OrderInterface
     /**
      * @see OrderRepository::one()
      *
+     * @param LazyValueInterface<CustomerInterface> $customer
+     * @param LazyValueInterface<AddressInterface> $address
      * @param LazyValueInterface<?ShippingInterface> $shipping
      * @param LazyValueInterface<list<ItemInterface>> $items
      */
     public function __construct(
         private string             $id,
-        private CustomerInterface  $customer,
-        private AddressInterface   $address,
+        private LazyValueInterface $customer,
+        private LazyValueInterface $address,
         private PriceInterface     $total,
         private LazyValueInterface $items,
         private LazyValueInterface $shipping,
@@ -42,7 +44,7 @@ class Order implements OrderInterface
 
     public function getCustomer(): CustomerInterface
     {
-        return $this->customer;
+        return $this->customer->getValue();
     }
 
     public function getCompanyName(): ?string
@@ -52,7 +54,7 @@ class Order implements OrderInterface
 
     public function getAddress(): AddressInterface
     {
-        return $this->address;
+        return $this->address->getValue();
     }
 
     public function getBillingAddress(): ?AddressInterface

@@ -77,8 +77,8 @@ class Basket
 
         $order = new Order(
             id            : '',
-            customer      : $customer,
-            address       : $address,
+            customer      : new ResolvedValue($customer),
+            address       : new ResolvedValue($address),
             total         : $this->getTotal() ?? throw new RuntimeException(),
             items         : new LazyValue(fn() => $this->getItems()),
             companyName   : $payment->customersCompany,
