@@ -37,7 +37,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
- *      client_code?: string,
+ *      brand_code?: string,
  *      country_from?: string,
  *      transport_type?: string,
  *      date_of_arrival?: ?string,
