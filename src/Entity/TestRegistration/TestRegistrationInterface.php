@@ -38,6 +38,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      created_at?: ?string,
  *      completed_at?: ?string,
  *      brand_code?: string,
+ *      foreign_id?: ?string,
  *      country_from?: string,
  *      transport_type?: string,
  *      date_of_arrival?: ?string,
