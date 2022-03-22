@@ -40,6 +40,7 @@ class ProductRepository extends AbstractRepository
         return new Product(
             id              : $id,
             name            : $entity['name'],
+            sku             : $entity['sku'],
             slug            : $entity['slug'],
             description     : $entity['description'],
             shortDescription: $entity['short_description'],

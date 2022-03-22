@@ -17,6 +17,8 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 class Product implements ProductInterface
 {
     /**
+     * @see ProductRepository::one()
+     *
      * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
      * @param LazyValueInterface<list<ShippingInterface>> $shippingTypes
      * @param LazyValueInterface<list<FileInterface>> $files
@@ -25,6 +27,7 @@ class Product implements ProductInterface
     public function __construct(
         protected string             $id,
         protected string             $name,
+        protected string             $sku,
         protected string             $slug,
         protected string             $description,
         protected string             $shortDescription,
@@ -52,6 +55,11 @@ class Product implements ProductInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getSku(): string
+    {
+        return $this->sku;
     }
 
     public function getSlug(): string
@@ -111,6 +119,7 @@ class Product implements ProductInterface
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
+            'sku' => $this->getSku(),
             'slug' => $this->getSlug(),
             'description' => $this->getLongDescription(),
             'short_description' => $this->getShortDescription(),

@@ -17,6 +17,7 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *      id: string,
  *      name: string,
  *      slug: string,
+ *      sku: string,
  *      description: string,
  *      short_description: string,
  *      test_to_release: bool,
@@ -29,6 +30,8 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 interface ProductInterface extends ModelInterface, SluggableInterface
 {
     public function getName(): string;
+
+    public function getSku(): string;
 
     public function getSlug(): string;
 
