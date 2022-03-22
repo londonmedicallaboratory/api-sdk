@@ -28,10 +28,10 @@ class TestRegistration implements TestRegistrationInterface
      */
     public function __construct(
         protected LazyValueInterface     $products,
-        protected string                 $email,
-        protected DateTimeInterface      $dateOfBirth,
-        protected string                 $firstName,
-        protected string                 $lastName,
+        protected ?string                $email,
+        protected ?DateTimeInterface     $dateOfBirth,
+        protected ?string                $firstName,
+        protected ?string                $lastName,
         protected GenderEnum             $gender,
         protected ?EthnicityEnum         $ethnicity = null,
         protected ?string                $mobilePhoneNumber = null,
@@ -76,42 +76,42 @@ class TestRegistration implements TestRegistrationInterface
         $this->ukAddress = new ResolvedValue($address);
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    public function getDateOfBirth(): DateTimeInterface
+    public function getDateOfBirth(): ?DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(DateTimeInterface $dateOfBirth): void
+    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): void
     {
         $this->dateOfBirth = $dateOfBirth;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }
@@ -253,7 +253,7 @@ class TestRegistration implements TestRegistrationInterface
             'id'                     => $this->getId(),
             'product_ids'            => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
             'email'                  => $this->getEmail(),
-            'date_of_birth'          => $this->getDateOfBirth()->format('Y-m-d'),
+            'date_of_birth'          => $this->getDateOfBirth()?->format('Y-m-d'),
             'first_name'             => $this->getFirstName(),
             'last_name'              => $this->getLastName(),
             'gender'                 => $this->getGender()->value,

@@ -47,10 +47,12 @@ class TestRegistrationRepository extends AbstractRepository
         $completedAt = $entity['completed_at'] ?? null;
         $dateOfArrival = $entity['date_of_arrival'] ?? null;
 
+        $dateOfBirth = $entity['date_of_birth'];
+
         return new TestRegistration(
             products         : new LazyPromise($this->getProducts($entity['id'])),
             email            : $entity['email'],
-            dateOfBirth      : new DateTime($entity['date_of_birth']),
+            dateOfBirth      : $dateOfBirth ? new DateTime($dateOfBirth) : null,
             firstName        : $entity['first_name'],
             lastName         : $entity['last_name'],
             gender           : $gender,

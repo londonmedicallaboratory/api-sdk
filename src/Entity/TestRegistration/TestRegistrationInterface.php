@@ -23,10 +23,10 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      product_skus?: list<string>,
  *      biomarker_ids?: list<string>,
  *      biomarker_codes?: list<string>,
- *      email: string,
- *      date_of_birth: string,
- *      first_name: string,
- *      last_name: string,
+ *      email: ?string,
+ *      date_of_birth: ?string,
+ *      first_name: ?string,
+ *      last_name: ?string,
  *      gender: string,
  *      ethnicity?: ?string,
  *      mobile_phone_number?: ?string,
@@ -87,13 +87,13 @@ interface TestRegistrationInterface extends ModelInterface
      */
     public function getProducts(): array;
 
-    public function getEmail(): string;
+    public function getEmail(): ?string;
 
-    public function getDateOfBirth(): DateTimeInterface;
+    public function getDateOfBirth(): ?DateTimeInterface;
 
-    public function getFirstName(): string;
+    public function getFirstName(): ?string;
 
-    public function getLastName(): string;
+    public function getLastName(): ?string;
 
     public function getGender(): GenderEnum;
 
