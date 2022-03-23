@@ -16,6 +16,7 @@ use LML\SDK\Entity\ModelInterface;
  *      country_name?: string,
  *      country_code: string,
  *      city: string,
+ *      company?: ?string,
  * }
  *
  * @extends ModelInterface<S>
@@ -37,4 +38,6 @@ interface AddressInterface extends ModelInterface
     public function getCountryCode(): string;
 
     public function getCity(): string;
+
+    public function getCompany(): ?string;
 }

@@ -21,6 +21,7 @@ class Address implements AddressInterface
         private string  $city,
         private ?string $line2 = null,
         private ?string $line3 = null,
+        private ?string $company = null,
     )
     {
     }
@@ -115,6 +116,11 @@ class Address implements AddressInterface
         $this->city = $city;
     }
 
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
     public function toArray()
     {
         return [
@@ -126,6 +132,7 @@ class Address implements AddressInterface
             'country_name' => $this->getCountryName(),
             'country_code' => $this->getCountryCode(),
             'city'         => $this->getCity(),
+            'company'      => $this->getCompany(),
         ];
     }
 }
