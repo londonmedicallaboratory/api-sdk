@@ -18,6 +18,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *
  * @psalm-type S=array{
  *      id: string,
+ *      patient_id?: ?string,
  *      results_ready: bool,
  *      product_ids?: list<string>,
  *      product_skus?: list<string>,

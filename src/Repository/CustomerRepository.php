@@ -17,7 +17,7 @@ use LML\SDK\Service\API\AbstractRepository;
  */
 class CustomerRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer)
+    protected function one($entity, $options, $optimizer): Customer
     {
         $id = $entity['id'];
 
