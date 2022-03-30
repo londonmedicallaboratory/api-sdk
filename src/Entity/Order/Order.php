@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Order;
 
+use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\OrderRepository;
@@ -31,6 +32,7 @@ class Order implements OrderInterface
         private PriceInterface     $total,
         private LazyValueInterface $items,
         private LazyValueInterface $shipping,
+        private ?DateTimeInterface $shippingDate = null,
         private ?string            $companyName = null,
         private ?AddressInterface  $billingAddress = null,
     )
@@ -77,22 +79,28 @@ class Order implements OrderInterface
         return $this->total;
     }
 
+    public function getShippingDate(): ?DateTimeInterface
+    {
+        return $this->shippingDate;
+    }
+
     public function toArray(): array
     {
         $price = $this->getTotal();
 
         return [
-            'id'          => $this->getId(),
-            'shipping_id' => $this->getShipping()?->getId(),
-            'company'     => $this->getCompanyName(),
-            'customer'    => $this->getCustomer()->toArray(),
-            'address'     => $this->getAddress()->toArray(),
-            'price'       => [
+            'id'            => $this->getId(),
+            'shipping_id'   => $this->getShipping()?->getId(),
+            'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
+            'company'       => $this->getCompanyName(),
+            'customer'      => $this->getCustomer()->toArray(),
+            'address'       => $this->getAddress()->toArray(),
+            'price'         => [
                 'amount_minor'    => $price->getAmount(),
                 'currency'        => $price->getCurrency(),
                 'formatted_value' => $price->getFormattedValue(),
             ],
-            'items'       => array_map(fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
+            'items'         => array_map(fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
     }
 }

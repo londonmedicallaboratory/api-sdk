@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Order;
 
+use DateTimeInterface;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Address\AddressInterface;
@@ -15,6 +16,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      id: string,
  *      company: ?string,
  *      shipping_id?: ?string,
+ *      shipping_date?: ?string,
  *      address: array{
  *          id: string,
  *          city: string,
@@ -58,4 +60,6 @@ interface OrderInterface extends ModelInterface
     public function getItems(): array;
 
     public function getTotal(): PriceInterface;
+
+    public function getShippingDate(): ?DateTimeInterface;
 }

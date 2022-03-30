@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
+use DateTime;
 use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
@@ -39,14 +40,17 @@ class OrderRepository extends AbstractRepository
 
         $id = $entity['id'];
 
+        $shippingDate = $entity['shipping_date'] ?? null;
+
         return new Order(
-            id         : $id,
-            customer   : new ResolvedValue($customer),
-            address    : new ResolvedValue($address),
-            total      : $price,
-            companyName: $entity['company'],
-            items      : new LazyValue(fn() => $this->createItems($entity['items'])),
-            shipping   : new LazyPromise($this->getShipping($id)),
+            id          : $id,
+            customer    : new ResolvedValue($customer),
+            shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
+            address     : new ResolvedValue($address),
+            total       : $price,
+            companyName : $entity['company'],
+            items       : new LazyValue(fn() => $this->createItems($entity['items'])),
+            shipping    : new LazyPromise($this->getShipping($id)),
         );
     }
 
