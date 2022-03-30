@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Product;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Entity\SluggableInterface;
@@ -27,7 +28,7 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *
  * @extends ModelInterface<S>
  */
-interface ProductInterface extends ModelInterface, SluggableInterface
+interface ProductInterface extends ModelInterface, SluggableInterface, Stringable
 {
     public function getName(): string;
 

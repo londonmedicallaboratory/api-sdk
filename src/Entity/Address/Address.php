@@ -6,8 +6,8 @@ namespace LML\SDK\Entity\Address;
 
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Repository\AddressRepository;
-
-/** @noinspection TypoSafeNamingInspection */
+use function implode;
+use function array_filter;
 
 #[Entity(repositoryClass: AddressRepository::class)]
 class Address implements AddressInterface
@@ -24,6 +24,21 @@ class Address implements AddressInterface
         private ?string $company = null,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        $parts = [
+            $this->getLine1(),
+            $this->getLine2(),
+            $this->getLine3(),
+            $this->getCity(),
+            $this->getCountryCode(),
+            $this->getPostalCode(),
+        ];
+        $filtered = array_filter($parts, fn(?string $part) => (bool)$part);
+
+        return implode(', ', $filtered);
     }
 
     public function setLine1(string $line1): void

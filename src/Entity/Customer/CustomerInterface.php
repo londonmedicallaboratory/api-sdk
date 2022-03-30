@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Customer;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 
 /**
@@ -17,7 +18,7 @@ use LML\SDK\Entity\ModelInterface;
  *
  * @extends ModelInterface<S>
  */
-interface CustomerInterface extends ModelInterface
+interface CustomerInterface extends ModelInterface, Stringable
 {
     public function getFirstName(): string;
 

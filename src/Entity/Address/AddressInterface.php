@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Address;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 
 /**
@@ -20,10 +21,8 @@ use LML\SDK\Entity\ModelInterface;
  * }
  *
  * @extends ModelInterface<S>
- *
- * @noinspection TypoSafeNamingInspection
  */
-interface AddressInterface extends ModelInterface
+interface AddressInterface extends ModelInterface, Stringable
 {
     public function getAddressLine1(): string;
 

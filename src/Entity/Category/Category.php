@@ -11,12 +11,17 @@ use LML\SDK\Repository\ProductCategoryRepository;
 class Category implements CategoryInterface
 {
     public function __construct(
-        protected string $id,
-        protected string $name,
-        protected string $slug,
+        protected string  $id,
+        protected string  $name,
+        protected string  $slug,
         protected ?string $description,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): string

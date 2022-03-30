@@ -26,6 +26,11 @@ class Biomarker implements BiomarkerInterface
     {
     }
 
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
+
     public function getName(): string
     {
         return $this->name;

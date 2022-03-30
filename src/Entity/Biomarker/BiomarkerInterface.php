@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Biomarker;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\SluggableInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
@@ -19,7 +20,7 @@ use LML\SDK\Entity\Category\CategoryInterface;
  *
  * @extends ModelInterface<S>
  */
-interface BiomarkerInterface extends ModelInterface, SluggableInterface
+interface BiomarkerInterface extends ModelInterface, SluggableInterface, Stringable
 {
     public function getName(): string;
 

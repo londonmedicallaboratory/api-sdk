@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Shipping;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 
 /**
@@ -16,7 +17,7 @@ use LML\SDK\Entity\ModelInterface;
  *
  * @extends ModelInterface<S>
  */
-interface ShippingInterface extends ModelInterface
+interface ShippingInterface extends ModelInterface, Stringable
 {
     public function getType(): string;
 

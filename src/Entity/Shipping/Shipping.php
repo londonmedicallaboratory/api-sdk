@@ -15,6 +15,11 @@ class Shipping implements ShippingInterface
     {
     }
 
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
+
     public function getId(): string
     {
         return $this->id;
