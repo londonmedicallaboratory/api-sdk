@@ -6,7 +6,6 @@ namespace LML\SDK\Entity\TestRegistration;
 
 use DateTime;
 use DateTimeInterface;
-use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
 use LML\View\Lazy\LazyValueInterface;
@@ -25,6 +24,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
+     * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
         protected LazyValueInterface     $products,
@@ -32,12 +32,12 @@ class TestRegistration implements TestRegistrationInterface
         protected ?DateTimeInterface     $dateOfBirth,
         protected ?string                $firstName,
         protected ?string                $lastName,
+        protected ?LazyValueInterface    $resultsReady = null,
         protected ?EthnicityEnum         $ethnicity = null,
         protected ?string                $mobilePhoneNumber = null,
         protected ?string                $passportNumber = null,
         protected ?VaccinationStatusEnum $vaccinationStatus = null,
         protected ?DateTimeInterface     $dateOfArrival = null,
-        protected bool                   $resultsReady = false,
         protected DateTimeInterface      $createdAt = new DateTime(),
         protected ?DateTimeInterface     $completedAt = null,
         protected ?DateTimeInterface     $departureStartDate = null,
@@ -218,7 +218,7 @@ class TestRegistration implements TestRegistrationInterface
 
     public function hasResults(): bool
     {
-        return $this->resultsReady;
+        return $this->resultsReady?->getValue() ?? false;
     }
 
     public function toArray(): array
@@ -237,7 +237,7 @@ class TestRegistration implements TestRegistrationInterface
             'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
             'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
             'completed_at'           => $this->getCompletedAt()?->format('Y-m-d'),
-            'results_ready'          => $this->resultsReady,
+            'results_ready'          => $this->hasResults(),
             'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
             'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
             'uk_address'             => $this->getUkAddress()?->toArray(),

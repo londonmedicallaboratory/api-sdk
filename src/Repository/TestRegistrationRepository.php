@@ -27,11 +27,11 @@ class TestRegistrationRepository extends AbstractRepository
     public function create(string $email, DateTime $dateOfBirth, string $firstName, string $lastName, GenderEnum $gender): TestRegistration
     {
         return new TestRegistration(
-            products         : new ResolvedValue([]),
-            email            : $email,
-            dateOfBirth      : $dateOfBirth,
-            firstName        : $firstName,
-            lastName         : $lastName,
+            products   : new ResolvedValue([]),
+            email      : $email,
+            dateOfBirth: $dateOfBirth,
+            firstName  : $firstName,
+            lastName   : $lastName,
         );
     }
 
@@ -57,7 +57,7 @@ class TestRegistrationRepository extends AbstractRepository
             passportNumber   : $entity['email'],
             vaccinationStatus: $vaccinationStatus,
             dateOfArrival    : $dateOfArrival ? new DateTime($dateOfArrival) : null,
-            resultsReady     : $entity['results_ready'],
+            resultsReady     : new ResolvedValue($entity['results_ready']),
             createdAt        : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt      : $completedAt ? new DateTime($completedAt) : null,
             id               : $entity['id'],
