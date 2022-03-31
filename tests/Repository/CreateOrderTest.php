@@ -18,13 +18,13 @@ class CreateOrderTest extends KernelTestCase
         /** @var OrderRepository $repo */
         $repo = self::$kernel->getContainer()->get(OrderRepository::class);
 
-        $customer = new Customer(
-            id         : '1',
-            firstName  : 'John',
-            lastName   : 'Doe',
-            email      : 'test@example.com',
-            phoneNumber: '123123123',
-        );
+//        $customer = new Customer(
+//            id         : '1',
+//            firstName  : 'John',
+//            lastName   : 'Doe',
+//            email      : 'test@example.com',
+//            phoneNumber: '123123123',
+//        );
 
 //        $address = new Address(
 //            id         : '2',

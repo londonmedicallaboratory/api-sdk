@@ -47,60 +47,60 @@ class Basket
     )
     {
     }
-
-    /**
-     * @todo Refactor to use OrderRepository::create()
-     */
-    public function createOrder(Payment $payment): OrderInterface
-    {
-        $customer = new Customer(
-            id         : '',
-            firstName  : $payment->customersFirstName ?? throw new RuntimeException(),
-            lastName   : $payment->customersLastName ?? throw new RuntimeException(),
-            email      : $payment->customersEmail ?? throw new RuntimeException(),
-            phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
-        );
-
-        $deliveryLine1 = $payment->deliveryAddressLine1 ?? $payment->customersAddressLine1;
-        $postalCode = $payment->deliveryPostalCode ?? $payment->customersPostalCode;
-
-        $address = new Address(
-            id         : '',
-            line1      : $deliveryLine1 ?? throw new RuntimeException(),
-            postalCode : $postalCode ?? throw new RuntimeException(),
-            city       : '',
-            countryCode: 'GB',
-            countryName: 'GB',
-            line2      : $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
-            line3      : $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
-        );
-
-        $order = new Order(
-            id            : '',
-            customer      : new ResolvedValue($customer),
-            address       : new ResolvedValue($address),
-            total         : $this->getTotal() ?? throw new RuntimeException(),
-            items         : new LazyValue(fn() => $this->getItems()),
-            companyName   : $payment->customersCompany,
-            billingAddress: null,
-            shipping: new ResolvedValue(null),
-        );
-
-        $promise = $this->orderRepository->persist($order);
-        /** @var Response $value */
-        $value = await($promise, Loop::get());
-
-        /** @var StreamInterface $stream */
-        $stream = $value->getBody();
-        $stringContent = (string)$stream;
-        /** @var array{id: string} $data */
-        $data = json_decode($stringContent, true, 512, JSON_THROW_ON_ERROR);
-
-        $promise = $this->orderRepository->find($data['id']);
-        $lazy = new LazyPromise($promise);
-
-        return $lazy->getValue() ?? throw new RuntimeException('This order is not available.');
-    }
+//
+//    /**
+//     * @todo Refactor to use OrderRepository::create()
+//     */
+//    public function createOrder(Payment $payment): OrderInterface
+//    {
+//        $customer = new Customer(
+//            id         : '',
+//            firstName  : $payment->customersFirstName ?? throw new RuntimeException(),
+//            lastName   : $payment->customersLastName ?? throw new RuntimeException(),
+//            email      : $payment->customersEmail ?? throw new RuntimeException(),
+//            phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
+//        );
+//
+//        $deliveryLine1 = $payment->deliveryAddressLine1 ?? $payment->customersAddressLine1;
+//        $postalCode = $payment->deliveryPostalCode ?? $payment->customersPostalCode;
+//
+//        $address = new Address(
+//            id         : '',
+//            line1      : $deliveryLine1 ?? throw new RuntimeException(),
+//            postalCode : $postalCode ?? throw new RuntimeException(),
+//            city       : '',
+//            countryCode: 'GB',
+//            countryName: 'GB',
+//            line2      : $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
+//            line3      : $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
+//        );
+//
+//        $order = new Order(
+//            id            : '',
+//            customer      : new ResolvedValue($customer),
+//            address       : new ResolvedValue($address),
+//            total         : $this->getTotal() ?? throw new RuntimeException(),
+//            items         : new LazyValue(fn() => $this->getItems()),
+//            companyName   : $payment->customersCompany,
+//            billingAddress: null,
+//            shipping: new ResolvedValue(null),
+//        );
+//
+//        $promise = $this->orderRepository->persist($order);
+//        /** @var Response $value */
+//        $value = await($promise, Loop::get());
+//
+//        /** @var StreamInterface $stream */
+//        $stream = $value->getBody();
+//        $stringContent = (string)$stream;
+//        /** @var array{id: string} $data */
+//        $data = json_decode($stringContent, true, 512, JSON_THROW_ON_ERROR);
+//
+//        $promise = $this->orderRepository->find($data['id']);
+//        $lazy = new LazyPromise($promise);
+//
+//        return $lazy->getValue() ?? throw new RuntimeException('This order is not available.');
+//    }
 
     public function empty(): void
     {

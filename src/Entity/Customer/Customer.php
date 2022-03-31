@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Customer;
 
+use DateTimeInterface;
 use function sprintf;
 
 class Customer implements CustomerInterface
 {
     public function __construct(
-        private string $id,
-        private string $firstName,
-        private string $lastName,
-        private string $email,
-        private string $phoneNumber,
+        private string            $id,
+        private string            $firstName,
+        private string            $lastName,
+        private string            $email,
+        private string            $phoneNumber,
+        private DateTimeInterface $dateOfBirth,
     )
     {
     }
@@ -73,14 +75,20 @@ class Customer implements CustomerInterface
         $this->phoneNumber = $phoneNumber;
     }
 
+    public function getDateOfBirth(): DateTimeInterface
+    {
+        return $this->dateOfBirth;
+    }
+
     public function toArray()
     {
         return [
-            'id'           => $this->getId(),
-            'first_name'   => $this->getFirstName(),
-            'last_name'    => $this->getLastName(),
-            'phone_number' => $this->getPhoneNumber(),
-            'email'        => $this->getEmail(),
+            'id'            => $this->getId(),
+            'first_name'    => $this->getFirstName(),
+            'last_name'     => $this->getLastName(),
+            'phone_number'  => $this->getPhoneNumber(),
+            'email'         => $this->getEmail(),
+            'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
         ];
     }
 }

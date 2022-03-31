@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Customer;
 
 use Stringable;
+use DateTimeInterface;
 use LML\SDK\Entity\ModelInterface;
 
 /**
@@ -14,6 +15,7 @@ use LML\SDK\Entity\ModelInterface;
  *      last_name: string,
  *      phone_number: string,
  *      email: string,
+ *      date_of_birth: string,
  * }
  *
  * @extends ModelInterface<S>
@@ -28,4 +30,5 @@ interface CustomerInterface extends ModelInterface, Stringable
 
     public function getEmail(): string;
 
+    public function getDateOfBirth(): DateTimeInterface;
 }

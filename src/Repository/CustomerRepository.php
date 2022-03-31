@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
+use DateTime;
 use LML\SDK\Entity\Customer\Customer;
-use LML\SDK\Entity\Customer\CustomerInterface;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Customer\CustomerInterface;
 
 /**
  * @psalm-import-type S from CustomerInterface
@@ -22,11 +23,12 @@ class CustomerRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Customer(
-            id: $id,
-            firstName: $entity['first_name'],
-            lastName: $entity['last_name'],
-            email: $entity['email'],
+            id         : $id,
+            firstName  : $entity['first_name'],
+            lastName   : $entity['last_name'],
+            email      : $entity['email'],
             phoneNumber: $entity['phone_number'],
+            dateOfBirth: new DateTime($entity['date_of_birth']),
         );
     }
 

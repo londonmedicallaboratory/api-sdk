@@ -32,7 +32,8 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *          email: string,
  *          first_name: string,
  *          last_name: string,
- *          phone_number: string
+ *          phone_number: string,
+ *          date_of_birth: string,
  *      },
  *      items: list<array{product_id: string, quantity: int}>,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
