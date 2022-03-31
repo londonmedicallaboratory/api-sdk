@@ -6,6 +6,7 @@ namespace LML\SDK\Entity\Customer;
 
 use Stringable;
 use DateTimeInterface;
+use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Entity\ModelInterface;
 
 /**
@@ -16,6 +17,8 @@ use LML\SDK\Entity\ModelInterface;
  *      phone_number: string,
  *      email: string,
  *      date_of_birth: string,
+ *      nhs_number: ?string,
+ *      gender: string,
  * }
  *
  * @extends ModelInterface<S>
@@ -31,4 +34,8 @@ interface CustomerInterface extends ModelInterface, Stringable
     public function getEmail(): string;
 
     public function getDateOfBirth(): DateTimeInterface;
+
+    public function getNhsNumber(): ?string;
+
+    public function getGender(): GenderEnum;
 }

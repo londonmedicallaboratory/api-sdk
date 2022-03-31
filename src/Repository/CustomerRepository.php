@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Customer\CustomerInterface;
@@ -29,6 +30,8 @@ class CustomerRepository extends AbstractRepository
             email      : $entity['email'],
             phoneNumber: $entity['phone_number'],
             dateOfBirth: new DateTime($entity['date_of_birth']),
+            nhsNumber  : $entity['nhs_number'],
+            gender     : GenderEnum::from($entity['gender']),
         );
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Customer;
 
 use DateTimeInterface;
+use LML\SDK\Enum\GenderEnum;
 use function sprintf;
 
 class Customer implements CustomerInterface
@@ -15,7 +16,9 @@ class Customer implements CustomerInterface
         private string            $lastName,
         private string            $email,
         private string            $phoneNumber,
+        private ?string           $nhsNumber,
         private DateTimeInterface $dateOfBirth,
+        private GenderEnum        $gender,
     )
     {
     }
@@ -80,6 +83,21 @@ class Customer implements CustomerInterface
         return $this->dateOfBirth;
     }
 
+    public function getNhsNumber(): ?string
+    {
+        return $this->nhsNumber;
+    }
+
+    public function getGender(): GenderEnum
+    {
+        return $this->gender;
+    }
+
+    public function getGenderName(): string
+    {
+        return $this->getGender()->getName();
+    }
+
     public function toArray()
     {
         return [
@@ -89,6 +107,8 @@ class Customer implements CustomerInterface
             'phone_number'  => $this->getPhoneNumber(),
             'email'         => $this->getEmail(),
             'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
+            'nhs_number'    => $this->getNhsNumber(),
+            'gender'        => $this->getGender()->value,
         ];
     }
 }

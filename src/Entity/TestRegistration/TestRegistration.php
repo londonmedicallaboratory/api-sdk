@@ -32,11 +32,9 @@ class TestRegistration implements TestRegistrationInterface
         protected ?DateTimeInterface     $dateOfBirth,
         protected ?string                $firstName,
         protected ?string                $lastName,
-        protected GenderEnum             $gender,
         protected ?EthnicityEnum         $ethnicity = null,
         protected ?string                $mobilePhoneNumber = null,
         protected ?string                $passportNumber = null,
-        protected ?string                $nhsNumber = null,
         protected ?VaccinationStatusEnum $vaccinationStatus = null,
         protected ?DateTimeInterface     $dateOfArrival = null,
         protected bool                   $resultsReady = false,
@@ -116,21 +114,6 @@ class TestRegistration implements TestRegistrationInterface
         $this->lastName = $lastName;
     }
 
-    public function getGender(): GenderEnum
-    {
-        return $this->gender;
-    }
-
-    public function getGenderName(): string
-    {
-        return $this->getGender()->getName();
-    }
-
-    public function setGender(GenderEnum $gender): void
-    {
-        $this->gender = $gender;
-    }
-
     public function getEthnicity(): ?EthnicityEnum
     {
         return $this->ethnicity;
@@ -161,15 +144,6 @@ class TestRegistration implements TestRegistrationInterface
         $this->passportNumber = $passportNumber;
     }
 
-    public function getNhsNumber(): ?string
-    {
-        return $this->nhsNumber;
-    }
-
-    public function setNhsNumber(?string $nhsNumber): void
-    {
-        $this->nhsNumber = $nhsNumber;
-    }
 
     public function isVaccinated(): bool
     {
@@ -256,11 +230,9 @@ class TestRegistration implements TestRegistrationInterface
             'date_of_birth'          => $this->getDateOfBirth()?->format('Y-m-d'),
             'first_name'             => $this->getFirstName(),
             'last_name'              => $this->getLastName(),
-            'gender'                 => $this->getGender()->value,
             'ethnicity'              => $this->getEthnicity()?->value,
             'mobile_phone_number'    => $this->getMobilePhoneNumber(),
             'passport_number'        => $this->getPassportNumber(),
-            'nhs_number'             => $this->getNhsNumber(),
             'transit_countries'      => $this->transitCountries,
             'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
             'created_at'             => $this->getCreatedAt()->format('Y-m-d'),

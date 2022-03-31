@@ -32,14 +32,11 @@ class TestRegistrationRepository extends AbstractRepository
             dateOfBirth      : $dateOfBirth,
             firstName        : $firstName,
             lastName         : $lastName,
-            gender           : $gender,
         );
     }
 
     protected function one($entity, $options, $optimizer): TestRegistration
     {
-        /** @var GenderEnum::* $gender */
-        $gender = $entity['gender'];
         $ethnicity = $entity['ethnicity'] ?? '';
         /** @var ?VaccinationStatusEnum::* */
         $vaccinationStatus = $entity['vaccination_status'] ?? '';
@@ -55,11 +52,9 @@ class TestRegistrationRepository extends AbstractRepository
             dateOfBirth      : $dateOfBirth ? new DateTime($dateOfBirth) : null,
             firstName        : $entity['first_name'],
             lastName         : $entity['last_name'],
-            gender           : $gender,
             ethnicity        : EthnicityEnum::from($ethnicity),
             mobilePhoneNumber: $entity['mobile_phone_number'] ?? null,
             passportNumber   : $entity['email'],
-            nhsNumber        : $entity['nhs_number'] ?? null,
             vaccinationStatus: $vaccinationStatus,
             dateOfArrival    : $dateOfArrival ? new DateTime($dateOfArrival) : null,
             resultsReady     : $entity['results_ready'],

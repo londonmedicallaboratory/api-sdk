@@ -6,19 +6,17 @@ namespace LML\SDK\Form;
 
 use DateTime;
 use DateTimeInterface;
-use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use Symfony\Component\Form\FormEvents;
 use LML\SDK\Enum\VaccinationStatusEnum;
 use Symfony\Component\Form\AbstractType;
-use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Form\FormInterface;
 use LML\SDK\Entity\Address\AddressInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use LML\SDK\Repository\TestRegistrationRepository;
-use LML\SDK\Entity\TestRegistration\TestRegistration;
 use Symfony\Component\Validator\Constraints\NotNull;
+use LML\SDK\Entity\TestRegistration\TestRegistration;
 use Symfony\Component\Validator\Constraints\LessThan;
 use LML\SDK\Form\Extension\DateTypeExtendedYearsRange;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,7 +36,6 @@ use function range;
 class TestRegistrationType extends AbstractType
 {
     public function __construct(
-        private ProductRepository          $productRepository,
         private TestRegistrationRepository $testRegistrationRepository,
     )
     {
@@ -78,13 +75,6 @@ class TestRegistrationType extends AbstractType
             'update_value' => fn(string $name, TestRegistration $registration) => $registration->setLastName($name),
         ]);
 
-        $builder->add('gender', EnumType::class, [
-            'class'        => GenderEnum::class,
-            'choice_label' => fn(GenderEnum $enum) => $enum->getName(),
-            'get_value'    => fn(TestRegistration $registration) => $registration->getGender(),
-            'update_value' => fn(GenderEnum $gender, TestRegistration $registration) => $registration->setGender($gender),
-        ]);
-
         $builder->add('ethnicity', EnumType::class, [
             'class'        => EthnicityEnum::class,
             'choices'      => EthnicityEnum::getAsFormGroupChoices(),
@@ -100,11 +90,6 @@ class TestRegistrationType extends AbstractType
         $builder->add('passportNumber', TextType::class, [
             'get_value'    => fn(TestRegistration $registration) => $registration->getPassportNumber(),
             'update_value' => fn(string $number, TestRegistration $registration) => $registration->setPassportNumber($number),
-        ]);
-
-        $builder->add('nhsNumber', TextType::class, [
-            'get_value'    => fn(TestRegistration $registration) => $registration->getNhsNumber(),
-            'update_value' => fn(?string $number, TestRegistration $registration) => $registration->setNhsNumber($number),
         ]);
 
         $builder->add('vaccinationStatus', EnumType::class, [
