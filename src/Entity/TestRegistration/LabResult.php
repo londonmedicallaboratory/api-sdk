@@ -16,12 +16,12 @@ class LabResult implements LabResultInterface
     {
     }
 
-    public function getMinValue(): ?string
+    public function getMinRange(): ?string
     {
         return $this->minValue;
     }
 
-    public function getMaxValue(): ?string
+    public function getMaxRange(): ?string
     {
         return $this->maxValue;
     }
@@ -47,8 +47,8 @@ class LabResult implements LabResultInterface
             'id'        => $this->getId(),
             'name'      => $this->getName(),
             'value'     => $this->getValue(),
-            'min_value' => $this->getMinValue(),
-            'max_value' => $this->getMaxValue(),
+            'min_range' => $this->getMinRange(),
+            'max_range' => $this->getMaxRange(),
         ];
     }
 }
