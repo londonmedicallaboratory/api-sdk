@@ -17,6 +17,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      company: ?string,
  *      shipping_id?: ?string,
  *      shipping_date?: ?string,
+ *      customer_id?: ?string,
  *      address: array{
  *          id: string,
  *          city: string,

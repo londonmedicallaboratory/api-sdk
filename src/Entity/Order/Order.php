@@ -90,6 +90,7 @@ class Order implements OrderInterface
 
         return [
             'id'            => $this->getId(),
+            'customer_id'   => $this->getCustomer()->getId(),
             'shipping_id'   => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company'       => $this->getCompanyName(),
