@@ -10,20 +10,20 @@ class LabResult implements LabResultInterface
         protected string  $id,
         protected string  $name,
         protected string  $value,
-        protected ?string $minValue,
-        protected ?string $maxValue,
+        protected ?string $minRange,
+        protected ?string $maxRange,
     )
     {
     }
 
     public function getMinRange(): ?string
     {
-        return $this->minValue;
+        return $this->minRange;
     }
 
     public function getMaxRange(): ?string
     {
-        return $this->maxValue;
+        return $this->maxRange;
     }
 
     public function getName(): string
