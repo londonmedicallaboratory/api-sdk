@@ -10,14 +10,16 @@ enum GenderEnum: string implements NameableInterface
 {
     case MALE = 'male';
     case FEMALE = 'female';
-    case EITHER = 'either';
+    case NON_BINARY = 'non_binary';
+    case PREFER_NOT_TO_SAY = 'prefer_not_to_say';
 
     public function getName(): string
     {
         return match ($this) {
             self::MALE => 'Male',
             self::FEMALE => 'Female',
-            self::EITHER => 'Prefer not to answer',
+            self::NON_BINARY => 'Non binary',
+            self::PREFER_NOT_TO_SAY => 'Prefer not to say',
         };
     }
 }
