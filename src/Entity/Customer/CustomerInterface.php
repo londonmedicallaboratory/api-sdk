@@ -19,6 +19,7 @@ use LML\SDK\Entity\ModelInterface;
  *      date_of_birth: string,
  *      nhs_number: ?string,
  *      gender: string,
+ *      foreign_id?: ?string,
  * }
  *
  * @extends ModelInterface<S>

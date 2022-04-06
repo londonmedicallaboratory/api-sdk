@@ -6,8 +6,12 @@ namespace LML\SDK\Entity\Customer;
 
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
+use LML\SDK\Repository\CustomerRepository;
 use function sprintf;
 
+/**
+ * @see CustomerRepository::one()
+ */
 class Customer implements CustomerInterface
 {
     public function __construct(
@@ -19,6 +23,7 @@ class Customer implements CustomerInterface
         private ?string           $nhsNumber,
         private DateTimeInterface $dateOfBirth,
         private GenderEnum        $gender,
+        private ?string           $foreignId = null,
     )
     {
     }
@@ -109,6 +114,7 @@ class Customer implements CustomerInterface
             'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
             'nhs_number'    => $this->getNhsNumber(),
             'gender'        => $this->getGender()->value,
+            'foreign_id'    => $this->foreignId,
         ];
     }
 }

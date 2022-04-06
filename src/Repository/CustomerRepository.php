@@ -32,6 +32,7 @@ class CustomerRepository extends AbstractRepository
             dateOfBirth: new DateTime($entity['date_of_birth']),
             nhsNumber  : $entity['nhs_number'],
             gender     : GenderEnum::from($entity['gender']),
+            foreignId  : $entity['foreign_id'] ?? null,
         );
     }
 
