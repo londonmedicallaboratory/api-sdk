@@ -6,8 +6,6 @@ namespace LML\SDK\Entity\TestRegistration;
 
 use DateTime;
 use DateTimeInterface;
-use LML\SDK\Enum\GenderEnum;
-use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
@@ -22,7 +20,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
-     * @param LazyValueInterface<PatientInterface> $patient
+     * @param LazyValueInterface<?PatientInterface> $patient
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<bool> $resultsReady
      */
@@ -42,7 +40,7 @@ class TestRegistration implements TestRegistrationInterface
     {
     }
 
-    public function getPatient(): PatientInterface
+    public function getPatient(): ?PatientInterface
     {
         return $this->patient->getValue();
     }
@@ -60,36 +58,6 @@ class TestRegistration implements TestRegistrationInterface
     public function getUkAddress(): ?AddressInterface
     {
         return $this->ukAddress?->getValue();
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->getPatient()->getEmail();
-    }
-
-    public function getDateOfBirth(): DateTimeInterface
-    {
-        return $this->getPatient()->getDateOfBirth();
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->getPatient()->getFirstName();
-    }
-
-    public function getLastName(): string
-    {
-        return $this->getPatient()->getLastName();
-    }
-
-    public function getEthnicity(): ?EthnicityEnum
-    {
-        return $this->getPatient()->getEthnicity();
-    }
-
-    public function getGender(): GenderEnum
-    {
-        return $this->getPatient()->getGender();
     }
 
     public function getId(): string
@@ -132,23 +100,27 @@ class TestRegistration implements TestRegistrationInterface
 
     public function toArray(): array
     {
+        $patient = $this->getPatient();
+        $productIds = array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts());
+
         return [
             'id'                     => $this->getId(),
-            'product_ids'            => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
-            'email'                  => $this->getEmail(),
-            'date_of_birth'          => $this->getDateOfBirth()->format('Y-m-d'),
-            'first_name'             => $this->getFirstName(),
-            'last_name'              => $this->getLastName(),
-            'ethnicity'              => $this->getEthnicity()?->value,
-            'transit_countries'      => $this->transitCountries,
+            'patient_id'             => $patient?->getId(),
+            'results_ready'          => $this->hasResults(),
+            'product_ids'            => $productIds,
+            'email'                  => $patient?->getEmail(),
+            'date_of_birth'          => $patient?->getDateOfBirth()->format('Y-m-d'),
+            'first_name'             => $patient?->getFirstName(),
+            'last_name'              => $patient?->getLastName(),
+            'ethnicity'              => $patient?->getEthnicity()?->value,
+            'gender'                 => $patient?->getGender()->value,
+            'transit_countries'      => $this->getTransitCountryCodes(),
             'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
             'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
             'completed_at'           => $this->getCompletedAt()?->format('Y-m-d'),
-            'results_ready'          => $this->hasResults(),
             'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
             'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
             'uk_address'             => $this->getUkAddress()?->toArray(),
-            'gender'                 => $this->getGender()->value,
         ];
     }
 }

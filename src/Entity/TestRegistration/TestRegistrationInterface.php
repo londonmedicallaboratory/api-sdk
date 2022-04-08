@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestRegistration;
 
 use DateTimeInterface;
-use LML\SDK\Enum\GenderEnum;
-use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
@@ -23,12 +21,12 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      product_skus?: list<string>,
  *      biomarker_ids?: list<string>,
  *      biomarker_codes?: list<string>,
- *      email: ?string,
+ *      email?: ?string,
  *      date_of_birth?: string,
  *      first_name: ?string,
  *      last_name: ?string,
  *      ethnicity?: ?string,
- *      gender?: string,
+ *      gender?: ?string,
  *      mobile_phone_number?: ?string,
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
@@ -86,16 +84,4 @@ interface TestRegistrationInterface extends ModelInterface
      * @return list<ProductInterface>
      */
     public function getProducts(): array;
-
-    public function getEmail(): ?string;
-
-    public function getDateOfBirth(): ?DateTimeInterface;
-
-    public function getFirstName(): ?string;
-
-    public function getLastName(): ?string;
-
-    public function getEthnicity(): ?EthnicityEnum;
-
-    public function getGender(): GenderEnum;
 }
