@@ -8,7 +8,6 @@ use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
 
@@ -25,10 +24,11 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      biomarker_ids?: list<string>,
  *      biomarker_codes?: list<string>,
  *      email: ?string,
- *      date_of_birth: ?string,
+ *      date_of_birth?: string,
  *      first_name: ?string,
  *      last_name: ?string,
  *      ethnicity?: ?string,
+ *      gender?: string,
  *      mobile_phone_number?: ?string,
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
@@ -97,14 +97,5 @@ interface TestRegistrationInterface extends ModelInterface
 
     public function getEthnicity(): ?EthnicityEnum;
 
-    public function getMobilePhoneNumber(): ?string;
-
-    public function getPassportNumber(): ?string;
-
-    public function isVaccinated(): bool;
-
-    public function getVaccinationStatus(): ?VaccinationStatusEnum;
-
-    public function getSelfIsolatingAddress(): ?AddressInterface;
-
+    public function getGender(): GenderEnum;
 }

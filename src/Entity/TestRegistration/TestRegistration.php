@@ -6,57 +6,50 @@ namespace LML\SDK\Entity\TestRegistration;
 
 use DateTime;
 use DateTimeInterface;
+use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
-use LML\View\Lazy\ResolvedValue;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Enum\VaccinationStatusEnum;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
+use LML\SDK\Entity\Patient\PatientInterface;
 use function array_map;
-use function array_search;
 
 class TestRegistration implements TestRegistrationInterface
 {
     /**
-     * @see \LML\SDK\Repository\TestRegistrationRepository::one
+     * @see \LML\SDK\Repository\TestRegistrationRepository::one()
      *
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
+     * @param LazyValueInterface<PatientInterface> $patient
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
-        protected LazyValueInterface     $products,
-        protected ?string                $email,
-        protected ?DateTimeInterface     $dateOfBirth,
-        protected ?string                $firstName,
-        protected ?string                $lastName,
-        protected ?LazyValueInterface    $resultsReady = null,
-        protected ?EthnicityEnum         $ethnicity = null,
-        protected ?string                $mobilePhoneNumber = null,
-        protected ?string                $passportNumber = null,
-        protected ?VaccinationStatusEnum $vaccinationStatus = null,
-        protected ?DateTimeInterface     $dateOfArrival = null,
-        protected DateTimeInterface      $createdAt = new DateTime(),
-        protected ?DateTimeInterface     $completedAt = null,
-        protected ?DateTimeInterface     $departureStartDate = null,
-        protected ?LazyValueInterface    $ukAddress = null,
-        protected ?LazyValueInterface    $selfIsolatingAddress = null,
-        protected array                  $transitCountries = [],
-        protected string                 $id = '',
+        protected LazyValueInterface  $products,
+        protected LazyValueInterface  $patient,
+        protected ?LazyValueInterface $resultsReady = null,
+        protected ?DateTimeInterface  $dateOfArrival = null,
+        protected DateTimeInterface   $createdAt = new DateTime(),
+        protected ?DateTimeInterface  $completedAt = null,
+        protected ?DateTimeInterface  $departureStartDate = null,
+        protected ?LazyValueInterface $ukAddress = null,
+        protected ?LazyValueInterface $selfIsolatingAddress = null,
+        protected array               $transitCountries = [],
+        protected string              $id = '',
     )
     {
+    }
+
+    public function getPatient(): PatientInterface
+    {
+        return $this->patient->getValue();
     }
 
     public function getDayOfArrival(): ?DateTimeInterface
     {
         return $this->dateOfArrival;
-    }
-
-    public function setDateOfArrival(?DateTimeInterface $date): void
-    {
-        $this->dateOfArrival = $date;
     }
 
     public function getProducts(): array
@@ -69,95 +62,34 @@ class TestRegistration implements TestRegistrationInterface
         return $this->ukAddress?->getValue();
     }
 
-    public function setUkAddress(?AddressInterface $address): void
-    {
-        $this->ukAddress = new ResolvedValue($address);
-    }
-
     public function getEmail(): ?string
     {
-        return $this->email;
+        return $this->getPatient()->getEmail();
     }
 
-    public function setEmail(?string $email): void
+    public function getDateOfBirth(): DateTimeInterface
     {
-        $this->email = $email;
+        return $this->getPatient()->getDateOfBirth();
     }
 
-    public function getDateOfBirth(): ?DateTimeInterface
+    public function getFirstName(): string
     {
-        return $this->dateOfBirth;
+        return $this->getPatient()->getFirstName();
     }
 
-    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): void
+    public function getLastName(): string
     {
-        $this->dateOfBirth = $dateOfBirth;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(?string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(?string $lastName): void
-    {
-        $this->lastName = $lastName;
+        return $this->getPatient()->getLastName();
     }
 
     public function getEthnicity(): ?EthnicityEnum
     {
-        return $this->ethnicity;
+        return $this->getPatient()->getEthnicity();
     }
 
-    public function setEthnicity(?EthnicityEnum $ethnicity): void
+    public function getGender(): GenderEnum
     {
-        $this->ethnicity = $ethnicity;
-    }
-
-    public function getMobilePhoneNumber(): ?string
-    {
-        return $this->mobilePhoneNumber;
-    }
-
-    public function setMobilePhoneNumber(?string $mobilePhoneNumber): void
-    {
-        $this->mobilePhoneNumber = $mobilePhoneNumber;
-    }
-
-    public function getPassportNumber(): ?string
-    {
-        return $this->passportNumber;
-    }
-
-    public function setPassportNumber(?string $passportNumber): void
-    {
-        $this->passportNumber = $passportNumber;
-    }
-
-
-    public function isVaccinated(): bool
-    {
-        return $this->vaccinationStatus === VaccinationStatusEnum::VACCINATED;
-    }
-
-    public function getVaccinationStatus(): ?VaccinationStatusEnum
-    {
-        return $this->vaccinationStatus;
-    }
-
-    public function setVaccinationStatus(?VaccinationStatusEnum $vaccinationStatus): void
-    {
-        $this->vaccinationStatus = $vaccinationStatus;
+        return $this->getPatient()->getGender();
     }
 
     public function getId(): string
@@ -170,11 +102,6 @@ class TestRegistration implements TestRegistrationInterface
         return $this->selfIsolatingAddress?->getValue();
     }
 
-    public function setSelfIsolatingAddress(?AddressInterface $selfIsolatingAddress): void
-    {
-        $this->selfIsolatingAddress = new ResolvedValue($selfIsolatingAddress);
-    }
-
     /**
      * @return list<string>
      */
@@ -183,27 +110,9 @@ class TestRegistration implements TestRegistrationInterface
         return $this->transitCountries;
     }
 
-    public function addTransitCountry(string $code): void
-    {
-        $this->transitCountries[] = $code;
-    }
-
-    public function removeTransitCountry(string $code): void
-    {
-        $key = array_search($code, $this->transitCountries, true);
-        if (false !== $key) {
-            unset($this->transitCountries[$key]);
-        }
-    }
-
     public function getDepartureStartDate(): ?DateTimeInterface
     {
         return $this->departureStartDate;
-    }
-
-    public function setDepartureStartDate(?DateTimeInterface $departureStartDate): void
-    {
-        $this->departureStartDate = $departureStartDate;
     }
 
     public function getCreatedAt(): DateTimeInterface
@@ -227,12 +136,10 @@ class TestRegistration implements TestRegistrationInterface
             'id'                     => $this->getId(),
             'product_ids'            => array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts()),
             'email'                  => $this->getEmail(),
-            'date_of_birth'          => $this->getDateOfBirth()?->format('Y-m-d'),
+            'date_of_birth'          => $this->getDateOfBirth()->format('Y-m-d'),
             'first_name'             => $this->getFirstName(),
             'last_name'              => $this->getLastName(),
             'ethnicity'              => $this->getEthnicity()?->value,
-            'mobile_phone_number'    => $this->getMobilePhoneNumber(),
-            'passport_number'        => $this->getPassportNumber(),
             'transit_countries'      => $this->transitCountries,
             'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
             'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
@@ -241,7 +148,7 @@ class TestRegistration implements TestRegistrationInterface
             'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
             'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
             'uk_address'             => $this->getUkAddress()?->toArray(),
-            'vaccination_status'     => $this->getVaccinationStatus()?->value,
+            'gender'                 => $this->getGender()->value,
         ];
     }
 }

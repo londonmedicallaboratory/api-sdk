@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
-use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Enum\EthnicityEnum;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
-use LML\SDK\Enum\VaccinationStatusEnum;
+use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
 use LML\SDK\Entity\TestRegistration\TestRegistrationInterface;
@@ -24,49 +22,37 @@ use function sprintf;
  */
 class TestRegistrationRepository extends AbstractRepository
 {
-    public function create(string $email, DateTime $dateOfBirth, string $firstName, string $lastName, GenderEnum $gender): TestRegistration
-    {
-        return new TestRegistration(
-            products   : new ResolvedValue([]),
-            email      : $email,
-            dateOfBirth: $dateOfBirth,
-            firstName  : $firstName,
-            lastName   : $lastName,
-        );
-    }
-
     protected function one($entity, $options, $optimizer): TestRegistration
     {
-        $ethnicity = $entity['ethnicity'] ?? '';
-        /** @var ?VaccinationStatusEnum::* */
-        $vaccinationStatus = $entity['vaccination_status'] ?? '';
         $createdAt = $entity['created_at'] ?? null;
         $completedAt = $entity['completed_at'] ?? null;
         $dateOfArrival = $entity['date_of_arrival'] ?? null;
-
-        $dateOfBirth = $entity['date_of_birth'];
+        $id = $entity['id'];
 
         return new TestRegistration(
-            products         : new LazyPromise($this->getProducts($entity['id'])),
-            email            : $entity['email'],
-            dateOfBirth      : $dateOfBirth ? new DateTime($dateOfBirth) : null,
-            firstName        : $entity['first_name'],
-            lastName         : $entity['last_name'],
-            ethnicity        : EthnicityEnum::from($ethnicity),
-            mobilePhoneNumber: $entity['mobile_phone_number'] ?? null,
-            passportNumber   : $entity['email'],
-            vaccinationStatus: $vaccinationStatus,
-            dateOfArrival    : $dateOfArrival ? new DateTime($dateOfArrival) : null,
-            resultsReady     : new ResolvedValue($entity['results_ready']),
-            createdAt        : $createdAt ? new DateTime($createdAt) : new DateTime(),
-            completedAt      : $completedAt ? new DateTime($completedAt) : null,
-            id               : $entity['id'],
+            products     : new LazyPromise($this->getProducts($id)),
+            patient      : new LazyPromise($this->getPatient($id)),
+            dateOfArrival: $dateOfArrival ? new DateTime($dateOfArrival) : null,
+            resultsReady : new ResolvedValue($entity['results_ready']),
+            createdAt    : $createdAt ? new DateTime($createdAt) : new DateTime(),
+            completedAt  : $completedAt ? new DateTime($completedAt) : null,
+            id           : $id,
         );
     }
 
     protected function getBaseUrl(): string
     {
         return '/test_registration';
+    }
+
+    /**
+     * @return PromiseInterface<Patient>
+     */
+    private function getPatient(string $id): PromiseInterface
+    {
+        $url = sprintf('/test_registration/%s/patient', $id);
+
+        return $this->get(PatientRepository::class)->fetchOneBy(url: $url);
     }
 
     /**
