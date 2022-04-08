@@ -15,15 +15,15 @@ use function sprintf;
 class Customer implements CustomerInterface
 {
     public function __construct(
-        private string            $id,
-        private string            $firstName,
-        private string            $lastName,
-        private string            $email,
-        private string            $phoneNumber,
-        private ?string           $nhsNumber,
-        private DateTimeInterface $dateOfBirth,
-        private GenderEnum        $gender,
-        private ?string           $foreignId = null,
+        private string             $id,
+        private string             $firstName,
+        private string             $lastName,
+        private string             $email,
+        private string             $phoneNumber,
+        private ?string            $nhsNumber,
+        private ?DateTimeInterface $dateOfBirth,
+        private ?GenderEnum        $gender,
+        private ?string            $foreignId = null,
     )
     {
     }
@@ -83,7 +83,7 @@ class Customer implements CustomerInterface
         $this->phoneNumber = $phoneNumber;
     }
 
-    public function getDateOfBirth(): DateTimeInterface
+    public function getDateOfBirth(): ?DateTimeInterface
     {
         return $this->dateOfBirth;
     }
@@ -93,14 +93,14 @@ class Customer implements CustomerInterface
         return $this->nhsNumber;
     }
 
-    public function getGender(): GenderEnum
+    public function getGender(): ?GenderEnum
     {
         return $this->gender;
     }
 
-    public function getGenderName(): string
+    public function getGenderName(): ?string
     {
-        return $this->getGender()->getName();
+        return $this->getGender()?->getName();
     }
 
     public function toArray()
@@ -111,9 +111,9 @@ class Customer implements CustomerInterface
             'last_name'     => $this->getLastName(),
             'phone_number'  => $this->getPhoneNumber(),
             'email'         => $this->getEmail(),
-            'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
+            'date_of_birth' => $this->getDateOfBirth()?->format('Y-m-d'),
             'nhs_number'    => $this->getNhsNumber(),
-            'gender'        => $this->getGender()->value,
+            'gender'        => $this->getGender()?->value,
             'foreign_id'    => $this->foreignId,
         ];
     }

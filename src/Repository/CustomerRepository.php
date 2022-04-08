@@ -22,6 +22,8 @@ class CustomerRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): Customer
     {
         $id = $entity['id'];
+        $dateOfBirth = $entity['date_of_birth'] ?? null;
+        $gender = $entity['gender'] ?? '';
 
         return new Customer(
             id         : $id,
@@ -29,9 +31,9 @@ class CustomerRepository extends AbstractRepository
             lastName   : $entity['last_name'],
             email      : $entity['email'],
             phoneNumber: $entity['phone_number'],
-            dateOfBirth: new DateTime($entity['date_of_birth']),
+            dateOfBirth: $dateOfBirth ? new DateTime($dateOfBirth) : null,
             nhsNumber  : $entity['nhs_number'],
-            gender     : GenderEnum::from($entity['gender']),
+            gender     : GenderEnum::tryFrom($gender),
             foreignId  : $entity['foreign_id'] ?? null,
         );
     }

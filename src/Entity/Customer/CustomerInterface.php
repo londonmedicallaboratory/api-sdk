@@ -16,9 +16,9 @@ use LML\SDK\Entity\ModelInterface;
  *      last_name: string,
  *      phone_number: string,
  *      email: string,
- *      date_of_birth: string,
+ *      date_of_birth: ?string,
  *      nhs_number: ?string,
- *      gender: string,
+ *      gender: ?string,
  *      foreign_id?: ?string,
  * }
  *
@@ -34,9 +34,9 @@ interface CustomerInterface extends ModelInterface, Stringable
 
     public function getEmail(): string;
 
-    public function getDateOfBirth(): DateTimeInterface;
+    public function getDateOfBirth(): ?DateTimeInterface;
 
     public function getNhsNumber(): ?string;
 
-    public function getGender(): GenderEnum;
+    public function getGender(): ?GenderEnum;
 }
