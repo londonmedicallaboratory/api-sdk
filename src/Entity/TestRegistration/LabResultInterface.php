@@ -10,6 +10,7 @@ use LML\SDK\Entity\ModelInterface;
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
+ *      code: string,
  *      value: string,
  *      min_range: ?string,
  *      max_range: ?string,
@@ -22,6 +23,8 @@ interface LabResultInterface extends ModelInterface
     public function getName(): string;
 
     public function getValue(): string;
+
+    public function getCode(): string;
 
     public function getMinRange(): ?string;
 

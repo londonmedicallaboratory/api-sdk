@@ -9,6 +9,7 @@ class LabResult implements LabResultInterface
     public function __construct(
         protected string  $id,
         protected string  $name,
+        protected string  $code,
         protected string  $value,
         protected ?string $minRange,
         protected ?string $maxRange,
@@ -36,6 +37,11 @@ class LabResult implements LabResultInterface
         return $this->value;
     }
 
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -46,6 +52,7 @@ class LabResult implements LabResultInterface
         return [
             'id'        => $this->getId(),
             'name'      => $this->getName(),
+            'code'      => $this->getCode(),
             'value'     => $this->getValue(),
             'min_range' => $this->getMinRange(),
             'max_range' => $this->getMaxRange(),
