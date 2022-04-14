@@ -12,6 +12,8 @@ use LML\SDK\Entity\Customer\CustomerInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 
 /**
+ * @psalm-type Item = array{product_id: string, quantity: int, product_sku?: ?string}
+ *
  * @psalm-type S=array{
  *      id: string,
  *      company: ?string,
@@ -36,7 +38,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *          phone_number?: ?string,
  *          foreign_id?: ?string,
  *      },
- *      items: list<array{product_id: string, quantity: int}>,
+ *      items: list<Item>,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
  * }
  *
