@@ -35,6 +35,7 @@ class TestRegistration implements TestRegistrationInterface
         protected ?LazyValueInterface $ukAddress = null,
         protected ?LazyValueInterface $selfIsolatingAddress = null,
         protected array               $transitCountries = [],
+        protected ?string             $doctorsNote = null,
         protected string              $id = '',
     )
     {
@@ -93,6 +94,11 @@ class TestRegistration implements TestRegistrationInterface
         return $this->completedAt;
     }
 
+    public function getDoctorsNote(): ?string
+    {
+        return $this->doctorsNote;
+    }
+
     public function hasResults(): bool
     {
         return $this->resultsReady?->getValue() ?? false;
@@ -121,6 +127,7 @@ class TestRegistration implements TestRegistrationInterface
             'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
             'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
             'uk_address'             => $this->getUkAddress()?->toArray(),
+            'doctors_note'           => $this->getDoctorsNote(),
         ];
     }
 }

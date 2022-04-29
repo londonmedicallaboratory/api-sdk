@@ -13,6 +13,7 @@ class LabResult implements LabResultInterface
         protected bool|string $value,
         protected ?string     $minRange,
         protected ?string     $maxRange,
+        protected ?string     $comment,
     )
     {
     }
@@ -42,6 +43,11 @@ class LabResult implements LabResultInterface
         return $this->code;
     }
 
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -56,6 +62,7 @@ class LabResult implements LabResultInterface
             'value'     => $this->value,
             'min_range' => $this->getMinRange(),
             'max_range' => $this->getMaxRange(),
+            'comment'   => $this->comment,
         ];
     }
 }

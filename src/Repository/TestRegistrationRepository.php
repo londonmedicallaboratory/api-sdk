@@ -36,6 +36,7 @@ class TestRegistrationRepository extends AbstractRepository
             resultsReady : new ResolvedValue($entity['results_ready']),
             createdAt    : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt  : $completedAt ? new DateTime($completedAt) : null,
+            doctorsNote  : $entity['doctors_note'] ?? null,
             id           : $id,
         );
     }
