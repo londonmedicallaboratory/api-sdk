@@ -11,7 +11,7 @@ use LML\SDK\Entity\ModelInterface;
  *      id: string,
  *      name: string,
  *      code: string,
- *      value: string,
+ *      value: bool|string,
  *      min_range: ?string,
  *      max_range: ?string,
  * }
@@ -22,7 +22,7 @@ interface LabResultInterface extends ModelInterface
 {
     public function getName(): string;
 
-    public function getValue(): string;
+    public function getValue(): bool|string;
 
     public function getCode(): string;
 

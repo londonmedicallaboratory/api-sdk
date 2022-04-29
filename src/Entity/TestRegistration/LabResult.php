@@ -7,12 +7,12 @@ namespace LML\SDK\Entity\TestRegistration;
 class LabResult implements LabResultInterface
 {
     public function __construct(
-        protected string  $id,
-        protected string  $name,
-        protected string  $code,
-        protected string  $value,
-        protected ?string $minRange,
-        protected ?string $maxRange,
+        protected string      $id,
+        protected string      $name,
+        protected string      $code,
+        protected bool|string $value,
+        protected ?string     $minRange,
+        protected ?string     $maxRange,
     )
     {
     }
@@ -32,7 +32,7 @@ class LabResult implements LabResultInterface
         return $this->name;
     }
 
-    public function getValue(): string
+    public function getValue(): bool|string
     {
         return $this->value;
     }
@@ -53,7 +53,7 @@ class LabResult implements LabResultInterface
             'id'        => $this->getId(),
             'name'      => $this->getName(),
             'code'      => $this->getCode(),
-            'value'     => $this->getValue(),
+            'value'     => $this->value,
             'min_range' => $this->getMinRange(),
             'max_range' => $this->getMaxRange(),
         ];
