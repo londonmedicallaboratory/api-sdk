@@ -61,7 +61,6 @@ abstract class AbstractRepository extends AbstractViewFactory
         return $await ? await($promise, Loop::get()) : $promise;
     }
 
-
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      *
@@ -180,7 +179,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findOneByDeprecated(array $filters = [], ?string $url = null, bool $await = false)
     {
-        $paginated = $this->findPaginated($filters, $url);
+        $paginated = $this->paginate($filters, $url);
 
         $promise = $paginated->then(function (PaginatedResults $results) {
             return $results->first();
@@ -216,7 +215,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findBy(array $filters = [], ?string $url = null, int $page = 1, array &$stored = []): PromiseInterface
     {
-        $promise = $this->findPaginated($filters, $url, $page);
+        $promise = $this->paginate($filters, $url, $page);
 
         return $promise->then(function (PaginatedResults $paginatedResults) use ($filters, $url, &$stored) {
             foreach ($paginatedResults->getItems() as $item) {
@@ -232,9 +231,11 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
-     * @return PromiseInterface<PaginatedResults<TView>>
+     * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
+     *
+     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
      */
-    public function findPaginated(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
+    public function paginate(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
     {
         $client = $this->getClient();
         if (!$url) {
@@ -244,7 +245,7 @@ abstract class AbstractRepository extends AbstractViewFactory
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
         $promise = $client->getAsync($url, $filters, $page, cacheTimeout: $this->getCacheTimeout());
 
-        return $promise
+        $paginationPromise = $promise
             ->then(function (array $data) {
                 $views = [];
                 $items = $data['items'] ?? [];
@@ -257,24 +258,15 @@ abstract class AbstractRepository extends AbstractViewFactory
                 }
 
                 return new PaginatedResults(
-                    currentPage   : $data['current_page'] ?? 1,
-                    nrOfPages     : $data['nr_of_pages'] ?? 1,
+                    currentPage: $data['current_page'] ?? 1,
+                    nrOfPages: $data['nr_of_pages'] ?? 1,
                     resultsPerPage: $data['results_per_page'] ?? 10,
-                    nextPage      : $data['next_page'] ?? null,
-                    items         : $views,
+                    nextPage: $data['next_page'] ?? null,
+                    items: $views,
                 );
             });
-    }
 
-    /**
-     * @return PaginatedResults<TView>
-     */
-    public function awaitPaginated(array $filters = [], ?string $url = null, int $page = 1): PaginatedResults
-    {
-        $promise = $this->findPaginated($filters, $url, $page);
-        $lazy = new LazyPromise($promise);
-
-        return $lazy->getValue();
+        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
     }
 
     /**
@@ -285,6 +277,11 @@ abstract class AbstractRepository extends AbstractViewFactory
         return $this->findBy(filters: $filters, url: $url);
     }
 
+    /**
+     * Used by Symfony
+     *
+     * @noinspection PhpUnused
+     */
     public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
