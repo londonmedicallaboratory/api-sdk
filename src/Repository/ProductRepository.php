@@ -8,11 +8,11 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
-use LML\SDK\Entity\Shipping\ShippingInterface;
-use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
@@ -25,7 +25,7 @@ use function sprintf;
  */
 class ProductRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer)
+    protected function one($entity, $options, $optimizer): Product
     {
         $priceData = $entity['price'];
 
@@ -90,9 +90,9 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<list<ShippingInterface>>
+     * @return PromiseInterface<list<Shipping>>
      */
-    private function getShippingTypes(string $id)
+    private function getShippingTypes(string $id): PromiseInterface
     {
         $url = sprintf('/product/%s/shipping', $id);
 

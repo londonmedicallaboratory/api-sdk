@@ -12,9 +12,9 @@ use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Shipping\ShippingInterface;
 use function sprintf;
 
 /**
@@ -26,7 +26,7 @@ use function sprintf;
  */
 class OrderRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer): Order
+    protected function one($entity, $options, $optimizer): OrderInterface
     {
         $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
         $address = $this->get(AddressRepository::class)->buildOne($entity['address']);
@@ -60,9 +60,9 @@ class OrderRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<?ShippingInterface>
+     * @return PromiseInterface<?Shipping>
      */
-    private function getShipping(string $id)
+    private function getShipping(string $id): PromiseInterface
     {
         $url = sprintf('/order/%s/shipping', $id);
 

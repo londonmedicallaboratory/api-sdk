@@ -12,7 +12,7 @@ use LML\SDK\Entity\ModelInterface;
 
 /**
  * @psalm-type S=array{
- *      id: string,
+ *      id: ?string,
  *      first_name: string,
  *      last_name: string,
  *      gender: string,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Patient;
 
+use LogicException;
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Attribute\Entity;
@@ -15,13 +16,13 @@ use function sprintf;
 class Patient implements PatientInterface
 {
     public function __construct(
-        private string            $id,
         private string            $firstName,
         private string            $lastName,
         private GenderEnum        $gender,
         private DateTimeInterface $dateOfBirth,
         private ?EthnicityEnum    $ethnicity,
         private ?string           $email,
+        private ?string           $id = null,
     )
     {
     }
@@ -33,7 +34,7 @@ class Patient implements PatientInterface
 
     public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new LogicException('Model has not been saved yet.');
     }
 
     public function getFirstName(): string
@@ -69,7 +70,7 @@ class Patient implements PatientInterface
     public function toArray()
     {
         return [
-            'id'            => $this->getId(),
+            'id'            => $this->id,
             'first_name'    => $this->getFirstName(),
             'last_name'     => $this->getLastName(),
             'gender'        => $this->getGender()->value,
