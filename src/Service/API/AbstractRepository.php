@@ -37,6 +37,8 @@ abstract class AbstractRepository extends AbstractViewFactory
 
     private ?ClientInterface $client = null;
 
+    private ?EntityManager $entityManager = null;
+
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      *
@@ -277,6 +279,11 @@ abstract class AbstractRepository extends AbstractViewFactory
         return $this->findBy(filters: $filters, url: $url);
     }
 
+    protected function getClient(): ClientInterface
+    {
+        return $this->client ?? throw new RuntimeException('Client is not defined.');
+    }
+
     /**
      * Used by Symfony
      *
@@ -287,9 +294,19 @@ abstract class AbstractRepository extends AbstractViewFactory
         $this->client = $client;
     }
 
-    protected function getClient(): ClientInterface
+    public function getEntityManager(): ?EntityManager
     {
-        return $this->client ?? throw new RuntimeException('Client is not defined.');
+        return $this->entityManager ?? throw new RuntimeException('Entity manager is not defined.');;
+    }
+
+    /**
+     * Used by Symfony
+     *
+     * @noinspection PhpUnused
+     */
+    public function setEntityManager(EntityManager $entityManager): void
+    {
+        $this->entityManager = $entityManager;
     }
 
     abstract protected function getBaseUrl(): string;

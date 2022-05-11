@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\DependencyInjection;
 
+use LML\SDK\Service\API\EntityManager;
 use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;
 use LML\SDK\Service\API\AbstractRepository;
@@ -30,6 +31,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
         foreach ($repos as $id => $_repo) {
             $definition = $container->getDefinition($id);
             $definition->addMethodCall('setClient', [new Reference('lml_sdk.client')]);
+            $definition->addMethodCall('setEntityManager', [new Reference(EntityManager::class)]);
         }
     }
 

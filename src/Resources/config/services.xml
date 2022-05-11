@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
 
         <defaults autoconfigure="true" autowire="true"/>
 
-        <service id="lml_sdk.form.extension.named_enum_type_extension" class="LML\SDK\Form\Extension\NamedEnumTypeExtension" />
+        <service id="lml_sdk.form.extension.named_enum_type_extension"
+                 class="LML\SDK\Form\Extension\NamedEnumTypeExtension"/>
         <service id="lml_sdk.client" class="LML\SDK\Service\Client\Client"/>
 
         <service id="LML\SDK\Repository\ProductRepository">
@@ -44,6 +45,9 @@
         <service id="LML\SDK\Repository\PageRepository">
             <tag name="lml_sdk.repository"/>
         </service>
+        <service id="LML\SDK\Repository\PatientRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
         <service id="LML\SDK\Repository\TestLocationRepository">
             <tag name="lml_sdk.repository"/>
         </service>
@@ -77,6 +81,7 @@
 
         <service id="LML\SDK\Service\API\EntityManager">
             <argument type="tagged_locator" tag="lml_sdk.repository" default-index-method="getDefaultName"/>
+            <argument type="service" id="lml_sdk.client"/>
         </service>
 
         <service id="LML\SDK\ArgumentValueResolver\EntityParamConverter">
