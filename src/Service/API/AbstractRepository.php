@@ -11,7 +11,6 @@ use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
 use LML\View\Lazy\LazyValueInterface;
-use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
@@ -141,18 +140,6 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
-     * @param TView $model
-     *
-     * @return PromiseInterface<ResponseInterface>
-     */
-    public function persist(ModelInterface $model): PromiseInterface
-    {
-        $client = $this->getClient();
-
-        return $client->post($this->getBaseUrl(), $model->toArray());
-    }
-
-    /**
      * @param TFilters $filters
      *
      * @return LazyValueInterface<?TView>
@@ -260,11 +247,11 @@ abstract class AbstractRepository extends AbstractViewFactory
                 }
 
                 return new PaginatedResults(
-                    currentPage: $data['current_page'] ?? 1,
-                    nrOfPages: $data['nr_of_pages'] ?? 1,
+                    currentPage   : $data['current_page'] ?? 1,
+                    nrOfPages     : $data['nr_of_pages'] ?? 1,
                     resultsPerPage: $data['results_per_page'] ?? 10,
-                    nextPage: $data['next_page'] ?? null,
-                    items: $views,
+                    nextPage      : $data['next_page'] ?? null,
+                    items         : $views,
                 );
             });
 
@@ -277,6 +264,34 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function findFromUrl(string $url, array $filters = []): PromiseInterface
     {
         return $this->findBy(filters: $filters, url: $url);
+    }
+
+    /**
+     * @param TView $model
+     */
+    public function persist(ModelInterface $model): void
+    {
+        $this->getEntityManager()->persist($model);
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    
+    public function getEntityManager(): EntityManager
+    {
+        return $this->entityManager ?? throw new RuntimeException('Entity manager is not defined.');
+    }
+
+    /**
+     * Used by Symfony
+     *
+     * @noinspection PhpUnused
+     */
+    public function setEntityManager(EntityManager $entityManager): void
+    {
+        $this->entityManager = $entityManager;
     }
 
     protected function getClient(): ClientInterface
@@ -292,21 +307,6 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
-    }
-
-    public function getEntityManager(): ?EntityManager
-    {
-        return $this->entityManager ?? throw new RuntimeException('Entity manager is not defined.');;
-    }
-
-    /**
-     * Used by Symfony
-     *
-     * @noinspection PhpUnused
-     */
-    public function setEntityManager(EntityManager $entityManager): void
-    {
-        $this->entityManager = $entityManager;
     }
 
     abstract protected function getBaseUrl(): string;

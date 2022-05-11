@@ -9,7 +9,7 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
-#[Entity(repositoryClass: TestLocationRepository::class)]
+#[Entity(repositoryClass: TestLocationRepository::class, baseUrl: 'test_location')]
 class TestLocation implements TestLocationInterface
 {
     /**

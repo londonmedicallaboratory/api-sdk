@@ -14,7 +14,7 @@ use LML\SDK\Entity\Customer\CustomerInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use function array_map;
 
-#[Entity(repositoryClass: OrderRepository::class)]
+#[Entity(repositoryClass: OrderRepository::class, baseUrl: 'order')]
 class Order implements OrderInterface
 {
     /**

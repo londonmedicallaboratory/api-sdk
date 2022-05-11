@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Customer;
 
+use LML\SDK\Attribute\Entity;
 use LML\SDK\Repository\CustomerRepository;
 use function sprintf;
 
 /**
  * @see CustomerRepository::one()
  */
+#[Entity(repositoryClass: CustomerRepository::class, baseUrl: 'customer')]
 class Customer implements CustomerInterface
 {
     public function __construct(

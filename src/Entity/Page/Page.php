@@ -7,7 +7,7 @@ namespace LML\SDK\Entity\Page;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Repository\PageRepository;
 
-#[Entity(repositoryClass: PageRepository::class)]
+#[Entity(repositoryClass: PageRepository::class, baseUrl: 'page')]
 class Page implements PageInterface
 {
     public function __construct(

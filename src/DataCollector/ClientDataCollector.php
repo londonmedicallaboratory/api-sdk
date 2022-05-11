@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 
-class ClientDecorator extends AbstractDataCollector implements ClientInterface
+class ClientDataCollector extends AbstractDataCollector implements ClientInterface
 {
     /**
      * @psalm-suppress NonInvariantDocblockPropertyType
@@ -47,9 +47,9 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
 
         $isCached = $promise instanceof CachedItemPromise;
         $this->data['requests'][] = [
-            'url' => $url,
-            'cached' => $isCached,
-            'method' => 'GET',
+            'url'     => $url,
+            'cached'  => $isCached,
+            'method'  => 'GET',
             'filters' => $filters,
         ];
 
@@ -68,6 +68,13 @@ class ClientDecorator extends AbstractDataCollector implements ClientInterface
         $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'PATCH', 'filters' => []];
 
         return $this->client->patch($url, $data);
+    }
+
+    public function delete(string $url, string $id): PromiseInterface
+    {
+        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'DELETE', 'filters' => []];
+
+        return $this->client->delete($url, $id);
     }
 
     public function collect(Request $request, Response $response, Throwable $exception = null): void

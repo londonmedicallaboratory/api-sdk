@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Product;
 
 use LML\SDK\Attribute\Entity;
-use LML\SDK\Entity\File\FileInterface;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 
-#[Entity(repositoryClass: ProductRepository::class)]
+#[Entity(repositoryClass: ProductRepository::class, baseUrl: 'product')]
 class Product implements ProductInterface
 {
     /**
-     * @see ProductRepository::one()
-     *
      * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
      * @param LazyValueInterface<list<ShippingInterface>> $shippingTypes
      * @param LazyValueInterface<list<FileInterface>> $files
      * @param LazyValueInterface<list<CategoryInterface>> $categories
+     * @see ProductRepository::one()
+     *
      */
     public function __construct(
         protected string             $id,
@@ -122,17 +122,17 @@ class Product implements ProductInterface
         $price = $this->getPrice();
 
         return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'sku' => $this->getSku(),
-            'slug' => $this->getSlug(),
-            'description' => $this->getLongDescription(),
+            'id'                => $this->getId(),
+            'name'              => $this->getName(),
+            'sku'               => $this->getSku(),
+            'slug'              => $this->getSlug(),
+            'description'       => $this->getLongDescription(),
             'short_description' => $this->getShortDescription(),
             'preview_image_url' => $this->getPreviewImageUrl(),
-            'test_to_release' => $this->isTestToRelease(),
-            'price' => [
-                'amount_minor' => $price->getAmount(),
-                'currency' => $price->getCurrency(),
+            'test_to_release'   => $this->isTestToRelease(),
+            'price'             => [
+                'amount_minor'    => $price->getAmount(),
+                'currency'        => $price->getCurrency(),
                 'formatted_value' => $price->getFormattedValue(),
             ],
         ];

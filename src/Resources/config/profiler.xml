@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="LML\SDK\DataCollector\ClientDecorator" decorates="lml_sdk.client" public="false">
+        <service id="LML\SDK\DataCollector\ClientDataCollector" decorates="lml_sdk.client" public="false">
             <argument type="service" id=".inner"/>
-            <tag name="data_collector" template="@LMLSDK/profiler/client_collector.html.twig" priority="-200"  id="lml_sdk.client_collector"  />
+            <tag name="data_collector"
+                 template="@LMLSDK/profiler/client_collector.html.twig" priority="-200"
+                 id="lml_sdk.client_collector"/>
         </service>
 
     </services>

@@ -7,8 +7,8 @@ namespace LML\SDK\Repository;
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Biomarker\Biomarker;
-use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
@@ -26,18 +26,18 @@ class BiomarkerRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Biomarker(
-            id: $id,
-            name: $entity['name'],
-            slug: $entity['slug'],
-            code: $entity['code'],
+            id         : $id,
+            name       : $entity['name'],
+            slug       : $entity['slug'],
+            code       : $entity['code'],
             description: $entity['description'],
-            category: new LazyPromise($this->getCategory($id)),
+            category   : new LazyPromise($this->getCategory($id)),
         );
     }
 
     protected function getBaseUrl(): string
     {
-        return '/biomarkers';
+        return '/biomarker';
     }
 
     /**

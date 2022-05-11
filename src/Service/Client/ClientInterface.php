@@ -19,10 +19,15 @@ interface ClientInterface
     /**
      * @return PromiseInterface<ResponseInterface>
      */
-    public function post(string $url, array $data);
+    public function post(string $url, array $data): PromiseInterface;
 
     /**
      * @return PromiseInterface<ResponseInterface>
      */
     public function patch(string $url, array $data): PromiseInterface;
+
+    /**
+     * @return PromiseInterface<ResponseInterface>
+     */
+    public function delete(string $url, string $id): PromiseInterface;
 }

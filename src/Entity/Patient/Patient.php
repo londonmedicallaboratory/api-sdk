@@ -6,9 +6,12 @@ namespace LML\SDK\Entity\Patient;
 
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
+use LML\SDK\Attribute\Entity;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\SDK\Repository\PatientRepository;
 use function sprintf;
 
+#[Entity(repositoryClass: PatientRepository::class, baseUrl: 'patient')]
 class Patient implements PatientInterface
 {
     public function __construct(

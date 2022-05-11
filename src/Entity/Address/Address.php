@@ -9,7 +9,7 @@ use LML\SDK\Repository\AddressRepository;
 use function implode;
 use function array_filter;
 
-#[Entity(repositoryClass: AddressRepository::class)]
+#[Entity(repositoryClass: AddressRepository::class, baseUrl: 'address')]
 class Address implements AddressInterface
 {
     public function __construct(

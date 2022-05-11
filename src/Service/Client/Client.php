@@ -45,7 +45,7 @@ class Client implements ClientInterface
         return $this->browser->patch($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
 
-    public function post(string $url, array $data)
+    public function post(string $url, array $data): PromiseInterface
     {
         $baseUrl = rtrim($this->baseUrl, '/');
         $url = ltrim($url, '/');
@@ -53,6 +53,16 @@ class Client implements ClientInterface
         $url = sprintf('%s/%s/', $baseUrl, $url);
 
         return $this->browser->post($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
+    }
+
+    public function delete(string $url, string $id): PromiseInterface
+    {
+        $baseUrl = rtrim($this->baseUrl, '/');
+        $url = ltrim($url, '/');
+
+        $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
+
+        return $this->browser->delete($url);
     }
 
     /**
@@ -116,7 +126,6 @@ class Client implements ClientInterface
      */
     private function getAuthHeaders(): array
     {
-
         return [
             'Authorization' => 'Bearer ' . $this->apiToken,
         ];

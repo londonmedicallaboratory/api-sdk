@@ -14,6 +14,7 @@ class Entity
      */
     public function __construct(
         private string $repositoryClass,
+        private string $baseUrl,
     )
     {
     }
@@ -24,5 +25,10 @@ class Entity
     public function getRepositoryClass(): string
     {
         return $this->repositoryClass;
+    }
+
+    public function getBaseUrl(): string
+    {
+        return $this->baseUrl;
     }
 }

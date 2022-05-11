@@ -51,12 +51,17 @@ class FakerClient implements ClientInterface
         throw new RuntimeException(sprintf('URL "%s" is not faked.', $url));
     }
 
-    public function post(string $url, array $data)
+    public function post(string $url, array $data): never
     {
         throw new RuntimeException('Not supported for faker.');
     }
 
-    public function patch(string $url, array $data): PromiseInterface
+    public function delete(string $url, string $id): never
+    {
+        throw new RuntimeException('Not supported for faker.');
+    }
+
+    public function patch(string $url, array $data): never
     {
         throw new RuntimeException('Not implemented.');
     }

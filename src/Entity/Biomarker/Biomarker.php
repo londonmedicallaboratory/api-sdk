@@ -9,18 +9,18 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\BiomarkerRepository;
 use LML\SDK\Entity\Category\CategoryInterface;
 
-#[Entity(repositoryClass: BiomarkerRepository::class)]
+#[Entity(repositoryClass: BiomarkerRepository::class, baseUrl: 'biomarkers')]
 class Biomarker implements BiomarkerInterface
 {
     /**
      * @param LazyValueInterface<CategoryInterface> $category
      */
     public function __construct(
-        protected string $id,
-        protected string $name,
-        protected string $slug,
-        protected string $code,
-        protected ?string $description,
+        protected string             $id,
+        protected string             $name,
+        protected string             $slug,
+        protected string             $code,
+        protected ?string            $description,
         protected LazyValueInterface $category,
     )
     {

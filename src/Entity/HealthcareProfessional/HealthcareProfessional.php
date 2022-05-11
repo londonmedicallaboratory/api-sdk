@@ -8,7 +8,7 @@ use LML\SDK\Attribute\Entity;
 use LML\SDK\Repository\HealthcareProfessionalRepository;
 use function sprintf;
 
-#[Entity(repositoryClass: HealthcareProfessionalRepository::class)]
+#[Entity(repositoryClass: HealthcareProfessionalRepository::class, baseUrl: 'healthcare_professional')]
 class HealthcareProfessional implements HealthcareProfessionalInterface
 {
     public function __construct(

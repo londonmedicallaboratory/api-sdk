@@ -7,7 +7,7 @@ namespace LML\SDK\Entity\Category;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Repository\ProductCategoryRepository;
 
-#[Entity(repositoryClass: ProductCategoryRepository::class)]
+#[Entity(repositoryClass: ProductCategoryRepository::class, baseUrl: 'product_categories')]
 class Category implements CategoryInterface
 {
     public function __construct(
@@ -44,12 +44,12 @@ class Category implements CategoryInterface
         return $this->description;
     }
 
-    public function getBiomarkers()
+    public function getBiomarkers(): array
     {
         return [];
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id'          => $this->getId(),
