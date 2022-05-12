@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <psalm
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         errorLevel="1"
         resolveFromConfigFile="true"
         findUnusedPsalmSuppress="true"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
@@ -15,6 +15,7 @@
 
     <projectFiles>
         <directory name="src"/>
+        <!--        <directory name="tests"/>-->
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="src/DependencyInjection"/>
@@ -31,7 +32,7 @@
     <!-- Remove once full support for enums is released -->
     <issueHandlers>
 
-        <UnusedMethodCall errorLevel="suppress" />
+        <UnusedMethodCall errorLevel="suppress"/>
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <referencedMethod name="*::from"/>

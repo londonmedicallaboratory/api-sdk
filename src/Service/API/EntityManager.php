@@ -6,12 +6,14 @@ namespace LML\SDK\Service\API;
 
 use LogicException;
 use ReflectionClass;
+use React\EventLoop\Loop;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
 /**
@@ -98,6 +100,33 @@ class EntityManager
         }
         $this->newEntities = [];
         $this->entitiesToBeDeleted = [];
+    }
+
+    /**
+     * @template TView
+     * @param class-string<TView> $className
+     *
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
+     *
+     * @psalm-suppress all
+     */
+    public function find(string $className, string $id, bool $await = false)
+    {
+        $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
+        $client = $this->client;
+
+        $promise = $client->getAsync($url, cacheTimeout: 30)
+            ->then(function ($data) use ($className) {
+                if (!$data) {
+                    return null;
+                }
+                $id = (string)$data['id'];
+
+                /** psalm-suppress MixedArgument */
+                return $this->cache[$id] ??= $this->getRepository($className)->buildOne($data);
+            });
+
+        return $await ? await($promise, Loop::get()) : $promise;
     }
 
     /**

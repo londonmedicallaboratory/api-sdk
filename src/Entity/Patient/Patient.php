@@ -27,6 +27,31 @@ class Patient implements PatientInterface
     {
     }
 
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function setDateOfBirth(DateTimeInterface $dateOfBirth): void
+    {
+        $this->dateOfBirth = $dateOfBirth;
+    }
+
+    public function setEthnicity(?EthnicityEnum $ethnicity): void
+    {
+        $this->ethnicity = $ethnicity;
+    }
+
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
     public function __toString(): string
     {
         return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
