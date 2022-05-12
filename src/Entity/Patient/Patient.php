@@ -27,31 +27,6 @@ class Patient implements PatientInterface
     {
     }
 
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function setLastName(string $lastName): void
-    {
-        $this->lastName = $lastName;
-    }
-
-    public function setDateOfBirth(DateTimeInterface $dateOfBirth): void
-    {
-        $this->dateOfBirth = $dateOfBirth;
-    }
-
-    public function setEthnicity(?EthnicityEnum $ethnicity): void
-    {
-        $this->ethnicity = $ethnicity;
-    }
-
-    public function setEmail(?string $email): void
-    {
-        $this->email = $email;
-    }
-
     public function __toString(): string
     {
         return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
@@ -67,14 +42,19 @@ class Patient implements PatientInterface
         return $this->firstName;
     }
 
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
     public function getLastName(): string
     {
         return $this->lastName;
     }
 
-    public function getGender(): GenderEnum
+    public function setLastName(string $lastName): void
     {
-        return $this->gender;
+        $this->lastName = $lastName;
     }
 
     public function getDateOfBirth(): DateTimeInterface
@@ -82,14 +62,39 @@ class Patient implements PatientInterface
         return $this->dateOfBirth;
     }
 
-    public function getEthnicity(): ?EthnicityEnum
+    public function setDateOfBirth(DateTimeInterface $dateOfBirth): void
     {
-        return $this->ethnicity;
+        $this->dateOfBirth = $dateOfBirth;
     }
 
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getGender(): GenderEnum
+    {
+        return $this->gender;
+    }
+
+    public function setGender(GenderEnum $gender): void
+    {
+        $this->gender = $gender;
+    }
+
+    public function getEthnicity(): ?EthnicityEnum
+    {
+        return $this->ethnicity;
+    }
+
+    public function setEthnicity(?EthnicityEnum $ethnicity): void
+    {
+        $this->ethnicity = $ethnicity;
     }
 
     public function toArray()
