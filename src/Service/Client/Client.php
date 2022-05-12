@@ -35,12 +35,15 @@ class Client implements ClientInterface
         $this->browser = new Browser();
     }
 
-    public function patch(string $url, array $data): PromiseInterface
+    public function patch(string $url, string $id, array $data): PromiseInterface
     {
         $baseUrl = rtrim($this->baseUrl, '/');
         $url = ltrim($url, '/');
 
-        $url = sprintf('%s/%s/', $baseUrl, $url);
+        $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
+        unset($data['id']);
+        $cacheKey = $this->createCacheKey($url);
+        $this->cache->deleteItem($cacheKey);
 
         return $this->browser->patch($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
@@ -105,7 +108,12 @@ class Client implements ClientInterface
 
         $url = sprintf('%s/%s', $baseUrl, $url);
 
-        $queryParams = http_build_query(array_merge(['page' => $page], $filters));
+        $extras = [];
+        if ($page !== 1) {
+            $extras['page'] = $page;
+        }
+        $merge = array_merge($extras, $filters);
+        $queryParams = http_build_query($merge);
         if ($queryParams) {
             $url .= '?' . $queryParams;
         }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\API;
 
+use LogicException;
 use RuntimeException;
+use ReflectionMethod;
 use React\EventLoop\Loop;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\ModelInterface;
@@ -40,26 +42,12 @@ abstract class AbstractRepository extends AbstractViewFactory
 
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
-     *
-     * @psalm-suppress MixedArrayAccess
      */
     public function find(string $id, bool $await = false)
     {
-        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
-        $client = $this->getClient();
+        $className = $this->extractTView();
 
-        $promise = $client->getAsync($url, cacheTimeout: $this->getCacheTimeout())
-            ->then(function ($data) {
-                if (!$data) {
-                    return null;
-                }
-                $id = (string)$data['id'];
-
-                /** @psalm-suppress MixedArgument */
-                return $this->cache[$id] ??= $this->buildOne($data);
-            });
-
-        return $await ? await($promise, Loop::get()) : $promise;
+        return $this->getEntityManager()->find($className, $id, $await);
     }
 
     /**
@@ -278,7 +266,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     {
         $this->getEntityManager()->flush();
     }
-    
+
     public function getEntityManager(): EntityManager
     {
         return $this->entityManager ?? throw new RuntimeException('Entity manager is not defined.');
@@ -317,5 +305,33 @@ abstract class AbstractRepository extends AbstractViewFactory
     protected function getCacheTimeout(): ?int
     {
         return null;
+    }
+
+    /**
+     * @return class-string<TView>
+     *
+     * We can "thank" PHP for lack of generics:
+     *
+     * @psalm-suppress LessSpecificReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     */
+    private function extractTView(): string
+    {
+        $rc = new ReflectionMethod($this, 'one');
+        /** @psalm-suppress UndefinedMethod */
+        $name = $rc->getReturnType()?->getName() ?? throw new LogicException('You **must** typehint return value of \'one\' method.');
+
+        if (!is_string($name)) {
+            throw new LogicException('Reflection failed.');
+        }
+
+        if (!class_exists($name)) {
+            throw new LogicException(sprintf('Class \'%s\' does not exist.', $name));
+        }
+        if (!is_a($name, ModelInterface::class, true)) {
+            throw new LogicException(sprintf('Class \'%s\' must implement \'%s\'.', $name, ModelInterface::class));
+        }
+
+        return $name;
     }
 }

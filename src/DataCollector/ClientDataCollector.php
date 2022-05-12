@@ -63,11 +63,11 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
         return $this->client->post($url, $data);
     }
 
-    public function patch(string $url, array $data): PromiseInterface
+    public function patch(string $url, string $id, array $data): PromiseInterface
     {
         $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'PATCH', 'filters' => []];
 
-        return $this->client->patch($url, $data);
+        return $this->client->patch($url, $id, $data);
     }
 
     public function delete(string $url, string $id): PromiseInterface

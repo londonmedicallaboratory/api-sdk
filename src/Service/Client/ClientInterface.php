@@ -24,7 +24,7 @@ interface ClientInterface
     /**
      * @return PromiseInterface<ResponseInterface>
      */
-    public function patch(string $url, array $data): PromiseInterface;
+    public function patch(string $url, string $id, array $data): PromiseInterface;
 
     /**
      * @return PromiseInterface<ResponseInterface>

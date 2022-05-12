@@ -61,7 +61,7 @@ class FakerClient implements ClientInterface
         throw new RuntimeException('Not supported for faker.');
     }
 
-    public function patch(string $url, array $data): never
+    public function patch(string $url, string $id, array $data): never
     {
         throw new RuntimeException('Not implemented.');
     }

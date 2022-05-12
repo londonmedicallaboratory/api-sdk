@@ -9,6 +9,7 @@ use ReflectionClass;
 use React\EventLoop\Loop;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
+use React\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
@@ -37,6 +38,11 @@ class EntityManager
     private array $managed = [];
 
     /**
+     * @var array<class-string, array<string, array>>
+     */
+    private array $fetchedValues = [];
+
+    /**
      * @param ServiceLocator<class-string, AbstractRepository> $repositories
      */
     public function __construct(
@@ -44,6 +50,39 @@ class EntityManager
         private ClientInterface $client,
     )
     {
+    }
+
+    /**
+     * @template TView of ModelInterface
+     * @param class-string<TView> $className
+     *
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
+     *
+     * @psalm-suppress all
+     */
+    public function find(string $className, string $id, bool $await = false): null|ModelInterface|PromiseInterface
+    {
+        $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
+        $client = $this->client;
+
+        $promise = $client->getAsync($url, cacheTimeout: 30)
+            ->then(function ($data) use ($className) {
+                if (!$data) {
+                    return null;
+                }
+                $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
+                $this->fetchedValues[$className][$id] = $data;
+                $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
+                $repo = $this->getRepository($repoName);
+                $entity = $repo->buildOne($data);
+                $this->managed[spl_object_hash($entity)] = $entity;
+
+                return $entity;
+            }, onRejected: function () {
+                return null;
+            });
+
+        return $await ? await($promise, Loop::get()) : $promise;
     }
 
     public function persist(ModelInterface $model): void
@@ -84,8 +123,13 @@ class EntityManager
         }
 
         foreach ($this->managed as $entity) {
+            $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
+            // no changes to entity
+            if ($fetchedValues === $entity->toArray()) {
+                continue;
+            }
             $baseUrl = $this->getBaseUrl(get_class($entity));
-            $promises[] = $this->client->patch($baseUrl . '/' . $entity->getId(), $entity->toArray());
+            $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
         }
 
         foreach ($this->entitiesToBeDeleted as $entity) {
@@ -103,38 +147,19 @@ class EntityManager
     }
 
     /**
-     * @template TView
-     * @param class-string<TView> $className
-     *
-     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
-     *
-     * @psalm-suppress all
-     */
-    public function find(string $className, string $id, bool $await = false)
-    {
-        $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
-        $client = $this->client;
-
-        $promise = $client->getAsync($url, cacheTimeout: 30)
-            ->then(function ($data) use ($className) {
-                if (!$data) {
-                    return null;
-                }
-                $id = (string)$data['id'];
-
-                /** psalm-suppress MixedArgument */
-                return $this->cache[$id] ??= $this->getRepository($className)->buildOne($data);
-            });
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
      * @param class-string $className
      */
     public function getRepository(string $className): AbstractRepository
     {
         return $this->repositories->get($className);
+    }
+
+    /**
+     * @param class-string $className
+     */
+    private function getEntityAttribute(string $className): Entity
+    {
+        return ReflectionAttributeReader::getAttribute($className, Entity::class) ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
     }
 
     /**
