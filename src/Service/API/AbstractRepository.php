@@ -16,7 +16,6 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
-use function rtrim;
 use function sprintf;
 use function Clue\React\Block\await;
 
@@ -48,6 +47,50 @@ abstract class AbstractRepository extends AbstractViewFactory
         $className = $this->extractTView();
 
         return $this->getEntityManager()->find($className, $id, $await);
+    }
+
+    /**
+     * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
+     *
+     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
+     *
+     * @psalm-suppress all
+     */
+    public function paginate(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
+    {
+        $className = $this->extractTView();
+
+        return $this->getEntityManager()->paginate($className, $filters, $url, $page, $await);
+//        $client = $this->getClient();
+//        if (!$url) {
+//            $url = rtrim($this->getBaseUrl(), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
+//        }
+//
+//        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
+//        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: $this->getCacheTimeout());
+//
+//        $paginationPromise = $promise
+//            ->then(function (array $data) {
+//                $views = [];
+//                $items = $data['items'] ?? [];
+//                foreach ($items as $item) {
+//                    /** @var ?string $id */
+//                    $id = $item['id'] ?? throw new RuntimeException();
+//                    /** @psalm-suppress PossiblyInvalidArgument */
+//                    $view = $this->cache[(string)$id] ??= $this->buildOne($item);
+//                    $views[] = $view;
+//                }
+//
+//                return new PaginatedResults(
+//                    currentPage   : $data['current_page'] ?? 1,
+//                    nrOfPages     : $data['nr_of_pages'] ?? 1,
+//                    resultsPerPage: $data['results_per_page'] ?? 10,
+//                    nextPage      : $data['next_page'] ?? null,
+//                    items         : $views,
+//                );
+//            });
+//
+//        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
     }
 
     /**
@@ -118,13 +161,6 @@ abstract class AbstractRepository extends AbstractViewFactory
             });
 
         return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    public function patchId(string $id, array $data): PromiseInterface
-    {
-        $client = $this->getClient();
-
-        return $client->patch($this->getBaseUrl() . '/' . $id, $data);
     }
 
     /**
@@ -205,45 +241,6 @@ abstract class AbstractRepository extends AbstractViewFactory
 
             return $this->findBy($filters, $url, $nextPage, $stored);
         });
-    }
-
-    /**
-     * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
-     *
-     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
-     */
-    public function paginate(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
-    {
-        $client = $this->getClient();
-        if (!$url) {
-            $url = rtrim($this->getBaseUrl(), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
-        }
-
-        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
-        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: $this->getCacheTimeout());
-
-        $paginationPromise = $promise
-            ->then(function (array $data) {
-                $views = [];
-                $items = $data['items'] ?? [];
-                foreach ($items as $item) {
-                    /** @var ?string $id */
-                    $id = $item['id'] ?? throw new RuntimeException();
-                    /** @psalm-suppress PossiblyInvalidArgument */
-                    $view = $this->cache[(string)$id] ??= $this->buildOne($item);
-                    $views[] = $view;
-                }
-
-                return new PaginatedResults(
-                    currentPage   : $data['current_page'] ?? 1,
-                    nrOfPages     : $data['nr_of_pages'] ?? 1,
-                    resultsPerPage: $data['results_per_page'] ?? 10,
-                    nextPage      : $data['next_page'] ?? null,
-                    items         : $views,
-                );
-            });
-
-        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
     }
 
     /**

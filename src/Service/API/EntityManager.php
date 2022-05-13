@@ -10,6 +10,7 @@ use React\EventLoop\Loop;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
+use LML\SDK\Entity\PaginatedResults;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
@@ -70,19 +71,53 @@ class EntityManager
                 if (!$data) {
                     return null;
                 }
-                $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
-                $this->fetchedValues[$className][$id] = $data;
-                $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
-                $repo = $this->getRepository($repoName);
-                $entity = $repo->buildOne($data);
-                $this->managed[spl_object_hash($entity)] = $entity;
 
-                return $entity;
+                return $this->store($className, $data);
             }, onRejected: function () {
                 return null;
             });
 
         return $await ? await($promise, Loop::get()) : $promise;
+    }
+
+    /**
+     * @template TPag of ModelInterface
+     *
+     * @return ($await is true ? PaginatedResults<TPag> : PromiseInterface<PaginatedResults<TPag>>)
+     *
+     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
+     *
+     * @psalm-suppress all
+     */
+    public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
+    {
+        $client = $this->client;
+        if (!$url) {
+            $url = rtrim($this->getBaseUrl($className), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
+        }
+
+        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
+        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: 30);
+
+        $paginationPromise = $promise
+            ->then(function (array $data) use ($className) {
+                $views = [];
+                $items = $data['items'] ?? [];
+                foreach ($items as $item) {
+                    $view = $this->store($className, $item);
+                    $views[] = $view;
+                }
+
+                return new PaginatedResults(
+                    currentPage   : $data['current_page'] ?? 1,
+                    nrOfPages     : $data['nr_of_pages'] ?? 1,
+                    resultsPerPage: $data['results_per_page'] ?? 10,
+                    nextPage      : $data['next_page'] ?? null,
+                    items         : $views,
+                );
+            });
+
+        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
     }
 
     public function persist(ModelInterface $model): void
@@ -152,6 +187,19 @@ class EntityManager
     public function getRepository(string $className): AbstractRepository
     {
         return $this->repositories->get($className);
+    }
+
+    private function store(string $className, array $data): ModelInterface
+    {
+        $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
+
+        $this->fetchedValues[$className][$id] = $data;
+        $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
+        $repo = $this->getRepository($repoName);
+        $entity = $repo->buildOne($data);
+        $this->managed[spl_object_hash($entity)] = $entity;
+
+        return $entity;
     }
 
     /**

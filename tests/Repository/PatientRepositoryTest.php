@@ -9,6 +9,7 @@ use Exception;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Repository\PatientRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -35,7 +36,7 @@ class PatientRepositoryTest extends KernelTestCase
         self::assertNotNull($patient->getId());
     }
 
-    public function testLoadOne(): void
+    public function testUpdate(): void
     {
         self::bootKernel();
         /** @var PatientRepository $repo */
@@ -45,6 +46,8 @@ class PatientRepositoryTest extends KernelTestCase
         $patient = $repo->find('ed0e6483-7f0e-4861-810c-5b3050005df1', await: true) ?? throw new Exception('No id.');
         self::assertInstanceOf(Patient::class, $patient);
         $patient->setFirstName($randomName);
+        $patient->setDateOfBirth(new DateTime('2010-01-30'));
+        $patient->setGender(GenderEnum::NON_BINARY);
         $repo->flush();
 
         // let's load same patient, see if the cache has been invalidated after update
@@ -58,9 +61,8 @@ class PatientRepositoryTest extends KernelTestCase
         /** @var PatientRepository $repo */
         $repo = self::$kernel->getContainer()->get(PatientRepository::class);
 
-        $patients = $repo->findAll(await: true);
-        $first = $patients[0] ?? throw new Exception('You need to create some fixtures.');
-        $first->setLastName('Something wild');
-        $repo->flush();
+        $pagination = $repo->paginate(await: true);
+        self::assertInstanceOf(PaginatedResults::class, $pagination);
+        self::assertNotEmpty($pagination->getItems());
     }
 }

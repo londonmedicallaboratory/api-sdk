@@ -2,16 +2,17 @@ framework:
   test: true
   cache:
     pools:
-      view_cache_pool: # default pool name; use redis if possible
+      test_cache_pool: # default pool name; use redis if possible
         tags: true      # adapter must allow tagging items
-      api_pool:
+      test_api_pool:
+        tags: true
 
 lml_view:
-  cache_pool: view_cache_pool
+  cache_pool: test_cache_pool
 
 lml_sdk:
   base_url: '%env(resolve:API_BASE_URL)%'
   api_token: '%env(resolve:API_TOKEN)%'
-  cache_pool: api_pool
+  cache_pool: test_api_pool
   cache_expiration: 60
   faker: false

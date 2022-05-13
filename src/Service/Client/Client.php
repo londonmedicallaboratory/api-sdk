@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace LML\SDK\Service\Client;
 
 use Closure;
+use LogicException;
 use RuntimeException;
 use React\Http\Browser;
+use React\EventLoop\Loop;
 use React\Promise\PromiseInterface;
-use Psr\Cache\CacheItemPoolInterface;
 use LML\SDK\Promise\CachedItemPromise;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use function rtrim;
 use function ltrim;
 use function sprintf;
@@ -20,6 +23,7 @@ use function array_merge;
 use function json_encode;
 use function base64_encode;
 use function http_build_query;
+use function Clue\React\Block\await;
 
 class Client implements ClientInterface
 {
@@ -28,7 +32,7 @@ class Client implements ClientInterface
     public function __construct(
         private string                  $baseUrl,
         private string                  $apiToken,
-        private ?CacheItemPoolInterface $cache,
+        private ?TagAwareCacheInterface $cache,
         private int                     $cacheExpiration,
     )
     {
@@ -43,7 +47,7 @@ class Client implements ClientInterface
         $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
         unset($data['id']);
         $cacheKey = $this->createCacheKey($url);
-        $this->cache->deleteItem($cacheKey);
+        $this->cache?->delete($cacheKey);
 
         return $this->browser->patch($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
@@ -72,6 +76,8 @@ class Client implements ClientInterface
      * @param int|null $cacheTimeout *
      *
      * @return PromiseInterface<mixed>
+     *
+     * @psalm-suppress all
      */
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null): PromiseInterface
     {
@@ -79,26 +85,78 @@ class Client implements ClientInterface
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
 
         $cacheKey = $this->createCacheKey($url);
-        $item = $cache->getItem($cacheKey);
 
-        if ($item->isHit()) {
-            return new CachedItemPromise(function (Closure $resolve) use ($item) {
-                $resolve($item->get());
+        return new CachedItemPromise(function (Closure $resolver) use ($cache, $cacheKey, $url) {
+            $value = $cache->get($cacheKey, function (ItemInterface $item) use ($url) {
+                return await($this->browser->get($url, $this->getAuthHeaders())
+                    ->then(function (ResponseInterface $response) use ($item): array {
+                        $cacheTimeout ??= $this->cacheExpiration;
+                        $body = (string)$response->getBody();
+                        /** @var array<string, mixed> $data */
+                        $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                        $item->expiresAfter($cacheTimeout);
+                        $item->tag('any');
+//                        $item->set($data);
+//                        $cache->save($item);
+
+                        return $data;
+                    }), Loop::get());
             });
-        }
 
-        return $this->browser->get($url, $this->getAuthHeaders())
-            ->then(function (ResponseInterface $response) use ($item, $cache, $cacheTimeout): array {
-                $cacheTimeout ??= $this->cacheExpiration;
-                $body = (string)$response->getBody();
-                /** @var array<string, mixed> $data */
-                $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-                $item->expiresAfter($cacheTimeout);
-                $item->set($data);
-                $cache->save($item);
+            $resolver($value);
 
-                return $data;
-            });
+//            return;
+//            dd($value);
+//
+//            $resolver(['items' => [
+//                [
+//                    'id' => 33,
+//                ],
+//            ]]);
+            return;
+//            return $this->cache->get($cacheKey, function (ItemInterface $item) use ($url) {
+//                dd($url);
+//                $promise = $this->browser->get($url, $this->getAuthHeaders())
+//                    ->then(function (ResponseInterface $response) use ($item): array {
+//                        $cacheTimeout ??= $this->cacheExpiration;
+//                        $body = (string)$response->getBody();
+//                        /** @var array<string, mixed> $data */
+//                        $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+//                        $item->expiresAfter($cacheTimeout);
+//                        $item->set($data);
+////                        $cache->save($item);
+//
+//                        return $data;
+//                    });
+//            });
+
+        });
+
+//        $item = $cache->get($cacheKey, fn() => null);
+//
+//        if ($item->isHit()) {
+//            return new CachedItemPromise(function (Closure $resolve) use ($item) {
+//                $resolve($item->get());
+//            });
+//        }
+//
+//        return $this->browser->get($url, $this->getAuthHeaders())
+//            ->then(function (ResponseInterface $response) use ($item, $cache, $cacheTimeout): array {
+//                $cacheTimeout ??= $this->cacheExpiration;
+//                $body = (string)$response->getBody();
+//                /** @var array<string, mixed> $data */
+//                $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+//                $item->expiresAfter($cacheTimeout);
+//                $item->set($data);
+//                $cache->save($item);
+//
+//                return $data;
+//            });
+    }
+
+    public function getCache(): TagAwareCacheInterface
+    {
+        return $this->cache ?? throw new LogicException('No cache.');
     }
 
     private function createRealUrl(string $url, array $filters = [], int $page = 1): string
