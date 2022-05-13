@@ -86,18 +86,16 @@ class Client implements ClientInterface
 
         $cacheKey = $this->createCacheKey($url);
 
-        return new CachedItemPromise(function (Closure $resolver) use ($cache, $cacheKey, $url) {
-            $value = $cache->get($cacheKey, function (ItemInterface $item) use ($url) {
+        return new CachedItemPromise(function (Closure $resolver) use ($cache, $cacheKey, $url, $cacheTimeout) {
+            $value = $cache->get($cacheKey, function (ItemInterface $item) use ($url, $cacheTimeout) {
                 return await($this->browser->get($url, $this->getAuthHeaders())
-                    ->then(function (ResponseInterface $response) use ($item): array {
+                    ->then(function (ResponseInterface $response) use ($item, $cacheTimeout): array {
                         $cacheTimeout ??= $this->cacheExpiration;
                         $body = (string)$response->getBody();
                         /** @var array<string, mixed> $data */
                         $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
                         $item->expiresAfter($cacheTimeout);
                         $item->tag('any');
-//                        $item->set($data);
-//                        $cache->save($item);
 
                         return $data;
                     }), Loop::get());

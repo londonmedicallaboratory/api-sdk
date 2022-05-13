@@ -97,7 +97,7 @@ class EntityManager
         }
 
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
-        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: 30);
+        $promise = $client->getAsync($url, $filters, $page);
 
         $paginationPromise = $promise
             ->then(function (array $data) use ($className) {

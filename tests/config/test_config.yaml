@@ -14,5 +14,5 @@ lml_sdk:
   base_url: '%env(resolve:API_BASE_URL)%'
   api_token: '%env(resolve:API_TOKEN)%'
   cache_pool: test_api_pool
-  cache_expiration: 60
+  cache_expiration: 2
   faker: false
