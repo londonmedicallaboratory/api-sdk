@@ -189,6 +189,9 @@ class EntityManager
         return $this->repositories->get($className);
     }
 
+    /**
+     * @param class-string $className
+     */
     private function store(string $className, array $data): ModelInterface
     {
         $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
