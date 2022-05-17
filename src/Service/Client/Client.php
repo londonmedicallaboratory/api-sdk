@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client;
 
+use Closure;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
+use LML\SDK\Promise\CachedItemPromise;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use function rtrim;
@@ -18,7 +20,6 @@ use function array_merge;
 use function json_encode;
 use function base64_encode;
 use function http_build_query;
-use function React\Promise\resolve;
 
 class Client implements ClientInterface
 {
@@ -83,7 +84,9 @@ class Client implements ClientInterface
 
         $item = $cache->getItem($cacheKey);
         if ($item->isHit()) {
-            return resolve($item->get());
+            return new CachedItemPromise(function (Closure $resolve) use ($item) {
+                $resolve($item->get());
+            });
         }
 
         $cacheTimeout ??= $this->cacheExpiration;
