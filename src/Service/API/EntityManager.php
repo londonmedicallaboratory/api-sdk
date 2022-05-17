@@ -66,7 +66,7 @@ class EntityManager
         $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
         $client = $this->client;
 
-        $promise = $client->getAsync($url, cacheTimeout: 30)
+        $promise = $client->getAsync($url, cacheTimeout: 30, tag: $className)
             ->then(function ($data) use ($className) {
                 if (!$data) {
                     return null;
@@ -82,6 +82,7 @@ class EntityManager
 
     /**
      * @template TPag of ModelInterface
+     * @param class-string<TPag> $className
      *
      * @return ($await is true ? PaginatedResults<TPag> : PromiseInterface<PaginatedResults<TPag>>)
      *
@@ -97,7 +98,7 @@ class EntityManager
         }
 
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
-        $promise = $client->getAsync($url, $filters, $page);
+        $promise = $client->getAsync($url, filters: $filters, page: $page, tag: $className);
 
         $paginationPromise = $promise
             ->then(function (array $data) use ($className) {
@@ -142,6 +143,7 @@ class EntityManager
 
     public function flush(): void
     {
+
         $promises = [];
         foreach ($this->newEntities as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
@@ -177,6 +179,18 @@ class EntityManager
         foreach ($this->newEntities as $oid => $entity) {
             $this->managed[$oid] = $entity;
         }
+        // let's invalidate cache
+        $tags = [];
+        $all = array_merge($this->newEntities, $this->managed, $this->entitiesToBeDeleted);
+        foreach ($all as $entity) {
+            $className = get_class($entity);
+            if (!in_array($className, $tags, true)) {
+                $tags[] = $className;
+            }
+        }
+
+        $this->client->invalidate(...$tags);
+
         $this->newEntities = [];
         $this->entitiesToBeDeleted = [];
     }

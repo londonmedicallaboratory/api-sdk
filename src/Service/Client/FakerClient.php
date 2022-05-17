@@ -36,7 +36,7 @@ class FakerClient implements ClientInterface
         ];
     }
 
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {
         foreach ($this->fakers as $faker) {
             foreach ($faker->getPaginatedData() as $prefix => $paginatedDatum) {
@@ -52,6 +52,11 @@ class FakerClient implements ClientInterface
     }
 
     public function post(string $url, array $data): never
+    {
+        throw new RuntimeException('Not supported for faker.');
+    }
+
+    public function invalidate(string ...$tags): void
     {
         throw new RuntimeException('Not supported for faker.');
     }

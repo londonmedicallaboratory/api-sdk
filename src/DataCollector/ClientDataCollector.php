@@ -41,9 +41,9 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
         return $this->data['requests'];
     }
 
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {
-        $promise = $this->client->getAsync($url, $filters, $page, $cacheTimeout);
+        $promise = $this->client->getAsync($url, $filters, $page, $cacheTimeout, tag: $tag);
 
         $isCached = $promise instanceof CachedItemPromise;
         $this->data['requests'][] = [
@@ -75,6 +75,11 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
         $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'DELETE', 'filters' => []];
 
         return $this->client->delete($url, $id);
+    }
+
+    public function invalidate(string ...$tags): void
+    {
+        $this->client->invalidate(...$tags);
     }
 
     public function collect(Request $request, Response $response, Throwable $exception = null): void

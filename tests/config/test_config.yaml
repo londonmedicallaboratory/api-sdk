@@ -5,7 +5,7 @@ framework:
       test_cache_pool: # default pool name; use redis if possible
         tags: true      # adapter must allow tagging items
       test_api_pool:
-#        tags: true
+        tags: true
 
 lml_view:
   cache_pool: test_cache_pool

@@ -34,7 +34,7 @@ class InformationBooth
     public function getWebsiteInfo()
     {
         /** @var PromiseInterface<TExpected> $promise */
-        $promise = $this->client->getAsync('/info/website');
+        $promise = $this->client->getAsync('/info/website', tag: 'information_booth');
         $lazy = new LazyPromise($promise);
 
         return $lazy->getValue();

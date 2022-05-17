@@ -54,7 +54,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * @noinspection PhpDocSignatureInspection Bug in PHPStorm
      *
-     * @psalm-suppress all
+     * psalm-suppress all
      */
     public function paginate(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
     {

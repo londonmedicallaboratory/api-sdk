@@ -10,11 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
-     * @param int|null $cacheTimeout *
-     *
      * @return PromiseInterface<mixed>
      */
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null): PromiseInterface;
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface;
 
     /**
      * @return PromiseInterface<ResponseInterface>
@@ -30,4 +28,6 @@ interface ClientInterface
      * @return PromiseInterface<ResponseInterface>
      */
     public function delete(string $url, string $id): PromiseInterface;
+
+    public function invalidate(string ...$tags): void;
 }
