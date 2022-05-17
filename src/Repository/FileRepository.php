@@ -17,14 +17,14 @@ use LML\SDK\Service\API\AbstractRepository;
  */
 class FileRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer)
+    protected function one($entity, $options, $optimizer): File
     {
         $id = $entity['id'];
 
         return new File(
-            id: $id,
-            filename: $entity['filename'],
-            url: $entity['url'],
+            id       : $id,
+            filename : $entity['filename'],
+            url      : $entity['url'],
             isPrimary: $entity['is_primary'],
         );
     }

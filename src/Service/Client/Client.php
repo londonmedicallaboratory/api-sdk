@@ -70,9 +70,6 @@ class Client implements ClientInterface
      * @param int|null $cacheTimeout *
      *
      * @return PromiseInterface<mixed>
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {

@@ -19,14 +19,11 @@ use function sprintf;
 
 /**
  * @psalm-import-type S from OrderInterface
- * @extends AbstractRepository<S, OrderInterface, array>
- *
- * @see Order
- * @see OrderInterface
+ * @extends AbstractRepository<S, Order, array>
  */
 class OrderRepository extends AbstractRepository
 {
-    protected function one($entity, $options, $optimizer): OrderInterface
+    protected function one($entity, $options, $optimizer): Order
     {
         $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
         $address = $this->get(AddressRepository::class)->buildOne($entity['address']);

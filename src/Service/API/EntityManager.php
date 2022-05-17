@@ -143,7 +143,6 @@ class EntityManager
 
     public function flush(): void
     {
-
         $promises = [];
         foreach ($this->newEntities as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
