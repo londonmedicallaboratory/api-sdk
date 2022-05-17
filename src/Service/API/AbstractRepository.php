@@ -316,7 +316,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     {
         $rc = new ReflectionMethod($this, 'one');
         /** @psalm-suppress UndefinedMethod */
-        $name = $rc->getReturnType()?->getName() ?? throw new LogicException('You **must** typehint return value of \'one\' method.');
+        $name = $rc->getReturnType()?->getName() ?? throw new LogicException(sprintf('You **must** typehint return value of \'one\' method in \'%s\'.', get_class($this)));
 
         if (!is_string($name)) {
             throw new LogicException('Reflection failed.');
