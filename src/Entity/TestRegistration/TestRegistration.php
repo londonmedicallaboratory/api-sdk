@@ -31,6 +31,7 @@ class TestRegistration implements TestRegistrationInterface
         protected ?DateTimeInterface  $dateOfArrival = null,
         protected DateTimeInterface   $createdAt = new DateTime(),
         protected ?DateTimeInterface  $completedAt = null,
+        protected ?DateTimeInterface  $patientRegisteredAt = null,
         protected ?DateTimeInterface  $departureStartDate = null,
         protected ?LazyValueInterface $ukAddress = null,
         protected ?LazyValueInterface $selfIsolatingAddress = null,
@@ -94,6 +95,11 @@ class TestRegistration implements TestRegistrationInterface
         return $this->completedAt;
     }
 
+    public function getPatientRegisteredAt(): ?DateTimeInterface
+    {
+        return $this->patientRegisteredAt;
+    }
+
     public function getDoctorsNote(): ?string
     {
         return $this->doctorsNote;
@@ -107,7 +113,7 @@ class TestRegistration implements TestRegistrationInterface
     public function toArray(): array
     {
         $patient = $this->getPatient();
-        $productIds = array_map(fn(ProductInterface $product) => $product->getId(), $this->getProducts());
+        $productIds = array_map(static fn(ProductInterface $product) => $product->getId(), $this->getProducts());
 
         return [
             'id'                     => $this->getId(),
@@ -124,6 +130,7 @@ class TestRegistration implements TestRegistrationInterface
             'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
             'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
             'completed_at'           => $this->getCompletedAt()?->format('Y-m-d'),
+            'patient_registered_at'  => $this->getPatientRegisteredAt()?->format('Y-m-d'),
             'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
             'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
             'uk_address'             => $this->getUkAddress()?->toArray(),

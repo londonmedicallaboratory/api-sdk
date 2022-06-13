@@ -35,6 +35,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
+ *      patient_registered_at?: ?string,
  *      brand_code?: string,
  *      foreign_id?: ?string,
  *      country_from?: string,
@@ -73,6 +74,8 @@ interface TestRegistrationInterface extends ModelInterface
     public function getCreatedAt(): DateTimeInterface;
 
     public function getCompletedAt(): ?DateTimeInterface;
+
+    public function getPatientRegisteredAt(): ?DateTimeInterface;
 
     public function getDoctorsNote(): ?string;
 
