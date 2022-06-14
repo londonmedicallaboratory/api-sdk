@@ -105,11 +105,6 @@ class TestRegistration implements TestRegistrationInterface
         return $this->doctorsNote;
     }
 
-    public function hasResults(): bool
-    {
-        return $this->resultsReady?->getValue() ?? false;
-    }
-
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -118,7 +113,7 @@ class TestRegistration implements TestRegistrationInterface
         return [
             'id'                     => $this->getId(),
             'patient_id'             => $patient?->getId(),
-            'results_ready'          => $this->hasResults(),
+            'results_ready'          => $this->resultsReady?->getValue() ?? false,
             'product_ids'            => $productIds,
             'email'                  => $patient?->getEmail(),
             'date_of_birth'          => $patient?->getDateOfBirth()->format('Y-m-d'),

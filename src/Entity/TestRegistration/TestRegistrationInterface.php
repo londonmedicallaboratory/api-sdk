@@ -69,8 +69,6 @@ use LML\SDK\Entity\Address\AddressInterface;
  */
 interface TestRegistrationInterface extends ModelInterface
 {
-    public function hasResults(): bool;
-
     public function getCreatedAt(): DateTimeInterface;
 
     public function getCompletedAt(): ?DateTimeInterface;
