@@ -11,19 +11,23 @@ use LML\SDK\Entity\ModelInterface;
  *      id: string,
  *      name: string,
  *      code: string,
- *      value: bool|string,
+ *      value: null|bool|string,
  *      min_range: ?string,
  *      max_range: ?string,
  *      comment?: ?string,
+ *      successful: bool,
+ *      error_reason?: string,
  * }
  *
  * @extends ModelInterface<S>
  */
 interface LabResultInterface extends ModelInterface
 {
+    public function isSuccessful(): bool;
+
     public function getName(): string;
 
-    public function getValue(): bool|string;
+    public function getValue(): null|bool|string;
 
     public function getCode(): string;
 

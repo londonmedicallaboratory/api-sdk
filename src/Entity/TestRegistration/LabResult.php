@@ -7,15 +7,21 @@ namespace LML\SDK\Entity\TestRegistration;
 class LabResult implements LabResultInterface
 {
     public function __construct(
-        protected string      $id,
-        protected string      $name,
-        protected string      $code,
-        protected bool|string $value,
-        protected ?string     $minRange,
-        protected ?string     $maxRange,
-        protected ?string     $comment,
+        protected string           $id,
+        protected string           $name,
+        protected string           $code,
+        protected null|bool|string $value,
+        private bool               $isSuccessful,
+        protected ?string          $minRange,
+        protected ?string          $maxRange,
+        protected ?string          $comment,
     )
     {
+    }
+
+    public function isSuccessful(): bool
+    {
+        return $this->isSuccessful;
     }
 
     public function getMinRange(): ?string
@@ -33,7 +39,7 @@ class LabResult implements LabResultInterface
         return $this->name;
     }
 
-    public function getValue(): bool|string
+    public function getValue(): null|bool|string
     {
         return $this->value;
     }
@@ -53,16 +59,17 @@ class LabResult implements LabResultInterface
         return $this->id;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
-            'id'        => $this->getId(),
-            'name'      => $this->getName(),
-            'code'      => $this->getCode(),
-            'value'     => $this->value,
-            'min_range' => $this->getMinRange(),
-            'max_range' => $this->getMaxRange(),
-            'comment'   => $this->comment,
+            'id'         => $this->getId(),
+            'name'       => $this->getName(),
+            'code'       => $this->getCode(),
+            'value'      => $this->value,
+            'min_range'  => $this->getMinRange(),
+            'max_range'  => $this->getMaxRange(),
+            'comment'    => $this->comment,
+            'successful' => $this->isSuccessful,
         ];
     }
 }
