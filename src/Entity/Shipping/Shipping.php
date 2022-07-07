@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Shipping;
 
+use LML\SDK\Attribute\Entity;
+use LML\SDK\Repository\ShippingRepository;
+
+#[Entity(repositoryClass: ShippingRepository::class, baseUrl: 'shipping')]
 class Shipping implements ShippingInterface
 {
     public function __construct(
