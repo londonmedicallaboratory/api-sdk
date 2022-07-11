@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Category;
 
 use LML\SDK\Attribute\Entity;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\ProductCategoryRepository;
 
 #[Entity(repositoryClass: ProductCategoryRepository::class, baseUrl: 'product_categories')]
 class Category implements CategoryInterface
 {
+    /**
+     * @param LazyValueInterface<?int> $nrOfProducts
+     */
     public function __construct(
-        protected string  $id,
-        protected string  $name,
-        protected string  $slug,
-        protected ?string $description,
+        protected string             $id,
+        protected string             $name,
+        protected string             $slug,
+        protected LazyValueInterface $nrOfProducts,
+        protected ?string            $description,
     )
     {
     }
@@ -49,13 +54,25 @@ class Category implements CategoryInterface
         return [];
     }
 
+    public function getNrOfProducts(): ?int
+    {
+        return $this->nrOfProducts->getValue();
+    }
+
     public function toArray(): array
     {
-        return [
+        $data = [
             'id'          => $this->getId(),
             'name'        => $this->getName(),
             'slug'        => $this->getSlug(),
             'description' => $this->getDescription(),
         ];
+        $nrOfProducts = $this->getNrOfProducts();
+
+        if (null !== $nrOfProducts) {
+            $data['nr_of_products'] = $nrOfProducts;
+        }
+
+        return $data;
     }
 }

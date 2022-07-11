@@ -13,6 +13,7 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
+ *      nr_of_products?: int,
  *      slug: string,
  *      description: ?string,
  * }
@@ -31,4 +32,6 @@ interface CategoryInterface extends ModelInterface, SluggableInterface, Stringab
      * @return list<BiomarkerInterface>
      */
     public function getBiomarkers();
+
+    public function getNrOfProducts(): ?int;
 }
