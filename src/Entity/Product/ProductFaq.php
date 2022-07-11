@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Product;
 
+use LML\SDK\Attribute\Entity;
+use LML\SDK\Repository\ProductFaqRepository;
+
+#[Entity(repositoryClass: ProductFaqRepository::class, baseUrl: 'product_faq')]
 class ProductFaq implements ProductFaqInterface
 {
     public function __construct(
         protected string $id,
         protected string $question,
         protected string $answer,
-        protected int $priority,
+        protected int    $priority,
     )
     {
     }

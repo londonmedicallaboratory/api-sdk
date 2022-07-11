@@ -231,6 +231,7 @@ abstract class AbstractRepository extends AbstractViewFactory
         $promise = $this->paginate($filters, $url, $page);
 
         return $promise->then(function (PaginatedResults $paginatedResults) use ($filters, $url, &$stored) {
+            /** @noinspection MissUsingForeachInspection */
             foreach ($paginatedResults->getItems() as $item) {
                 $stored[] = $item;
             }

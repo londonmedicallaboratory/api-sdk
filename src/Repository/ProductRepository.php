@@ -10,6 +10,7 @@ use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\Product\ProductFaq;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
@@ -51,6 +52,7 @@ class ProductRepository extends AbstractRepository
             shippingTypes   : new LazyPromise($this->getShippingTypes($id)),
             files           : new LazyPromise($this->getFiles($id)),
             categories      : new LazyPromise($this->getCategories($id)),
+            faqs            : new LazyPromise($this->getFaqs($id)),
         );
     }
 
@@ -97,5 +99,15 @@ class ProductRepository extends AbstractRepository
         $url = sprintf('/product/%s/shipping', $id);
 
         return $this->get(ShippingRepository::class)->findBy(url: $url);
+    }
+
+    /**
+     * @return PromiseInterface<list<ProductFaq>>
+     */
+    private function getFaqs(string $id): PromiseInterface
+    {
+        $url = sprintf('/product/%s/faqs', $id);
+
+        return $this->get(ProductFaqRepository::class)->findBy(url: $url);
     }
 }

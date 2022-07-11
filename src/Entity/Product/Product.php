@@ -17,12 +17,13 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 class Product implements ProductInterface
 {
     /**
-     * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
+     * @see ProductRepository::one()
+     *
      * @param LazyValueInterface<list<ShippingInterface>> $shippingTypes
      * @param LazyValueInterface<list<FileInterface>> $files
      * @param LazyValueInterface<list<CategoryInterface>> $categories
-     * @see ProductRepository::one()
-     *
+     * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
+     * @param LazyValueInterface<list<ProductFaq>> $faqs
      */
     public function __construct(
         protected string             $id,
@@ -38,6 +39,7 @@ class Product implements ProductInterface
         protected LazyValueInterface $shippingTypes,
         protected LazyValueInterface $files,
         protected LazyValueInterface $categories,
+        protected LazyValueInterface $faqs,
     )
     {
     }
@@ -102,9 +104,9 @@ class Product implements ProductInterface
         return $this->files->getValue();
     }
 
-    public function getFaqs()
+    public function getFaqs(): array
     {
-        return [];
+        return $this->faqs->getValue();
     }
 
     public function getCategories()
@@ -117,7 +119,7 @@ class Product implements ProductInterface
         return $this->testToRelease;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $price = $this->getPrice();
 
