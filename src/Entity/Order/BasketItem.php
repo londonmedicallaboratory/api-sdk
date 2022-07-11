@@ -39,11 +39,11 @@ class BasketItem implements ItemInterface
         $this->quantity = $quantity;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'product_id' => $this->getProduct()->getId(),
-            'quantity' => $this->getQuantity(),
+            'quantity'   => $this->getQuantity(),
         ];
     }
 

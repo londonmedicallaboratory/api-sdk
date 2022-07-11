@@ -51,7 +51,7 @@ class HealthcareProfessional implements HealthcareProfessionalInterface
         return $this->id;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id'              => $this->getId(),

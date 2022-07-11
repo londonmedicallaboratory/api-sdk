@@ -121,8 +121,6 @@ class Product implements ProductInterface
 
     public function toArray(): array
     {
-        $price = $this->getPrice();
-
         return [
             'id'                => $this->getId(),
             'name'              => $this->getName(),
@@ -132,11 +130,7 @@ class Product implements ProductInterface
             'short_description' => $this->getShortDescription(),
             'preview_image_url' => $this->getPreviewImageUrl(),
             'test_to_release'   => $this->isTestToRelease(),
-            'price'             => [
-                'amount_minor'    => $price->getAmount(),
-                'currency'        => $price->getCurrency(),
-                'formatted_value' => $price->getFormattedValue(),
-            ],
+            'price'             => $this->getPrice()->toArray(),
         ];
     }
 }

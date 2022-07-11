@@ -36,7 +36,7 @@ class Address implements AddressInterface
             $this->getCountryCode(),
             $this->getPostalCode(),
         ];
-        $filtered = array_filter($parts, fn(?string $part) => (bool)$part);
+        $filtered = array_filter($parts, static fn(?string $part) => (bool)$part);
 
         return implode(', ', $filtered);
     }

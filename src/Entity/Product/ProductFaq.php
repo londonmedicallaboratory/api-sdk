@@ -39,7 +39,7 @@ class ProductFaq implements ProductFaqInterface
         return $this->priority;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id'       => $this->getId(),

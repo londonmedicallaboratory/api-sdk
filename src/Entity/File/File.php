@@ -10,7 +10,7 @@ class File implements FileInterface
         protected string $id,
         protected string $filename,
         protected string $url,
-        protected bool $isPrimary,
+        protected bool   $isPrimary,
     )
     {
     }
@@ -35,7 +35,7 @@ class File implements FileInterface
         return $this->id;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id'         => $this->getId(),

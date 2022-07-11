@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client\Faker;
 
+use Generator;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 
 /**
@@ -19,6 +20,11 @@ class ShippingFaker implements FakerInterface
         'name'        => 'Free Shipping',
         'type'        => '1',
         'description' => 'Free Shipping description',
+        'price'       => [
+            'amount_minor'    => 100,
+            'currency'        => 'USD',
+            'formatted_value' => '$1',
+        ],
     ];
 
     public const SHIPPING_2 = [
@@ -26,9 +32,14 @@ class ShippingFaker implements FakerInterface
         'name'        => 'UPS',
         'type'        => '2',
         'description' => 'UPS description',
+        'price'       => [
+            'amount_minor'    => 100,
+            'currency'        => 'USD',
+            'formatted_value' => '$1',
+        ],
     ];
 
-    public function getPaginatedData()
+    public function getPaginatedData(): Generator
     {
         yield '/product/1/shipping' => [
             'current_page'     => 1,
@@ -36,7 +47,7 @@ class ShippingFaker implements FakerInterface
             'nr_of_pages'      => 1,
             'results_per_page' => 10,
             'next_page'        => null,
-            'items' => [
+            'items'            => [
                 self::SHIPPING_1,
             ],
         ];

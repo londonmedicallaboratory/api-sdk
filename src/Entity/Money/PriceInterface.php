@@ -13,4 +13,9 @@ interface PriceInterface
     public function getFormattedValue(): string;
 
     public function multiply(int $by): PriceInterface;
+
+    /**
+     * @return array{amount_minor: int, currency: string, formatted_value: string}
+     */
+    public function toArray(): array;
 }

@@ -39,12 +39,12 @@ class Page implements PageInterface
         return $this->name;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'slug' => $this->getSlug(),
+            'id'      => $this->getId(),
+            'name'    => $this->getName(),
+            'slug'    => $this->getSlug(),
             'content' => $this->getContent(),
         ];
     }

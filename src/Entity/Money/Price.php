@@ -9,7 +9,7 @@ use Brick\Money\Money;
 class Price implements PriceInterface
 {
     public function __construct(
-        protected int $amount,
+        protected int    $amount,
         protected string $currency,
         protected string $formattedValue,
     )
@@ -47,5 +47,14 @@ class Price implements PriceInterface
     public function getFormattedValue(): string
     {
         return $this->formattedValue;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'amount_minor'    => $this->amount,
+            'currency'        => $this->currency,
+            'formatted_value' => $this->formattedValue,
+        ];
     }
 }

@@ -97,7 +97,7 @@ class Patient implements PatientInterface
         $this->ethnicity = $ethnicity;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id'            => $this->id,

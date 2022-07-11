@@ -86,8 +86,6 @@ class Order implements OrderInterface
 
     public function toArray(): array
     {
-        $price = $this->getTotal();
-
         return [
             'id'            => $this->getId(),
             'customer_id'   => $this->getCustomer()->getId(),
@@ -96,12 +94,8 @@ class Order implements OrderInterface
             'company'       => $this->getCompanyName(),
             'customer'      => $this->getCustomer()->toArray(),
             'address'       => $this->getAddress()->toArray(),
-            'price'         => [
-                'amount_minor'    => $price->getAmount(),
-                'currency'        => $price->getCurrency(),
-                'formatted_value' => $price->getFormattedValue(),
-            ],
-            'items'         => array_map(fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
+            'price'         => $this->getTotal()->toArray(),
+            'items'         => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
     }
 }
