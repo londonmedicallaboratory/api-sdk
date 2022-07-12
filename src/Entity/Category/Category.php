@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Category;
 
-use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductCategoryRepository;
 
-#[Entity(repositoryClass: ProductCategoryRepository::class, baseUrl: 'product_categories')]
 class Category implements CategoryInterface
 {
     /**
+     * @see ProductCategoryRepository::one()
+     *
      * @param LazyValueInterface<?int> $nrOfProducts
+     * @param LazyValueInterface<?FileInterface> $logo
      */
     public function __construct(
         protected string             $id,
@@ -20,6 +22,7 @@ class Category implements CategoryInterface
         protected string             $slug,
         protected LazyValueInterface $nrOfProducts,
         protected ?string            $description,
+        protected LazyValueInterface $logo,
     )
     {
     }
@@ -59,6 +62,11 @@ class Category implements CategoryInterface
         return $this->nrOfProducts->getValue();
     }
 
+    public function getLogo(): ?FileInterface
+    {
+        return $this->logo->getValue();
+    }
+
     public function toArray(): array
     {
         $data = [
@@ -66,6 +74,7 @@ class Category implements CategoryInterface
             'name'        => $this->getName(),
             'slug'        => $this->getSlug(),
             'description' => $this->getDescription(),
+            'logo'        => $this->getLogo()?->toArray(),
         ];
         $nrOfProducts = $this->getNrOfProducts();
 

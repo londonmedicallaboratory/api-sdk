@@ -19,6 +19,7 @@ class BiomarkerCategoriesFaker implements FakerInterface
         'name'        => 'Cholesterol',
         'slug'        => 'cholesterol',
         'description' => 'Cholesterol description',
+        'logo'        => null,
     ];
 
     public const CATEGORY_2 = [
@@ -26,6 +27,7 @@ class BiomarkerCategoriesFaker implements FakerInterface
         'name'        => 'Diabetes',
         'slug'        => 'diabetes',
         'description' => 'Diabetes description',
+        'logo'        => null,
     ];
 
     public const CATEGORY_3 = [
@@ -33,6 +35,7 @@ class BiomarkerCategoriesFaker implements FakerInterface
         'name'        => 'Triglyceride',
         'slug'        => 'triglyceride',
         'description' => 'Triglyceride description',
+        'logo'        => null,
     ];
 
     public function getPaginatedData()

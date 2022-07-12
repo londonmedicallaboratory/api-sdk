@@ -19,6 +19,7 @@ class ProductCategoriesFaker implements FakerInterface
         'name'        => 'Health check kits',
         'slug'        => 'health-check',
         'description' => 'Health Check',
+        'logo'        => null,
     ];
 
     public const CATEGORY_2 = [
@@ -26,6 +27,7 @@ class ProductCategoriesFaker implements FakerInterface
         'name'        => 'Fertility',
         'slug'        => 'fertility',
         'description' => 'Fertility description',
+        'logo'        => null,
     ];
 
     public const CATEGORY_3 = [
@@ -33,6 +35,7 @@ class ProductCategoriesFaker implements FakerInterface
         'name'        => 'Sexual Health',
         'slug'        => 'sexual-health',
         'description' => 'Sexual Health description',
+        'logo'        => null,
     ];
 
     public function getPaginatedData()

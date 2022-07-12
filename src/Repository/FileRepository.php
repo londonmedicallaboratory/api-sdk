@@ -25,7 +25,7 @@ class FileRepository extends AbstractRepository
             id       : $id,
             filename : $entity['filename'],
             url      : $entity['url'],
-            isPrimary: $entity['is_primary'],
+            isPrimary: $entity['is_primary'] ?? null,
         );
     }
 

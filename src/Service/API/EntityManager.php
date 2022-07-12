@@ -94,9 +94,9 @@ class EntityManager
     {
         $client = $this->client;
         if (!$url) {
-            $url = rtrim($this->getBaseUrl($className), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
+            $url = $this->getBaseUrl($className);
+            $url = rtrim($url, '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
-
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
         $promise = $client->getAsync($url, filters: $filters, page: $page, tag: $className);
 

@@ -10,7 +10,7 @@ class File implements FileInterface
         protected string $id,
         protected string $filename,
         protected string $url,
-        protected bool   $isPrimary,
+        protected ?bool  $isPrimary = null,
     )
     {
     }
@@ -25,7 +25,7 @@ class File implements FileInterface
         return $this->url;
     }
 
-    public function isPrimary(): bool
+    public function isPrimary(): ?bool
     {
         return $this->isPrimary;
     }
@@ -37,11 +37,18 @@ class File implements FileInterface
 
     public function toArray(): array
     {
-        return [
+        $isPrimary = $this->isPrimary();
+
+        $data = [
             'id'         => $this->getId(),
             'filename'   => $this->getFilename(),
             'url'        => $this->getUrl(),
-            'is_primary' => $this->isPrimary(),
+            'is_primary' => $isPrimary,
         ];
+        if (null !== $isPrimary) {
+            $data['is_primary'] = $isPrimary;
+        }
+
+        return $data;
     }
 }

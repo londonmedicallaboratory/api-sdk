@@ -7,6 +7,7 @@ namespace LML\SDK\Entity\Category;
 use Stringable;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\SluggableInterface;
+use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 
 /**
@@ -16,6 +17,12 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *      nr_of_products?: int,
  *      slug: string,
  *      description: ?string,
+ *      logo?: null|array{
+ *          id: string,
+ *          filename: string,
+ *          url: string,
+ *          is_primary?: ?bool
+ *      }
  * }
  *
  * @extends ModelInterface<S>
@@ -34,4 +41,6 @@ interface CategoryInterface extends ModelInterface, SluggableInterface, Stringab
     public function getBiomarkers();
 
     public function getNrOfProducts(): ?int;
+
+    public function getLogo(): ?FileInterface;
 }
