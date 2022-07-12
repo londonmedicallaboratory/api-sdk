@@ -14,6 +14,7 @@ use LML\SDK\Entity\PaginatedResults;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
+use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
@@ -21,7 +22,7 @@ use function Clue\React\Block\awaitAll;
 /**
  * Doctrine equivalent for models
  */
-class EntityManager
+class EntityManager implements ResetInterface
 {
     /**
      * @var array<string, ModelInterface>
@@ -51,6 +52,19 @@ class EntityManager
         private ClientInterface $client,
     )
     {
+    }
+
+    public function reset(): void
+    {
+        $this->clear();
+    }
+
+    public function clear(): void
+    {
+        $this->newEntities = [];
+        $this->entitiesToBeDeleted = [];
+        $this->managed = [];
+        $this->fetchedValues = [];
     }
 
     /**
@@ -114,6 +128,7 @@ class EntityManager
                     nrOfPages     : $data['nr_of_pages'] ?? 1,
                     resultsPerPage: $data['results_per_page'] ?? 10,
                     nextPage      : $data['next_page'] ?? null,
+                    nrOfResults   : $data['nr_of_results'] ?? 0,
                     items         : $views,
                 );
             });

@@ -21,6 +21,7 @@ class PaginatedResults implements IteratorAggregate
         protected int   $nrOfPages,
         protected int   $resultsPerPage,
         protected ?int  $nextPage,
+        protected int   $nrOfResults,
         protected array $items,
     )
     {
@@ -67,5 +68,10 @@ class PaginatedResults implements IteratorAggregate
     public function getIterator(): Traversable
     {
         yield from $this->getItems();
+    }
+
+    public function getNrOfResults(): int
+    {
+        return $this->nrOfResults;
     }
 }

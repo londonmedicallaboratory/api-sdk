@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LML\SDK\Tests\Repository;
 
 use LML\SDK\Tests\AbstractTest;
-use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -25,8 +24,7 @@ class AsyncTest extends AbstractTest
         $stopwatch = new Stopwatch();
         $stopwatch->start('init');
 
-        /** @var Product $book */
-        $book = $repo->findLazy(['slug' => 'book'])->getValue();
+        $book = $repo->findOneBySlug('book', await: true);
         self::assertInstanceOf(ProductInterface::class, $book);
 
         $event = $stopwatch->stop('init');
@@ -39,7 +37,7 @@ class AsyncTest extends AbstractTest
         }
 
         $biomarkers = $book->getBiomarkers();
-        self::assertGreaterThanOrEqual(2, count($biomarkers));
+        self::assertNotEmpty($biomarkers);
         foreach ($biomarkers as $biomarker) {
             self::assertInstanceOf(BiomarkerInterface::class, $biomarker);
         }
@@ -56,7 +54,6 @@ class AsyncTest extends AbstractTest
         $repo = $this->getService(ProductRepository::class);
 
         $lazyValue = $repo->findLazy(['slug' => 'book']);
-        /** @var Product $book */
         $book = $lazyValue->getValue();
 
         self::assertInstanceOf(ProductInterface::class, $book);

@@ -6,6 +6,7 @@ namespace LML\SDK\Tests\Repository;
 
 use DateTime;
 use Exception;
+use LogicException;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Tests\AbstractTest;
@@ -39,18 +40,23 @@ class PatientRepositoryTest extends AbstractTest
     {
         self::bootKernel();
         $repo = $this->getPatientRepository();
-        $randomName = sprintf('Randomizer-%s', random_int(1, 10_000));
 
-        $patient = $repo->find('ed0e6483-7f0e-4861-810c-5b3050005df1', await: true) ?? throw new Exception('No id.');
-        self::assertInstanceOf(Patient::class, $patient);
+        $pagination = $repo->paginate(await: true);
+        $nrOfResults = $pagination->getNrOfResults();
+        $patient = $pagination->first() ?? throw new LogicException('No patient fixtures.');
+
+        $randomName = sprintf('Randomizer-%s', random_int(1, 10_000));
         $patient->setFirstName($randomName);
-        $patient->setDateOfBirth(new DateTime('2010-01-30'));
-        $patient->setGender(GenderEnum::NON_BINARY);
         $repo->flush();
+        $repo->clear();
 
         // let's load same patient, see if the cache has been invalidated after update
-        $patient = $repo->find('ed0e6483-7f0e-4861-810c-5b3050005df1', await: true) ?? throw new Exception('No id.');
+        $patient = $repo->find($patient->getId(), await: true) ?? throw new Exception('Patient is no longer existing.');
         self::assertEquals($randomName, $patient->getFirstName());
+
+        // assert no new patient has been created
+        $pagination = $repo->paginate(await: true);
+        self::assertEquals($nrOfResults, $pagination->getNrOfResults());
     }
 
     public function testPagination(): void

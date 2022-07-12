@@ -15,6 +15,9 @@ class BiomarkerCategoryTest extends AbstractTest
         self::bootKernel();
 
         $pagination = $this->getService(BiomarkerCategoryRepository::class)->paginate(await: true);
+        foreach ($pagination as $item) {
+            dump($item->getLogo());
+        }
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());
     }

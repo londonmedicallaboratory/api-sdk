@@ -168,7 +168,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * @return LazyValueInterface<?TView>
      */
-    public function findLazy(array $filters, ?string $url = null): LazyValueInterface
+    public function findLazy(array $filters = [], ?string $url = null): LazyValueInterface
     {
         $promise = $this->findOneByDeprecated($filters, $url);
 
@@ -258,6 +258,11 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function persist(ModelInterface $model): void
     {
         $this->getEntityManager()->persist($model);
+    }
+
+    public function clear(): void
+    {
+        $this->getEntityManager()->clear();
     }
 
     public function flush(): void
