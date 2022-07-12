@@ -12,8 +12,6 @@ use LML\SDK\Service\API\AbstractRepository;
  * @psalm-import-type S from PageInterface
  *
  * @extends AbstractRepository<S, PageInterface, array>
- *
- * @see PageInterface
  */
 class PageRepository extends AbstractRepository
 {

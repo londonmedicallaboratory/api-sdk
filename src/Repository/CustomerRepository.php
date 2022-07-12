@@ -12,8 +12,6 @@ use LML\SDK\Entity\Customer\CustomerInterface;
  * @psalm-import-type S from CustomerInterface
  *
  * @extends AbstractRepository<S, CustomerInterface, array{product_id?: string}>
- *
- * @see CustomerInterface
  */
 class CustomerRepository extends AbstractRepository
 {

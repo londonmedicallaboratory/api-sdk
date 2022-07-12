@@ -12,8 +12,6 @@ use LML\SDK\Entity\Address\AddressInterface;
  * @psalm-import-type S from AddressInterface
  *
  * @extends AbstractRepository<S, AddressInterface, array>
- *
- * @see AddressInterface
  */
 class AddressRepository extends AbstractRepository
 {

@@ -8,8 +8,8 @@ use DateTime;
 use React\EventLoop\Loop;
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
-use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlock;
 use LML\SDK\Entity\TestLocation\TestLocationInterface;
 use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlockInterface;
@@ -23,8 +23,6 @@ use function Clue\React\Block\await;
  * @psalm-import-type S from TimeBlockInterface as TH
  *
  * @extends AbstractRepository<S, TestLocationInterface, array>
- *
- * @see TimeBlockInterface
  */
 class TestLocationRepository extends AbstractRepository
 {

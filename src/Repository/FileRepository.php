@@ -12,8 +12,6 @@ use LML\SDK\Service\API\AbstractRepository;
  * @psalm-import-type S from FileInterface
  *
  * @extends AbstractRepository<S, FileInterface, array{product_id?: string}>
- *
- * @see FileInterface
  */
 class FileRepository extends AbstractRepository
 {

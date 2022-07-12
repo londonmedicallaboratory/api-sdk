@@ -20,9 +20,6 @@ use function sprintf;
 /**
  * @psalm-import-type S from ProductInterface
  * @extends AbstractRepository<S, Product, array>
- *
- * @see Product
- * @see ProductInterface
  */
 class ProductRepository extends AbstractRepository
 {

@@ -25,8 +25,6 @@ use function Clue\React\Block\await;
  * @template TFilters of array
  *
  * @extends AbstractViewFactory<TData, TView, array, array>
- *
- * @see ModelInterface
  */
 abstract class AbstractRepository extends AbstractViewFactory
 {

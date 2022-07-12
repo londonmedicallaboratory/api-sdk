@@ -16,8 +16,6 @@ use function sprintf;
  * @psalm-import-type S from BiomarkerInterface
  *
  * @extends AbstractRepository<S, BiomarkerInterface, array{product_id?: string}>
- *
- * @see BiomarkerInterface
  */
 class BiomarkerRepository extends AbstractRepository
 {

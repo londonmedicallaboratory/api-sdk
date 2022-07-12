@@ -12,8 +12,6 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
 /**
  * @psalm-import-type S from ShippingInterface
  * @extends AbstractRepository<S, Shipping, array>
- *
- * @see ShippingInterface
  */
 class ShippingRepository extends AbstractRepository
 {

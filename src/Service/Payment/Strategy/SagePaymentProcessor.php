@@ -122,8 +122,6 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
     private function extractRedirectResponse(ResponseInterface $responseMessage): ?Response
     {
         if ($responseMessage->isRedirect() && method_exists($responseMessage, 'getRedirectResponse')) {
-            /** @noinspection PhpUnnecessaryLocalVariableInspection */
-
             /** @var Response $redirectResponse */
             $redirectResponse = $responseMessage->getRedirectResponse();
 
