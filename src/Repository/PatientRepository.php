@@ -32,6 +32,7 @@ class PatientRepository extends AbstractRepository
             dateOfBirth: new DateTime($entity['date_of_birth']),
             ethnicity  : EthnicityEnum::tryFrom($ethnicity),
             email      : $entity['email'] ?? null,
+            foreignId  : $entity['foreign_id'] ?? null,
         );
     }
 

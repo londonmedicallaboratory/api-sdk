@@ -22,6 +22,7 @@ class Patient implements PatientInterface
         private DateTimeInterface $dateOfBirth,
         private ?EthnicityEnum    $ethnicity,
         private ?string           $email,
+        private ?string           $foreignId = null,
         private ?string           $id = null,
     )
     {
@@ -107,6 +108,7 @@ class Patient implements PatientInterface
             'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
             'ethnicity'     => $this->getEthnicity()?->value,
             'email'         => $this->getEmail(),
+            'foreign_id'    => $this->foreignId,
         ];
     }
 }
