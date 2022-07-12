@@ -7,11 +7,13 @@ namespace LML\SDK\Entity\Category;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductCategoryRepository;
+use LML\SDK\Repository\BiomarkerCategoryRepository;
 
 class Category implements CategoryInterface
 {
     /**
      * @see ProductCategoryRepository::one()
+     * @see BiomarkerCategoryRepository::one()
      *
      * @param LazyValueInterface<?int> $nrOfProducts
      * @param LazyValueInterface<?FileInterface> $logo
@@ -74,7 +76,6 @@ class Category implements CategoryInterface
             'name'        => $this->getName(),
             'slug'        => $this->getSlug(),
             'description' => $this->getDescription(),
-            'logo'        => $this->getLogo()?->toArray(),
         ];
         $nrOfProducts = $this->getNrOfProducts();
 

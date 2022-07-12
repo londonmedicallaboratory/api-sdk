@@ -13,8 +13,6 @@ use LML\SDK\Entity\Category\CategoryInterface;
  * @psalm-import-type S from CategoryInterface
  *
  * @extends AbstractRepository<S, CategoryInterface, array{product_id?: string}>
- *
- * @see CategoryInterface
  */
 class ProductCategoryRepository extends AbstractRepository
 {

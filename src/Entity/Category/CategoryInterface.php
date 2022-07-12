@@ -17,12 +17,6 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *      nr_of_products?: int,
  *      slug: string,
  *      description: ?string,
- *      logo?: null|array{
- *          id: string,
- *          filename: string,
- *          url: string,
- *          is_primary?: ?bool
- *      }
  * }
  *
  * @extends ModelInterface<S>
