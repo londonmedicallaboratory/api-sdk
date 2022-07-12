@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Service;
 
+use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Service\InformationBooth;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class InformationBoothTest extends KernelTestCase
+class InformationBoothTest extends AbstractTest
 {
     public function testFindOneBy(): void
     {
         self::bootKernel();
-        /** @var InformationBooth $booth */
-        $booth = self::$kernel->getContainer()->get(InformationBooth::class);
+        $booth = $this->getService(InformationBooth::class);
 
         $info = $booth->getWebsiteInfo();
         self::assertNotNull($info);

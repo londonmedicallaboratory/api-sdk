@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
-use LML\SDK\Entity\Order\Order;
-use LML\SDK\Entity\Address\Address;
-use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Repository\OrderRepository;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class CreateOrderTest extends KernelTestCase
+class CreateOrderTest extends AbstractTest
 {
     public function testFindOneBy(): void
     {
         self::bootKernel();
-        /** @var OrderRepository $repo */
-        $repo = self::$kernel->getContainer()->get(OrderRepository::class);
+        $repo = $this->getService(OrderRepository::class);
 
 //        $customer = new Customer(
 //            id         : '1',

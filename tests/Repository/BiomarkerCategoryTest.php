@@ -6,21 +6,16 @@ namespace LML\SDK\Tests\Repository;
 
 use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\PaginatedResults;
-use LML\SDK\Repository\ProductRepository;
+use LML\SDK\Repository\BiomarkerCategoryRepository;
 
-class ProductRepositoryTest extends AbstractTest
+class BiomarkerCategoryTest extends AbstractTest
 {
     public function testPagination(): void
     {
         self::bootKernel();
 
-        $pagination = $this->getProductRepository()->paginate(await: true);
+        $pagination = $this->getService(BiomarkerCategoryRepository::class)->paginate(await: true);
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());
-    }
-
-    private function getProductRepository(): ProductRepository
-    {
-        return $this->getService(ProductRepository::class);
     }
 }

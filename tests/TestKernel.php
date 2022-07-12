@@ -14,6 +14,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use function str_starts_with;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class TestKernel extends Kernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
@@ -30,16 +33,16 @@ class TestKernel extends Kernel implements CompilerPassInterface
         yield new LMLViewBundle();
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__ . '/config/test_config.yaml');
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         foreach ($container->getDefinitions() as $id => $definition) {
             // all services within the bundle will become public
-            if (str_starts_with((string)$id, 'lml_sdk') || str_starts_with((string)$id, 'LML\SDK')) {
+            if (str_starts_with($id, 'lml_sdk') || str_starts_with($id, 'LML\SDK')) {
                 $definition->setPublic(true);
             }
         }

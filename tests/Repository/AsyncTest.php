@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
+use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductRepository;
@@ -12,16 +13,14 @@ use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function count;
 
-class AsyncTest extends KernelTestCase
+class AsyncTest extends AbstractTest
 {
     public function testFindOneBy(): void
     {
         self::bootKernel();
-        /** @var ProductRepository $repo */
-        $repo = self::$kernel->getContainer()->get(ProductRepository::class);
+        $repo = $this->getService(ProductRepository::class);
 
         $stopwatch = new Stopwatch();
         $stopwatch->start('init');
@@ -54,8 +53,7 @@ class AsyncTest extends KernelTestCase
     public function testFindOneAsync(): void
     {
         self::bootKernel();
-        /** @var ProductRepository $repo */
-        $repo = self::$kernel->getContainer()->get(ProductRepository::class);
+        $repo = $this->getService(ProductRepository::class);
 
         $lazyValue = $repo->findLazy(['slug' => 'book']);
         /** @var Product $book */
@@ -75,7 +73,5 @@ class AsyncTest extends KernelTestCase
         foreach ($book->getShippingTypes() as $biomarker) {
             self::assertInstanceOf(ShippingInterface::class, $biomarker);
         }
-
-//        dump($book->getCategories());
     }
 }

@@ -8,18 +8,17 @@ use DateTime;
 use Exception;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Repository\PatientRepository;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class PatientRepositoryTest extends KernelTestCase
+class PatientRepositoryTest extends AbstractTest
 {
     public function testCreate(): void
     {
         self::bootKernel();
-        /** @var PatientRepository $repo */
-        $repo = self::$kernel->getContainer()->get(PatientRepository::class);
+        $repo = $this->getPatientRepository();
 
         $patient = new Patient(
             email      : 'test@ex.de',
@@ -39,8 +38,7 @@ class PatientRepositoryTest extends KernelTestCase
     public function testUpdate(): void
     {
         self::bootKernel();
-        /** @var PatientRepository $repo */
-        $repo = self::$kernel->getContainer()->get(PatientRepository::class);
+        $repo = $this->getPatientRepository();
         $randomName = sprintf('Randomizer-%s', random_int(1, 10_000));
 
         $patient = $repo->find('ed0e6483-7f0e-4861-810c-5b3050005df1', await: true) ?? throw new Exception('No id.');
@@ -58,11 +56,15 @@ class PatientRepositoryTest extends KernelTestCase
     public function testPagination(): void
     {
         self::bootKernel();
-        /** @var PatientRepository $repo */
-        $repo = self::$kernel->getContainer()->get(PatientRepository::class);
+        $repo = $this->getPatientRepository();
 
         $pagination = $repo->paginate(await: true);
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());
+    }
+
+    private function getPatientRepository(): PatientRepository
+    {
+        return $this->getService(PatientRepository::class);
     }
 }
