@@ -93,6 +93,7 @@ class TestLocationRepository extends AbstractRepository
             dayOfWeek: DayOfWeekEnum::fromShortcut($datum['day_of_week']),
             startsAt : $datum['starts_at'],
             endsAt   : $datum['ends_at'],
+            isActive : $datum['active'] ?? true,
         ), $data));
 
         return $await ? await($resolvedPromise, Loop::get()) : $resolvedPromise;
