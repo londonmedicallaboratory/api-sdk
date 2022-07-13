@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestLocation\TimeBlock;
 
 use DateTimeInterface;
+use LML\SDK\Repository\TestLocationRepository;
 
+/**
+ * @see TestLocationRepository::getTimeBlocks
+ */
 class TimeBlock implements TimeBlockInterface
 {
-    /**
-     * @see \LML\SDK\Repository\TestLocationRepository::getTimeBlocks
-     */
     public function __construct(
         protected string            $id,
         protected DateTimeInterface $startsAt,

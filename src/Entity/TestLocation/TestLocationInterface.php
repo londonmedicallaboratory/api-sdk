@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestLocation;
 
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
 /**
@@ -32,4 +33,9 @@ interface TestLocationInterface extends ModelInterface
      * @return list<HealthcareProfessionalInterface>
      */
     public function getHealthcareProfessionals();
+
+    /**
+     * @return list<WorkingHoursInterface>
+     */
+    public function getWorkingHours(): array;
 }

@@ -7,21 +7,24 @@ namespace LML\SDK\Entity\TestLocation;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
+use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
 #[Entity(repositoryClass: TestLocationRepository::class, baseUrl: 'test_location')]
 class TestLocation implements TestLocationInterface
 {
     /**
-     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals,
+     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals ,
+     * @param LazyValueInterface<list<WorkingHoursInterface>> $workHours ,
      */
     public function __construct(
-        protected string $id,
-        protected string $fullAddress,
-        protected string $city,
-        protected string $postalCode,
-        protected string $name,
+        protected string           $id,
+        protected string           $fullAddress,
+        protected string           $city,
+        protected string           $postalCode,
+        protected string           $name,
         private LazyValueInterface $healthcareProfessionals,
+        private LazyValueInterface $workHours,
     )
     {
     }
@@ -56,7 +59,12 @@ class TestLocation implements TestLocationInterface
         return $this->healthcareProfessionals->getValue();
     }
 
-    public function toArray()
+    public function getWorkingHours(): array
+    {
+        return $this->workHours->getValue();
+    }
+
+    public function toArray(): array
     {
         return [
             'id'           => $this->getId(),

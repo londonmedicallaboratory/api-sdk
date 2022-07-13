@@ -8,7 +8,7 @@ use RuntimeException;
 
 class Day implements DayInterface
 {
-    public function getAvailableSlots()
+    public function getAvailableSlots(): array
     {
         return [];
     }
