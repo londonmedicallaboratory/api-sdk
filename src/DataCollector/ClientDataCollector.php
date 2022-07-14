@@ -12,19 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 
+/**
+ * @property array{requests: list<array{url: string, cached: bool, method: string, filters: array}>} $data
+ */
 class ClientDataCollector extends AbstractDataCollector implements ClientInterface
 {
-    /**
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     *
-     * @var array{
-     *     requests: list<array{url: string, cached: bool, method: string, filters: array}>,
-     * }
-     */
-    protected $data = [
-        'requests' => [],
-    ];
-
     public function __construct(
         private ClientInterface $client,
     )
