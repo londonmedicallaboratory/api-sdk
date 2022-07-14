@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 
 /**
- * @property array{requests: list<array{url: string, cached: bool, method: string, filters: array}>} $data
+ * @property array{requests: null|list<array{url: string, cached: bool, method: string, filters: array}>} $data
  */
 class ClientDataCollector extends AbstractDataCollector implements ClientInterface
 {
@@ -30,7 +30,7 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
      */
     public function getRequests(): array
     {
-        return $this->data['requests'];
+        return $this->data['requests'] ?? [];
     }
 
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
