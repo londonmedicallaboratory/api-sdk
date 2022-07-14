@@ -23,6 +23,7 @@ class Patient implements PatientInterface
         private ?EthnicityEnum    $ethnicity,
         private ?string           $email,
         private ?string           $foreignId = null,
+        private ?string           $phoneNumber = null,
         private ?string           $id = null,
     )
     {
@@ -98,6 +99,11 @@ class Patient implements PatientInterface
         $this->ethnicity = $ethnicity;
     }
 
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
     public function toArray(): array
     {
         return [
@@ -109,6 +115,7 @@ class Patient implements PatientInterface
             'ethnicity'     => $this->getEthnicity()?->value,
             'email'         => $this->getEmail(),
             'foreign_id'    => $this->foreignId,
+            'phone_number'  => $this->getPhoneNumber(),
         ];
     }
 }

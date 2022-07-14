@@ -38,4 +38,6 @@ interface PatientInterface extends ModelInterface, Stringable
     public function getEthnicity(): ?EthnicityEnum;
 
     public function getEmail(): ?string;
+
+    public function getPhoneNumber(): ?string;
 }
