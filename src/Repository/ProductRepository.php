@@ -43,7 +43,6 @@ class ProductRepository extends AbstractRepository
             description     : $entity['description'],
             shortDescription: $entity['short_description'],
             previewImageUrl : $entity['preview_image_url'],
-            testToRelease   : $entity['test_to_release'],
             price           : $price,
             biomarkers      : new LazyPromise($this->getBiomarkers($id)),
             shippingTypes   : new LazyPromise($this->getShippingTypes($id)),

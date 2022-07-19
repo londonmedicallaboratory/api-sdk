@@ -33,7 +33,6 @@ class Product implements ProductInterface
         protected string             $description,
         protected string             $shortDescription,
         protected ?string            $previewImageUrl,
-        protected bool               $testToRelease,
         protected PriceInterface     $price,
         protected LazyValueInterface $biomarkers,
         protected LazyValueInterface $shippingTypes,
@@ -114,11 +113,6 @@ class Product implements ProductInterface
         return $this->categories->getValue();
     }
 
-    public function isTestToRelease(): bool
-    {
-        return $this->testToRelease;
-    }
-
     public function toArray(): array
     {
         return [
@@ -129,7 +123,6 @@ class Product implements ProductInterface
             'description'       => $this->getLongDescription(),
             'short_description' => $this->getShortDescription(),
             'preview_image_url' => $this->getPreviewImageUrl(),
-            'test_to_release'   => $this->isTestToRelease(),
             'price'             => $this->getPrice()->toArray(),
         ];
     }
