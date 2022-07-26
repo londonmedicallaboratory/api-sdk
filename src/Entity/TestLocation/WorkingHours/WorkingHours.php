@@ -50,6 +50,7 @@ class WorkingHours implements WorkingHoursInterface
             'day_of_week' => $this->getDayOfWeek()->getShortcut(),
             'starts_at'   => $this->getStartsAt(),
             'ends_at'     => $this->getEndsAt(),
+            'active'      => $this->isActive(),
         ];
     }
 }
