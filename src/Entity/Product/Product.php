@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Product;
 
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\File\Video;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Entity\Money\PriceInterface;
@@ -24,6 +25,7 @@ class Product implements ProductInterface
      * @param LazyValueInterface<list<CategoryInterface>> $categories
      * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
      * @param LazyValueInterface<list<ProductFaq>> $faqs
+     * @param LazyValueInterface<null|Video> $video
      */
     public function __construct(
         protected string             $id,
@@ -39,6 +41,7 @@ class Product implements ProductInterface
         protected LazyValueInterface $files,
         protected LazyValueInterface $categories,
         protected LazyValueInterface $faqs,
+        protected LazyValueInterface $video,
     )
     {
     }
@@ -111,6 +114,11 @@ class Product implements ProductInterface
     public function getCategories()
     {
         return $this->categories->getValue();
+    }
+
+    public function getVideo(): ?Video
+    {
+        return $this->video->getValue();
     }
 
     public function toArray(): array

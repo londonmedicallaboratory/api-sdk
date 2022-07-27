@@ -36,6 +36,9 @@
         <service id="LML\SDK\Repository\FileRepository">
             <tag name="lml_sdk.repository"/>
         </service>
+        <service id="LML\SDK\Repository\VideoRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
         <service id="LML\SDK\Repository\OrderRepository">
             <tag name="lml_sdk.repository"/>
         </service>

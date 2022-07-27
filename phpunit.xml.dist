@@ -21,12 +21,12 @@
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
         <server name="KERNEL_CLASS" value="LML\SDK\Tests\TestKernel"/>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1"/>
         <env name="APP_ENV" value="testing" force="true"/>
 
         <env name="API_BASE_URL" value="https://example.com" force="true"/>
-        <env name="API_USERNAME" value="example" force="true"/>
-        <env name="API_PASSWORD" value="example" force="true"/>
+        <env name="API_TOKEN" value="123123123" force="true"/>
+        <env name="API_CACHE_EXPIRATION" value="600" force="true"/>
     </php>
 
 

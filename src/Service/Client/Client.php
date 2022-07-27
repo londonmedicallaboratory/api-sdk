@@ -10,6 +10,7 @@ use React\Http\Browser;
 use React\Promise\PromiseInterface;
 use LML\SDK\Promise\CachedItemPromise;
 use Psr\Http\Message\ResponseInterface;
+use React\Http\Message\ResponseException;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use function rtrim;
 use function ltrim;
@@ -102,6 +103,11 @@ class Client implements ClientInterface
                 $cache->save($item);
 
                 return $data;
+            }, function (ResponseException $_e) use ($item, $cacheTimeout) {
+                $item->expiresAfter($cacheTimeout);
+                $item->set(null);
+
+                return null;
             });
     }
 

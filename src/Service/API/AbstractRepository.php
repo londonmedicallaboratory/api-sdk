@@ -59,36 +59,6 @@ abstract class AbstractRepository extends AbstractViewFactory
         $className = $this->extractTView();
 
         return $this->getEntityManager()->paginate($className, $filters, $url, $page, $await);
-//        $client = $this->getClient();
-//        if (!$url) {
-//            $url = rtrim($this->getBaseUrl(), '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
-//        }
-//
-//        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<TData>}> $promise */
-//        $promise = $client->getAsync($url, $filters, $page, cacheTimeout: $this->getCacheTimeout());
-//
-//        $paginationPromise = $promise
-//            ->then(function (array $data) {
-//                $views = [];
-//                $items = $data['items'] ?? [];
-//                foreach ($items as $item) {
-//                    /** @var ?string $id */
-//                    $id = $item['id'] ?? throw new RuntimeException();
-//                    /** @psalm-suppress PossiblyInvalidArgument */
-//                    $view = $this->cache[(string)$id] ??= $this->buildOne($item);
-//                    $views[] = $view;
-//                }
-//
-//                return new PaginatedResults(
-//                    currentPage   : $data['current_page'] ?? 1,
-//                    nrOfPages     : $data['nr_of_pages'] ?? 1,
-//                    resultsPerPage: $data['results_per_page'] ?? 10,
-//                    nextPage      : $data['next_page'] ?? null,
-//                    items         : $views,
-//                );
-//            });
-//
-//        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
     }
 
     /**
@@ -102,7 +72,10 @@ abstract class AbstractRepository extends AbstractViewFactory
         $client = $this->getClient();
 
         $promise = $client->getAsync($url, $filters, cacheTimeout: $this->getCacheTimeout())
-            ->then(/** @param TData $data */ function (array $data) {
+            ->then(/** @param null|TData $data */ function (null|array $data) {
+                if (null === $data) {
+                    return null;
+                }
                 $id = $data['id'] ?? null;
                 if (!$id) {
                     return null;

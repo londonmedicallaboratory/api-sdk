@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
@@ -49,6 +50,7 @@ class ProductRepository extends AbstractRepository
             files           : new LazyPromise($this->getFiles($id)),
             categories      : new LazyPromise($this->getCategories($id)),
             faqs            : new LazyPromise($this->getFaqs($id)),
+            video           : new LazyPromise($this->getVideo($id)),
         );
     }
 
@@ -64,7 +66,17 @@ class ProductRepository extends AbstractRepository
     {
         $url = sprintf('/product/%s/categories', $id);
 
-        return $this->get(BiomarkerCategoryRepository::class)->findBy(url: $url);
+        return $this->get(ProductCategoryRepository::class)->findBy(url: $url);
+    }
+
+    /**
+     * @return PromiseInterface<?Video>
+     */
+    private function getVideo(string $id): PromiseInterface
+    {
+        $url = sprintf('/product/%s/video', $id);
+
+        return $this->get(VideoRepository::class)->findOneByUrl(url: $url);
     }
 
     /**
