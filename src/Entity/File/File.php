@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\File;
 
+use LML\SDK\Attribute\Entity;
+use LML\SDK\Repository\FileRepository;
+
+#[Entity(repositoryClass: FileRepository::class, baseUrl: 'file')]
 class File implements FileInterface
 {
     public function __construct(
