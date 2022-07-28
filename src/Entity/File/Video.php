@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\File;
 
+use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\VideoRepository;
 
 /**
  * @see VideoRepository::one()
  */
+#[Entity(repositoryClass: VideoRepository::class, baseUrl: 'video')]
 class Video implements VideoInterface
 {
     /**
