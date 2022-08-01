@@ -15,6 +15,9 @@
         <service id="LML\SDK\Repository\ProductRepository">
             <tag name="lml_sdk.repository"/>
         </service>
+        <service id="LML\SDK\Repository\ProductCollectionRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
         <service id="LML\SDK\Repository\ProductFaqRepository">
             <tag name="lml_sdk.repository"/>
         </service>
