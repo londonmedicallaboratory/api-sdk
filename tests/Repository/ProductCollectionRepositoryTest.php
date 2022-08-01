@@ -16,7 +16,7 @@ class ProductCollectionRepositoryTest extends AbstractTest
 
         $pagination = $this->getProductCollectionRepository()->paginate(await: true);
         foreach ($pagination->getItems() as $item) {
-            dump($item->getLogo());
+//            dump($item->getLogo());
         }
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());

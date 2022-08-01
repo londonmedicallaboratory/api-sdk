@@ -4,34 +4,24 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service;
 
-use RuntimeException;
 use Brick\Money\Money;
-use LML\SDK\DTO\Payment;
 use React\EventLoop\Loop;
-use LML\View\Lazy\LazyValue;
-use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Money\Price;
-use LML\SDK\Entity\Order\Order;
-use RingCentral\Psr7\Response;
-use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Order\BasketItem;
-use LML\SDK\Entity\Customer\Customer;
-use Psr\Http\Message\StreamInterface;
 use LML\SDK\Repository\OrderRepository;
-use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
 use Symfony\Contracts\Service\ResetInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
-use function json_decode;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use function array_filter;
 use function array_values;
-use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
-class Basket implements ResetInterface
+class Basket implements ResetInterface, EventSubscriberInterface
 {
     private const SESSION_KEY = 'basket';
 
@@ -49,15 +39,22 @@ class Basket implements ResetInterface
     {
     }
 
-    public function __destruct()
-    {
-        $this->save();
-    }
-
     public function reset(): void
     {
         $this->save();
         $this->items = null;
+    }
+
+    public function onKernelResponse(): void
+    {
+        $this->save();
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::TERMINATE => 'onKernelResponse',
+        ];
     }
 
 //
