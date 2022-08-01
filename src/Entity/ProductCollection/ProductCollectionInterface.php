@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\ProductCollection;
 
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\File\FileInterface;
 
 /**
  * @psalm-type S=array{
@@ -22,4 +23,6 @@ interface ProductCollectionInterface extends ModelInterface
     public function getSlug(): string;
 
     public function getDescription(): string;
+
+    public function getLogo(): ?FileInterface;
 }
