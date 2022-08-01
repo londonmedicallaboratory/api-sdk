@@ -12,16 +12,12 @@ use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
-use Symfony\Contracts\Service\ResetInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use function array_filter;
 use function array_values;
 use function Clue\React\Block\awaitAll;
 
-class Basket implements ResetInterface, EventSubscriberInterface
+class Basket
 {
     private const SESSION_KEY = 'basket';
 
@@ -37,24 +33,6 @@ class Basket implements ResetInterface, EventSubscriberInterface
         private ShippingRepository $shippingRepository,
     )
     {
-    }
-
-    public function reset(): void
-    {
-        $this->save();
-        $this->items = null;
-    }
-
-    public function onKernelResponse(): void
-    {
-        $this->save();
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::TERMINATE => 'onKernelResponse',
-        ];
     }
 
 //
