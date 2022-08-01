@@ -23,6 +23,7 @@ use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function json_decode;
 use function array_filter;
@@ -30,7 +31,7 @@ use function array_values;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
-class Basket
+class Basket implements ResetInterface
 {
     private const SESSION_KEY = 'basket';
 
@@ -47,6 +48,18 @@ class Basket
     )
     {
     }
+
+    public function __destruct()
+    {
+        $this->save();
+    }
+
+    public function reset(): void
+    {
+        $this->save();
+        $this->items = null;
+    }
+
 //
 //    /**
 //     * @todo Refactor to use OrderRepository::create()
@@ -175,6 +188,11 @@ class Basket
         $item->setQuantity($quantity + 1);
     }
 
+    public function setQuantityForProduct(ProductInterface $product, int $quantity): void
+    {
+        $item = $this->findItemOrCreateNew($product);
+        $item->setQuantity($quantity);
+    }
 
     private function findItem(ProductInterface $product): ?BasketItem
     {
