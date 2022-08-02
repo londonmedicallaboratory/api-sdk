@@ -33,6 +33,7 @@ class Product implements ProductInterface
         protected string             $sku,
         protected string             $slug,
         protected string             $description,
+        protected bool               $isFeatured,
         protected string             $shortDescription,
         protected ?string            $previewImageUrl,
         protected PriceInterface     $price,
@@ -81,6 +82,11 @@ class Product implements ProductInterface
         return $this->previewImageUrl;
     }
 
+    public function isFeatured(): bool
+    {
+        return $this->isFeatured;
+    }
+
     public function getShortDescription(): string
     {
         return $this->shortDescription;
@@ -96,12 +102,12 @@ class Product implements ProductInterface
         return $this->price;
     }
 
-    public function getShippingTypes()
+    public function getShippingTypes(): array
     {
         return $this->shippingTypes->getValue();
     }
 
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->files->getValue();
     }

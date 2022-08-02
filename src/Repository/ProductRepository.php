@@ -21,7 +21,14 @@ use function sprintf;
 /**
  * @psalm-import-type S from ProductInterface
  *
- * @extends AbstractRepository<S, Product, array>
+ * @extends AbstractRepository<S, Product, array{
+ *     slug?: string,
+ *     search?: string,
+ *     sku?: string,
+ *     category_slug?: string,
+ *     collection_slug?: string,
+ *     product_categories?: list<string>,
+ * }>
  */
 class ProductRepository extends AbstractRepository
 {
@@ -45,6 +52,7 @@ class ProductRepository extends AbstractRepository
             description     : $entity['description'],
             shortDescription: $entity['short_description'],
             previewImageUrl : $entity['preview_image_url'],
+            isFeatured      : $entity['is_featured'] ?? false,
             price           : $price,
             biomarkers      : new LazyPromise($this->getBiomarkers($id)),
             shippingTypes   : new LazyPromise($this->getShippingTypes($id)),

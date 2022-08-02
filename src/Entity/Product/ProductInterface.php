@@ -21,6 +21,7 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *      sku: string,
  *      description: string,
  *      short_description: string,
+ *      is_featured?: bool,
  *      preview_image_url: ?string,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
  * }
@@ -43,15 +44,17 @@ interface ProductInterface extends ModelInterface, SluggableInterface, Stringabl
 
     public function getPreviewImageUrl(): ?string;
 
+    public function isFeatured(): bool;
+
     /**
      * @return list<ShippingInterface>
      */
-    public function getShippingTypes();
+    public function getShippingTypes(): array;
 
     /**
      * @return list<FileInterface>
      */
-    public function getFiles();
+    public function getFiles(): array;
 
     /**
      * @return list<BiomarkerInterface>
