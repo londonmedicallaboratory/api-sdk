@@ -142,6 +142,16 @@ class Basket
         return Price::fromMoney($money);
     }
 
+    public function getTotalQuantity(): int
+    {
+        $quantity = 0;
+        foreach ($this->getItems() as $item) {
+            $quantity += $item->getQuantity();
+        }
+
+        return $quantity;
+    }
+
     public function removeProduct(ProductInterface $product): void
     {
         if ($item = $this->findItem($product)) {
