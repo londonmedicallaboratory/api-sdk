@@ -128,10 +128,7 @@ class Basket
 
     public function getTotal(): ?Price
     {
-        $total = 0;
-        foreach ($this->getItems() as $item) {
-            $total += $item->getTotal()->getAmount();
-        }
+        $total = array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getTotal()->getAmount() + $carry, 0);
 
         if (!$total) {
             return null;
@@ -140,6 +137,11 @@ class Basket
         $money = Money::ofMinor($total, 'GBP');
 
         return Price::fromMoney($money);
+    }
+
+    public function getTotalQuantity(): int
+    {
+        return array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getQuantity() + $carry, 0);
     }
 
     public function removeProduct(ProductInterface $product): void
