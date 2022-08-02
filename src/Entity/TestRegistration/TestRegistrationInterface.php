@@ -31,8 +31,6 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      passport_number?: ?string,
  *      nhs_number?: ?string,
  *      vaccination_status?: ?string,
- *      departure_start_date?: ?string,
- *      transit_countries?: list<string>,
  *      created_at?: ?string,
  *      completed_at?: ?string,
  *      patient_registered_at?: ?string,
@@ -40,20 +38,9 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      foreign_id?: ?string,
  *      country_from?: string,
  *      transport_type?: string,
- *      date_of_arrival?: ?string,
  *      travel_number?: string,
  *      doctors_note?: ?string,
  *      uk_address?: null|array{
- *          id: string,
- *          line1: string,
- *          line2?: ?string,
- *          line3?: ?string,
- *          postal_code: string,
- *          country_name?: string,
- *          country_code: string,
- *          city: string,
- *      },
- *      self_isolating_address?: null|array{
  *          id: string,
  *          line1: string,
  *          line2?: ?string,
@@ -76,11 +63,6 @@ interface TestRegistrationInterface extends ModelInterface
     public function getPatientRegisteredAt(): ?DateTimeInterface;
 
     public function getDoctorsNote(): ?string;
-
-    /**
-     * @return list<string>
-     */
-    public function getTransitCountryCodes(): array;
 
     public function getUkAddress(): ?AddressInterface;
 

@@ -12,11 +12,12 @@ use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Entity\Patient\PatientInterface;
 use function array_map;
 
+/**
+ * @see \LML\SDK\Repository\TestRegistrationRepository::one()
+ */
 class TestRegistration implements TestRegistrationInterface
 {
     /**
-     * @see \LML\SDK\Repository\TestRegistrationRepository::one()
-     *
      * @param ?LazyValueInterface<?AddressInterface> $selfIsolatingAddress
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
@@ -28,13 +29,10 @@ class TestRegistration implements TestRegistrationInterface
         protected LazyValueInterface  $products,
         protected LazyValueInterface  $patient,
         protected ?LazyValueInterface $resultsReady = null,
-        protected ?DateTimeInterface  $dateOfArrival = null,
         protected DateTimeInterface   $createdAt = new DateTime(),
         protected ?DateTimeInterface  $completedAt = null,
         protected ?DateTimeInterface  $patientRegisteredAt = null,
-        protected ?DateTimeInterface  $departureStartDate = null,
         protected ?LazyValueInterface $ukAddress = null,
-        protected ?LazyValueInterface $selfIsolatingAddress = null,
         protected array               $transitCountries = [],
         protected ?string             $doctorsNote = null,
         protected string              $id = '',
@@ -45,11 +43,6 @@ class TestRegistration implements TestRegistrationInterface
     public function getPatient(): ?PatientInterface
     {
         return $this->patient->getValue();
-    }
-
-    public function getDayOfArrival(): ?DateTimeInterface
-    {
-        return $this->dateOfArrival;
     }
 
     public function getProducts(): array
@@ -65,24 +58,6 @@ class TestRegistration implements TestRegistrationInterface
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getSelfIsolatingAddress(): ?AddressInterface
-    {
-        return $this->selfIsolatingAddress?->getValue();
-    }
-
-    /**
-     * @return list<string>
-     */
-    public function getTransitCountryCodes(): array
-    {
-        return $this->transitCountries;
-    }
-
-    public function getDepartureStartDate(): ?DateTimeInterface
-    {
-        return $this->departureStartDate;
     }
 
     public function getCreatedAt(): DateTimeInterface
@@ -111,25 +86,21 @@ class TestRegistration implements TestRegistrationInterface
         $productIds = array_map(static fn(ProductInterface $product) => $product->getId(), $this->getProducts());
 
         return [
-            'id'                     => $this->getId(),
-            'patient_id'             => $patient?->getId(),
-            'results_ready'          => $this->resultsReady?->getValue() ?? false,
-            'product_ids'            => $productIds,
-            'email'                  => $patient?->getEmail(),
-            'date_of_birth'          => $patient?->getDateOfBirth()->format('Y-m-d'),
-            'first_name'             => $patient?->getFirstName(),
-            'last_name'              => $patient?->getLastName(),
-            'ethnicity'              => $patient?->getEthnicity()?->value,
-            'gender'                 => $patient?->getGender()->value,
-            'transit_countries'      => $this->getTransitCountryCodes(),
-            'departure_start_date'   => $this->getDepartureStartDate()?->format('Y-m-d'),
-            'created_at'             => $this->getCreatedAt()->format('Y-m-d'),
-            'completed_at'           => $this->getCompletedAt()?->format('Y-m-d'),
-            'patient_registered_at'  => $this->getPatientRegisteredAt()?->format('Y-m-d'),
-            'self_isolating_address' => $this->getSelfIsolatingAddress()?->toArray(),
-            'date_of_arrival'        => $this->getDayOfArrival()?->format('Y-m-d'),
-            'uk_address'             => $this->getUkAddress()?->toArray(),
-            'doctors_note'           => $this->getDoctorsNote(),
+            'id'                    => $this->getId(),
+            'patient_id'            => $patient?->getId(),
+            'results_ready'         => $this->resultsReady?->getValue() ?? false,
+            'product_ids'           => $productIds,
+            'email'                 => $patient?->getEmail(),
+            'date_of_birth'         => $patient?->getDateOfBirth()->format('Y-m-d'),
+            'first_name'            => $patient?->getFirstName(),
+            'last_name'             => $patient?->getLastName(),
+            'ethnicity'             => $patient?->getEthnicity()?->value,
+            'gender'                => $patient?->getGender()->value,
+            'created_at'            => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at'          => $this->getCompletedAt()?->format('Y-m-d'),
+            'patient_registered_at' => $this->getPatientRegisteredAt()?->format('Y-m-d'),
+            'uk_address'            => $this->getUkAddress()?->toArray(),
+            'doctors_note'          => $this->getDoctorsNote(),
         ];
     }
 }

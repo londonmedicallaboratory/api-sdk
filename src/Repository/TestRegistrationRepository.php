@@ -27,13 +27,11 @@ class TestRegistrationRepository extends AbstractRepository
         $createdAt = $entity['created_at'] ?? null;
         $completedAt = $entity['completed_at'] ?? null;
         $patientRegisteredAt = $entity['patient_registered_at'] ?? null;
-        $dateOfArrival = $entity['date_of_arrival'] ?? null;
         $id = $entity['id'];
 
         return new TestRegistration(
             products           : new LazyPromise($this->getProducts($id)),
             patient            : new LazyPromise($this->getPatient($id)),
-            dateOfArrival      : $dateOfArrival ? new DateTime($dateOfArrival) : null,
             resultsReady       : new ResolvedValue($entity['results_ready']),
             createdAt          : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt        : $completedAt ? new DateTime($completedAt) : null,
