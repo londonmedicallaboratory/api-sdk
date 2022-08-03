@@ -28,6 +28,7 @@ use function sprintf;
  *     category_slug?: string,
  *     collection_slug?: string,
  *     product_categories?: list<string>,
+ *     featured?: bool,
  * }>
  */
 class ProductRepository extends AbstractRepository
