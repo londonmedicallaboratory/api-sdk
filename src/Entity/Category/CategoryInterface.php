@@ -32,7 +32,7 @@ interface CategoryInterface extends ModelInterface, SluggableInterface, Stringab
     /**
      * @return list<BiomarkerInterface>
      */
-    public function getBiomarkers();
+    public function getBiomarkers(): array;
 
     public function getNrOfProducts(): ?int;
 
