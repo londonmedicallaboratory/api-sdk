@@ -11,6 +11,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
 
 /**
  * @psalm-import-type S from ShippingInterface
+ *
  * @extends AbstractRepository<S, Shipping, array>
  */
 class ShippingRepository extends AbstractRepository
@@ -33,10 +34,5 @@ class ShippingRepository extends AbstractRepository
             description: $entity['description'],
             price      : $price,
         );
-    }
-
-    protected function getBaseUrl(): string
-    {
-        return '/shipping';
     }
 }

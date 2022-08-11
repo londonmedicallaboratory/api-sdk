@@ -41,11 +41,6 @@ class TestRegistrationRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/test_registration';
-    }
-
     /**
      * @return PromiseInterface<Patient>
      */

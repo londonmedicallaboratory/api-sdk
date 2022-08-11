@@ -27,11 +27,6 @@ class PageRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/page';
-    }
-
     protected function getCacheTimeout(): ?int
     {
         return 500;

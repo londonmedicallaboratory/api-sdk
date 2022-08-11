@@ -28,7 +28,8 @@
         "symfony/framework-bundle": "^6.0",
         "strictify/form-mapper-bundle": "dev-master",
         "strictify/goodies-bundle": "dev-master",
-        "symfony/form": "^6.0"
+        "symfony/form": "^6.0",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

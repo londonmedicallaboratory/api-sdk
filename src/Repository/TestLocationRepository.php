@@ -114,11 +114,6 @@ class TestLocationRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/test_location';
-    }
-
     /**
      * @return PromiseInterface<list<HealthcareProfessional>>
      */

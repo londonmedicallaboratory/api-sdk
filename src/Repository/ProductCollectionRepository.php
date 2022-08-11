@@ -31,11 +31,6 @@ class ProductCollectionRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/product_collection';
-    }
-
     /**
      * @return PromiseInterface<?FileInterface>
      */

@@ -28,9 +28,4 @@ class FileRepository extends AbstractRepository
             thumbnails: new ResolvedValue($entity['thumbnails'] ?? []),
         );
     }
-
-    protected function getBaseUrl(): string
-    {
-        return '/files';
-    }
 }

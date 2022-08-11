@@ -31,9 +31,4 @@ class AddressRepository extends AbstractRepository
             company    : $entity['company'] ?? null,
         );
     }
-
-    protected function getBaseUrl(): string
-    {
-        return '/address';
-    }
 }
