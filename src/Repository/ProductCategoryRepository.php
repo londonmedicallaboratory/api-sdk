@@ -35,11 +35,6 @@ class ProductCategoryRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/product_categories';
-    }
-
     /**
      * @return PromiseInterface<?FileInterface>
      */

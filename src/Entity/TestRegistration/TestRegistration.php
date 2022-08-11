@@ -6,15 +6,18 @@ namespace LML\SDK\Entity\TestRegistration;
 
 use DateTime;
 use DateTimeInterface;
+use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Entity\Patient\PatientInterface;
+use LML\SDK\Repository\TestRegistrationRepository;
 use function array_map;
 
 /**
  * @see \LML\SDK\Repository\TestRegistrationRepository::one()
  */
+#[Entity(repositoryClass: TestRegistrationRepository::class, baseUrl: 'test_registration')]
 class TestRegistration implements TestRegistrationInterface
 {
     /**

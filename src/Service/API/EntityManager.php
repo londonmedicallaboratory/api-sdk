@@ -220,6 +220,18 @@ class EntityManager implements ResetInterface
     /**
      * @param class-string $className
      */
+    public function getBaseUrl(string $className): string
+    {
+        $attribute = ReflectionAttributeReader::getAttribute($className, Entity::class);
+
+        $url = $attribute?->getBaseUrl() ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
+
+        return trim($url, '/');
+    }
+
+    /**
+     * @param class-string $className
+     */
     private function store(string $className, array $data): ModelInterface
     {
         $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
@@ -239,17 +251,5 @@ class EntityManager implements ResetInterface
     private function getEntityAttribute(string $className): Entity
     {
         return ReflectionAttributeReader::getAttribute($className, Entity::class) ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
-    }
-
-    /**
-     * @param class-string $className
-     */
-    private function getBaseUrl(string $className): string
-    {
-        $attribute = ReflectionAttributeReader::getAttribute($className, Entity::class);
-
-        $url = $attribute?->getBaseUrl() ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
-
-        return trim($url, '/');
     }
 }

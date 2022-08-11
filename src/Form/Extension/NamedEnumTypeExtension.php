@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Form\Extension;
 
 use Closure;
+use Webmozart\Assert\Assert;
 use LML\SDK\Enum\Model\NameableInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -25,8 +26,7 @@ class NamedEnumTypeExtension extends AbstractTypeExtension
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->addNormalizer('choice_label', function (Options $options, Closure $default) {
-            /** @var class-string $class */
-            $class = $options['class'];
+            Assert::classExists($class = $options['class']);
             if (is_a($class, NameableInterface::class, true)) {
                 return static fn(NameableInterface $nameable) => $nameable->getName();
             }

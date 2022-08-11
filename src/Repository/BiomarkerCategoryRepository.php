@@ -30,12 +30,7 @@ class BiomarkerCategoryRepository extends AbstractRepository
             logo        : new LazyPromise($this->getLogo($entity['id'])),
         );
     }
-
-    protected function getBaseUrl(): string
-    {
-        return '/biomarker_categories';
-    }
-
+    
     /**
      * @return PromiseInterface<?FileInterface>
      */

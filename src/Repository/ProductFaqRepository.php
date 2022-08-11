@@ -10,6 +10,7 @@ use LML\SDK\Entity\Product\ProductFaqInterface;
 
 /**
  * @psalm-import-type S from ProductFaqInterface
+ *
  * @extends AbstractRepository<S, ProductFaq, array>
  */
 class ProductFaqRepository extends AbstractRepository
@@ -22,10 +23,5 @@ class ProductFaqRepository extends AbstractRepository
             answer  : $entity['answer'],
             priority: $entity['priority'],
         );
-    }
-
-    protected function getBaseUrl(): string
-    {
-        return '/product_faq';
     }
 }

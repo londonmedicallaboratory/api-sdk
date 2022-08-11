@@ -10,6 +10,7 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
 /**
  * @psalm-import-type S from HealthcareProfessionalInterface
+ *
  * @extends AbstractRepository<S, HealthcareProfessional, array>
  */
 class HealthcareProfessionalRepository extends AbstractRepository
@@ -23,10 +24,5 @@ class HealthcareProfessionalRepository extends AbstractRepository
             isNurse      : $entity['is_nurse'],
             isLMLApproved: $entity['is_lml_approved'],
         );
-    }
-
-    protected function getBaseUrl(): string
-    {
-        return '/healthcare_professional';
     }
 }

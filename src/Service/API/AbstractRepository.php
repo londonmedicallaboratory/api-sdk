@@ -7,7 +7,9 @@ namespace LML\SDK\Service\API;
 use LogicException;
 use RuntimeException;
 use ReflectionMethod;
+use ReflectionNamedType;
 use React\EventLoop\Loop;
+use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
@@ -32,6 +34,11 @@ abstract class AbstractRepository extends AbstractViewFactory
      * @var array<string, TView>
      */
     private array $cache = [];
+
+    /**
+     * @var null|class-string<TView>
+     */
+    private ?string $tViewClassName = null;
 
     private ?ClientInterface $client = null;
 
@@ -180,7 +187,6 @@ abstract class AbstractRepository extends AbstractViewFactory
         $promise = $this->findBy();
 
         return $await ? await($promise, Loop::get()) : $promise;
-
     }
 
     /**
@@ -271,7 +277,12 @@ abstract class AbstractRepository extends AbstractViewFactory
         $this->client = $client;
     }
 
-    abstract protected function getBaseUrl(): string;
+    protected function getBaseUrl(): string
+    {
+        $tViewClassName = $this->extractTView();
+
+        return $this->getEntityManager()->getBaseUrl($tViewClassName);
+    }
 
     /**
      * Returning null means default timeout will be used, i.e. the one defined in ``lml_sdk.cache_expiration``
@@ -282,6 +293,16 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
+     * Returns class-name by using reflection; calculated only once.
+     *
+     * @return class-string<TView>
+     */
+    private function extractTView(): string
+    {
+        return $this->tViewClassName ??= $this->doExtractTViewClassName();
+    }
+
+    /**
      * @return class-string<TView>
      *
      * We can "thank" PHP for lack of generics:
@@ -289,19 +310,14 @@ abstract class AbstractRepository extends AbstractViewFactory
      * @psalm-suppress LessSpecificReturnStatement
      * @psalm-suppress MoreSpecificReturnType
      */
-    private function extractTView(): string
+    private function doExtractTViewClassName(): string
     {
         $rc = new ReflectionMethod($this, 'one');
-        /** @psalm-suppress UndefinedMethod */
-        $name = $rc->getReturnType()?->getName() ?? throw new LogicException(sprintf('You **must** typehint return value of \'one\' method in \'%s\'.', get_class($this)));
+        $returnType = $rc->getReturnType() ?? throw new LogicException(sprintf('You **must** typehint return value of \'one\' method in \'%s\'.', get_class($this)));
 
-        if (!is_string($name)) {
-            throw new LogicException('Reflection failed.');
-        }
+        Assert::isInstanceOf($returnType, ReflectionNamedType::class);
+        Assert::classExists($name = $returnType->getName());
 
-        if (!class_exists($name)) {
-            throw new LogicException(sprintf('Class \'%s\' does not exist.', $name));
-        }
         if (!is_a($name, ModelInterface::class, true)) {
             throw new LogicException(sprintf('Class \'%s\' must implement \'%s\'.', $name, ModelInterface::class));
         }

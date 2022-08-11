@@ -19,6 +19,7 @@ use function sprintf;
 
 /**
  * @psalm-import-type S from OrderInterface
+ *
  * @extends AbstractRepository<S, Order, array>
  */
 class OrderRepository extends AbstractRepository
@@ -49,11 +50,6 @@ class OrderRepository extends AbstractRepository
             items       : new LazyValue(fn() => $this->createItems($entity['items'])),
             shipping    : new LazyPromise($this->getShipping($id)),
         );
-    }
-
-    protected function getBaseUrl(): string
-    {
-        return '/order';
     }
 
     /**

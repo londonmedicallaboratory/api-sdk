@@ -33,11 +33,6 @@
     <issueHandlers>
 
         <UnusedMethodCall errorLevel="suppress"/>
-        <UndefinedMethod>
-            <errorLevel type="suppress">
-                <referencedMethod name="*::from"/>
-            </errorLevel>
-        </UndefinedMethod>
 
         <MethodSignatureMismatch>
             <errorLevel type="suppress">

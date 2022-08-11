@@ -64,11 +64,6 @@ class ProductRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/product';
-    }
-
     /**
      * @return PromiseInterface<list<CategoryInterface>>
      */

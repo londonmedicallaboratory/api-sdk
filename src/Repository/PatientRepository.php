@@ -35,9 +35,4 @@ class PatientRepository extends AbstractRepository
             foreignId  : $entity['foreign_id'] ?? null,
         );
     }
-
-    protected function getBaseUrl(): string
-    {
-        return '/patient';
-    }
 }

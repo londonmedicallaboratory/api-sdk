@@ -9,7 +9,7 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\BiomarkerRepository;
 use LML\SDK\Entity\Category\CategoryInterface;
 
-#[Entity(repositoryClass: BiomarkerRepository::class, baseUrl: 'biomarkers')]
+#[Entity(repositoryClass: BiomarkerRepository::class, baseUrl: 'biomarker')]
 class Biomarker implements BiomarkerInterface
 {
     /**

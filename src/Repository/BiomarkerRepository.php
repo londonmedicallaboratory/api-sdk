@@ -33,11 +33,6 @@ class BiomarkerRepository extends AbstractRepository
         );
     }
 
-    protected function getBaseUrl(): string
-    {
-        return '/biomarker';
-    }
-
     /**
      * @return PromiseInterface<CategoryInterface>
      */
