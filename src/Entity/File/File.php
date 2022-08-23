@@ -13,11 +13,12 @@ class File implements FileInterface
 {
     /**
      * @param LazyValueInterface<array<string, string>> $thumbnails
+     * @param LazyValueInterface<string> $url
      */
     public function __construct(
         protected string             $id,
         protected string             $filename,
-        protected string             $url,
+        protected LazyValueInterface $url,
         protected ?bool              $isPrimary,
         protected LazyValueInterface $thumbnails,
     )
@@ -36,7 +37,7 @@ class File implements FileInterface
 
     public function getUrl(): string
     {
-        return $this->url;
+        return $this->url->getValue();
     }
 
     public function isPrimary(): ?bool

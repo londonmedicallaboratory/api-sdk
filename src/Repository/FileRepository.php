@@ -23,7 +23,7 @@ class FileRepository extends AbstractRepository
         return new File(
             id        : $id,
             filename  : $entity['filename'],
-            url       : $entity['url'],
+            url       : new ResolvedValue($entity['url']),
             isPrimary : $entity['is_primary'] ?? null,
             thumbnails: new ResolvedValue($entity['thumbnails'] ?? []),
         );
