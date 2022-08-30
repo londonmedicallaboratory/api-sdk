@@ -64,7 +64,7 @@ class Client implements ClientInterface
 
         $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
 
-        return $this->browser->delete($url);
+        return $this->browser->delete($url, $this->getAuthHeaders());
     }
 
     /**

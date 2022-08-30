@@ -237,6 +237,14 @@ abstract class AbstractRepository extends AbstractViewFactory
         $this->getEntityManager()->persist($model);
     }
 
+    /**
+     * @param TView $model
+     */
+    public function remove(ModelInterface $model): void
+    {
+        $this->getEntityManager()->remove($model);
+    }
+
     public function clear(): void
     {
         $this->getEntityManager()->clear();

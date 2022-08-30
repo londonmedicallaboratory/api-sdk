@@ -31,7 +31,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *          postal_code: string
  *      },
  *      customer: array{
- *          id: string,
+ *          id: ?string,
  *          first_name: string,
  *          last_name: string,
  *          email: string,
