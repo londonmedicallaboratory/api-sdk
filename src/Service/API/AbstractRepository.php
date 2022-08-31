@@ -61,11 +61,11 @@ abstract class AbstractRepository extends AbstractViewFactory
      *
      * psalm-suppress all
      */
-    public function paginate(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
+    public function paginate(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
     {
         $className = $this->extractTView();
 
-        return $this->getEntityManager()->paginate($className, $filters, $url, $page, $await);
+        return $this->getEntityManager()->paginate($className, $filters, $url, $page, $limit, $await);
     }
 
     /**
@@ -148,7 +148,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findLazy(array $filters = [], ?string $url = null): LazyValueInterface
     {
-        $promise = $this->findOneByDeprecated($filters, $url);
+        $promise = $this->findOneBy($filters, $url);
 
         return new LazyPromise($promise);
     }
@@ -160,7 +160,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findOneBySlug(string $slug, bool $await = false)
     {
-        $promise = $this->findOneByDeprecated(['slug' => $slug]);
+        $promise = $this->findOneBy(['slug' => $slug]);
 
         return $await ? await($promise, Loop::get()) : $promise;
     }
@@ -168,13 +168,10 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function findOneByDeprecated(array $filters = [], ?string $url = null, bool $await = false)
+    public function findOneBy(array $filters = [], ?string $url = null, bool $await = false)
     {
-        $paginated = $this->paginate($filters, $url);
-
-        $promise = $paginated->then(function (PaginatedResults $results) {
-            return $results->first();
-        });
+        $paginated = $this->paginate($filters, $url, limit: 1);
+        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
 
         return $await ? await($promise, Loop::get()) : $promise;
     }

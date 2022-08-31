@@ -36,7 +36,7 @@ class FakerClient implements ClientInterface
         ];
     }
 
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {
         foreach ($this->fakers as $faker) {
             foreach ($faker->getPaginatedData() as $prefix => $paginatedDatum) {

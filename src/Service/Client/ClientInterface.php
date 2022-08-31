@@ -12,7 +12,7 @@ interface ClientInterface
     /**
      * @return PromiseInterface<mixed>
      */
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface;
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface;
 
     /**
      * @return PromiseInterface<ResponseInterface>

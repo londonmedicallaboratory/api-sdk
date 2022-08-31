@@ -104,7 +104,7 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, bool $await = false): PromiseInterface|PaginatedResults
+    public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
     {
         $client = $this->client;
         if (!$url) {
@@ -112,7 +112,7 @@ class EntityManager implements ResetInterface
             $url = rtrim($url, '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
-        $promise = $client->getAsync($url, filters: $filters, page: $page, tag: $className);
+        $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className);
 
         $paginationPromise = $promise
             ->then(function (array $data) use ($className) {

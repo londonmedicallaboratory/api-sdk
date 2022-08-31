@@ -72,11 +72,11 @@ class Client implements ClientInterface
      *
      * @return PromiseInterface<mixed>
      */
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {
         $tag = $tag ? preg_replace('/\W/', '', $tag) : null;
 
-        $url = $this->createRealUrl($url, $filters, $page);
+        $url = $this->createRealUrl($url, $filters, $page, $limit);
         $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
         $cacheKey = $this->createCacheKey($url);
 
@@ -118,7 +118,7 @@ class Client implements ClientInterface
         $cache->invalidateTags($tags);
     }
 
-    private function createRealUrl(string $url, array $filters = [], int $page = 1): string
+    private function createRealUrl(string $url, array $filters = [], int $page = 1, ?int $limit = null): string
     {
         $baseUrl = rtrim($this->baseUrl, '/');
         $url = ltrim($url, '/');
@@ -128,6 +128,9 @@ class Client implements ClientInterface
         $extras = [];
         if ($page !== 1) {
             $extras['page'] = $page;
+        }
+        if ($limit) {
+            $extras['limit'] = $limit;
         }
         $merge = array_merge($extras, $filters);
         $queryParams = http_build_query($merge);
