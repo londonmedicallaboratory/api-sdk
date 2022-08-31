@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service;
 
+use RuntimeException;
 use Brick\Money\Money;
 use React\EventLoop\Loop;
 use LML\SDK\Entity\Money\Price;
+use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\ProductRepository;
+use LML\SDK\Repository\VoucherRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,19 +23,22 @@ use function Clue\React\Block\awaitAll;
 class Basket
 {
     private const SESSION_KEY = 'basket';
+    private const VOUCHER_KEY = 'voucher';
 
     /**
      * @var null|list<BasketItem>
      */
     private ?array $items = null;
 
+    private ?Voucher $voucher = null;
+
     public function __construct(
-        private RequestStack       $requestStack,
-        private ProductRepository  $productRepository,
-        private OrderRepository    $orderRepository,
+        private RequestStack $requestStack,
+        private ProductRepository $productRepository,
+        private OrderRepository $orderRepository,
+        private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    )
-    {
+    ) {
     }
 
 //
@@ -107,6 +113,9 @@ class Basket
             }
         }
         $session->set(self::SESSION_KEY, $data);
+        if ($this->voucher) {
+            $session->set(self::VOUCHER_KEY, $this->voucher->getCode());
+        }
     }
 
     public function addProduct(ProductInterface $product, int $quantity): void
@@ -134,7 +143,7 @@ class Basket
             return null;
         }
 
-        $money = Money::ofMinor($total, 'GBP');
+        $money = $this->applyVoucher(Money::ofMinor($total, 'GBP'));
 
         return Price::fromMoney($money);
     }
@@ -169,6 +178,37 @@ class Basket
     {
         $item = $this->findItemOrCreateNew($product);
         $item->setQuantity($quantity);
+    }
+
+    public function getVoucher(): ?Voucher
+    {
+        return $this->voucher ??= $this->doGetVoucher();
+    }
+
+    public function setVoucher(?Voucher $voucher): void
+    {
+        $session = $this->requestStack->getSession();
+        if (!$voucher) {
+            $session->remove(self::VOUCHER_KEY);
+        }
+        $this->voucher = $voucher;
+    }
+
+    private function applyVoucher(Money $total): Money
+    {
+        if (!$voucher = $this->getVoucher()) {
+            return $total;
+        }
+
+        if ($voucher->getType() === 'percent') {
+            return $total->minus($total->multipliedBy($voucher->getValue() / 100));
+        }
+
+        if ($voucher->getType() === 'amount') {
+            return $total->minus(Money::of($voucher->getValue(), 'GBP'));
+        }
+
+        throw new RuntimeException('Unsupported voucher type');
     }
 
     private function findItem(ProductInterface $product): ?BasketItem
@@ -217,5 +257,16 @@ class Basket
         $filtered = array_filter($responses, fn(?BasketItem $item) => (bool)$item);
 
         return array_values($filtered);
+    }
+
+    private function doGetVoucher(): ?Voucher
+    {
+        $session = $this->requestStack->getSession();
+        $id = (string)$session->get(self::VOUCHER_KEY);
+        if (!$id) {
+            return null;
+        }
+
+        return $this->voucherRepository->find($id, true);
     }
 }
