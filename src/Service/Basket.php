@@ -142,6 +142,7 @@ class Basket
         if (!$total) {
             return null;
         }
+
         $money = $this->applyVoucher(Money::ofMinor($total, 'GBP'));
 
         return Price::fromMoney($money);
