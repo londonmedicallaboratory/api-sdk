@@ -7,6 +7,7 @@ namespace LML\SDK\Service;
 use RuntimeException;
 use Brick\Money\Money;
 use React\EventLoop\Loop;
+use Brick\Math\RoundingMode;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Order\BasketItem;
@@ -225,8 +226,8 @@ class Basket
         }
 
         $reducedPrice = match ($voucher->getType()) {
-            'percent' => $amount->minus($amount->multipliedBy($voucher->getValue() / 100)),
-            'amount' => $amount->minus(Money::of($voucher->getValue(), 'GBP')),
+            'percent' => $amount->minus($amount->multipliedBy($voucher->getValue() / 100), RoundingMode::UP),
+            'amount' => $amount->minus(Money::of($voucher->getValue(), 'GBP'), RoundingMode::UP),
             default => throw new RuntimeException('Unsupported voucher type'),
         };
 
