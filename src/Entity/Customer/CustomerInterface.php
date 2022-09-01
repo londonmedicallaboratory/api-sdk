@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
  *      email: string,
  *      phone_number?: ?string,
  *      foreign_id?: ?string,
+ *      password?: string,
  * }
  *
  * @extends ModelInterface<S>

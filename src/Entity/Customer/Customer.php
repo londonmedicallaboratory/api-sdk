@@ -103,7 +103,7 @@ class Customer implements CustomerInterface
 
     public function toArray()
     {
-        return [
+        $data = [
             'id'           => $this->id,
             'first_name'   => $this->getFirstName(),
             'last_name'    => $this->getLastName(),
@@ -111,5 +111,10 @@ class Customer implements CustomerInterface
             'email'        => $this->getEmail(),
             'foreign_id'   => $this->foreignId,
         ];
+        if (!$this->id && $password = $this->getPassword()) {
+            $data['password'] = $password;
+        }
+
+        return $data;
     }
 }
