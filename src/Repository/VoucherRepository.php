@@ -12,7 +12,9 @@ use LML\SDK\Entity\Voucher\VoucherInterface;
 /**
  * @psalm-import-type S from VoucherInterface
  *
- * @extends AbstractRepository<S, Voucher, array>
+ * @extends AbstractRepository<S, Voucher, array{
+ *     code?: string,
+ * }>
  */
 class VoucherRepository extends AbstractRepository
 {

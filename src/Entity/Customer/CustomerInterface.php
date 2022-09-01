@@ -6,6 +6,8 @@ namespace LML\SDK\Entity\Customer;
 
 use Stringable;
 use LML\SDK\Entity\ModelInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @psalm-type S=array{
@@ -19,7 +21,7 @@ use LML\SDK\Entity\ModelInterface;
  *
  * @extends ModelInterface<S>
  */
-interface CustomerInterface extends ModelInterface, Stringable
+interface CustomerInterface extends ModelInterface, Stringable, UserInterface, PasswordAuthenticatedUserInterface
 {
     public function getFirstName(): string;
 

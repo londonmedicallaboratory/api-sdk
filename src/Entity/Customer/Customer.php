@@ -22,6 +22,7 @@ class Customer implements CustomerInterface
         private ?string $phoneNumber = null,
         private ?string $foreignId = null,
         private ?string $id = null,
+        private ?string $password = null,
     )
     {
     }
@@ -74,6 +75,30 @@ class Customer implements CustomerInterface
     public function getId(): string
     {
         return $this->id ?? throw new LogicException('Model has not been saved yet.');
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $hashedPassword): void
+    {
+        $this->password = $hashedPassword;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_CUSTOMER', 'ROLE_USER'];
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getEmail();
     }
 
     public function toArray()
