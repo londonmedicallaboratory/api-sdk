@@ -114,7 +114,7 @@ class Basket
         }
         $session->set(self::SESSION_KEY, $data);
         if ($this->voucher) {
-            $session->set(self::VOUCHER_KEY, $this->voucher->getCode());
+            $session->set(self::VOUCHER_KEY, $this->voucher->getId());
         }
     }
 
@@ -194,23 +194,6 @@ class Basket
         $this->voucher = $voucher;
     }
 
-    private function applyVoucher(Money $total): Money
-    {
-        if (!$voucher = $this->getVoucher()) {
-            return $total;
-        }
-
-        if ($voucher->getType() === 'percent') {
-            return $total->minus($total->multipliedBy($voucher->getValue() / 100));
-        }
-
-        if ($voucher->getType() === 'amount') {
-            return $total->minus(Money::of($voucher->getValue(), 'GBP'));
-        }
-
-        throw new RuntimeException('Unsupported voucher type');
-    }
-
     private function findItem(ProductInterface $product): ?BasketItem
     {
         foreach ($this->getItems() as $item) {
@@ -232,6 +215,22 @@ class Basket
         $this->items[] = $item;
 
         return $item;
+    }
+
+    private function applyVoucher(Money $amount): Money
+    {
+        $voucher = $this->getVoucher();
+        if (!$voucher) {
+            return $amount;
+        }
+
+        $reducedPrice = match ($voucher->getType()) {
+            'percent' => $amount->minus($amount->multipliedBy($voucher->getValue() / 100)),
+            'amount' => $amount->minus(Money::of($voucher->getValue(), 'GBP')),
+            default => throw new RuntimeException('Unsupported voucher type'),
+        };
+
+        return $reducedPrice->getAmount()->toInt() > 0 ? $reducedPrice : Money::of(0, 'GBP');
     }
 
     /**
