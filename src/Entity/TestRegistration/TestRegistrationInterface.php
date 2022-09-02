@@ -40,6 +40,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      transport_type?: string,
  *      travel_number?: string,
  *      doctors_note?: ?string,
+ *      doctors_name?: ?string,
  *      uk_address?: null|array{
  *          id: string,
  *          line1: string,
@@ -63,6 +64,8 @@ interface TestRegistrationInterface extends ModelInterface
     public function getPatientRegisteredAt(): ?DateTimeInterface;
 
     public function getDoctorsNote(): ?string;
+
+    public function getDoctorsName(): ?string;
 
     public function getUkAddress(): ?AddressInterface;
 

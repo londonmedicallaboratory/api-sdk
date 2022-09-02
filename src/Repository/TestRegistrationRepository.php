@@ -37,6 +37,7 @@ class TestRegistrationRepository extends AbstractRepository
             completedAt        : $completedAt ? new DateTime($completedAt) : null,
             patientRegisteredAt: $patientRegisteredAt ? new DateTime($patientRegisteredAt) : null,
             doctorsNote        : $entity['doctors_note'] ?? null,
+            doctorsName        : $entity['doctors_name'] ?? null,
             id                 : $id,
         );
     }

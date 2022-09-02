@@ -38,6 +38,7 @@ class TestRegistration implements TestRegistrationInterface
         protected ?LazyValueInterface $ukAddress = null,
         protected array               $transitCountries = [],
         protected ?string             $doctorsNote = null,
+        protected ?string             $doctorsName = null,
         protected string              $id = '',
     )
     {
@@ -83,6 +84,11 @@ class TestRegistration implements TestRegistrationInterface
         return $this->doctorsNote;
     }
 
+    public function getDoctorsName(): ?string
+    {
+        return $this->doctorsName;
+    }
+
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -104,6 +110,7 @@ class TestRegistration implements TestRegistrationInterface
             'patient_registered_at' => $this->getPatientRegisteredAt()?->format('Y-m-d'),
             'uk_address'            => $this->getUkAddress()?->toArray(),
             'doctors_note'          => $this->getDoctorsNote(),
+            'doctors_name'          => $this->getDoctorsName(),
         ];
     }
 }

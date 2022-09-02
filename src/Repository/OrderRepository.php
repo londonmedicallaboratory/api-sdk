@@ -10,6 +10,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
 use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Enum\OrderStatusEnum;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
@@ -39,7 +40,9 @@ class OrderRepository extends AbstractRepository
         $id = $entity['id'];
 
         $shippingDate = $entity['shipping_date'] ?? null;
-
+        $createdAt = $entity['created_at'] ?? null;
+        $status = $entity['status'] ?? null;
+        
         return new Order(
             id          : $id,
             customer    : new ResolvedValue($customer),
@@ -49,6 +52,9 @@ class OrderRepository extends AbstractRepository
             companyName : $entity['company'],
             items       : new LazyValue(fn() => $this->createItems($entity['items'])),
             shipping    : new LazyPromise($this->getShipping($id)),
+            status      : $status ? OrderStatusEnum::tryFrom($status) : null,
+            createdAt   : $createdAt ? new DateTime($createdAt) : null,
+            orderNumber : $entity['order_number'] ?? null,
         );
     }
 

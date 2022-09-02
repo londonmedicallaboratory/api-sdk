@@ -6,6 +6,7 @@ namespace LML\SDK\Entity\Order;
 
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Enum\OrderStatusEnum;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Entity\Money\PriceInterface;
@@ -26,17 +27,40 @@ class Order implements OrderInterface
      * @param LazyValueInterface<list<ItemInterface>> $items
      */
     public function __construct(
-        private string             $id,
-        private LazyValueInterface $customer,
-        private LazyValueInterface $address,
-        private PriceInterface     $total,
-        private LazyValueInterface $items,
-        private LazyValueInterface $shipping,
-        private ?DateTimeInterface $shippingDate = null,
-        private ?string            $companyName = null,
-        private ?AddressInterface  $billingAddress = null,
+        protected string             $id,
+        protected LazyValueInterface $customer,
+        protected LazyValueInterface $address,
+        protected PriceInterface     $total,
+        protected LazyValueInterface $items,
+        protected LazyValueInterface $shipping,
+        protected ?DateTimeInterface $shippingDate = null,
+        protected ?string            $companyName = null,
+        protected ?AddressInterface  $billingAddress = null,
+        protected ?OrderStatusEnum   $status = null,
+        protected ?DateTimeInterface $createdAt = null,
+        protected ?int               $orderNumber = null,
     )
     {
+    }
+
+    public function getStatus(): ?OrderStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function getStatusName(): ?string
+    {
+        return $this->getStatus()?->getName();
+    }
+
+    public function getCreatedAt(): ?DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getOrderNumber(): ?int
+    {
+        return $this->orderNumber;
     }
 
     public function getShipping(): ?ShippingInterface

@@ -40,6 +40,9 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      },
  *      items: list<Item>,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ *      status?: ?string,
+ *      created_at?: ?string,
+ *      order_number?: ?int,
  * }
  *
  * @extends ModelInterface<S>
