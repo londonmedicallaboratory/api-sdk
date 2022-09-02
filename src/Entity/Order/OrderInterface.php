@@ -43,6 +43,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      status?: ?string,
  *      created_at?: ?string,
  *      order_number?: ?int,
+ *      voucher_id?: ?string,
  * }
  *
  * @extends ModelInterface<S>
