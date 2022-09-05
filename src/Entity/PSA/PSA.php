@@ -11,8 +11,9 @@ use LML\SDK\Repository\PSARepository;
 class PSA implements PSAInterface
 {
     public function __construct(
-        protected string $id,
-        protected string $message,
+        protected string  $id,
+        protected string  $message,
+        protected ?string $type,
     )
     {
     }
@@ -27,11 +28,17 @@ class PSA implements PSAInterface
         return $this->message;
     }
 
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
     public function toArray()
     {
         return [
             'id'      => $this->getId(),
             'message' => $this->getMessage(),
+            'type'    => $this->getType(),
         ];
     }
 }

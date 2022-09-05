@@ -24,6 +24,7 @@ class PSARepository extends AbstractRepository
         return new PSA(
             id     : $id,
             message: $entity['message'],
+            type   : $entity['type'],
         );
     }
 }

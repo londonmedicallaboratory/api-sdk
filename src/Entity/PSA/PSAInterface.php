@@ -10,7 +10,7 @@ use LML\SDK\Entity\ModelInterface;
  * @psalm-type S=array{
  *      id: string,
  *      message: string,
- *      type?: ?string,
+ *      type: ?string,
  * }
  *
  * @extends ModelInterface<S>
@@ -18,4 +18,6 @@ use LML\SDK\Entity\ModelInterface;
 interface PSAInterface extends ModelInterface
 {
     public function getMessage(): string;
+
+    public function getType(): ?string;
 }
