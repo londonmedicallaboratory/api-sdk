@@ -18,7 +18,9 @@ use function sprintf;
 /**
  * @psalm-import-type S from TestRegistrationInterface
  *
- * @extends AbstractRepository<S, TestRegistrationInterface, array>
+ * @extends AbstractRepository<S, TestRegistrationInterface, array{
+ *     customer?: string,
+ * }>
  */
 class TestRegistrationRepository extends AbstractRepository
 {
