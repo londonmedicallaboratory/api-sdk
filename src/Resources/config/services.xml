@@ -60,6 +60,12 @@
         <service id="LML\SDK\Repository\PageRepository">
             <tag name="lml_sdk.repository"/>
         </service>
+        <service id="LML\SDK\Repository\Blog\CategoryRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
+        <service id="LML\SDK\Repository\Blog\ArticleRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
         <service id="LML\SDK\Repository\PatientRepository">
             <tag name="lml_sdk.repository"/>
         </service>
