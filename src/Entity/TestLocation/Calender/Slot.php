@@ -9,9 +9,9 @@ use DateTimeInterface;
 class Slot implements SlotInterface
 {
     public function __construct(
-        private DateTimeInterface $time,
-        private ?SlotInterface    $previous = null,
-        private ?SlotInterface    $next = null,
+        protected DateTimeInterface $time,
+        protected ?SlotInterface    $previous = null,
+        protected ?SlotInterface    $next = null,
     )
     {
     }
@@ -38,8 +38,8 @@ class Slot implements SlotInterface
         return $this->time;
     }
 
-    public function format(string $format): string
+    public function format(?string $format = null): string
     {
-        return $this->getTime()->format($format);
+        return $this->getTime()->format($format ?? 'Y-m-d H:i');
     }
 }

@@ -17,7 +17,7 @@ interface SlotInterface
 
     public function getTime(): DateTimeInterface;
 
-    public function format(string $format): string;
+    public function format(?string $format = null): string;
 
     public function matches(int $hour, int $minute): bool;
 }
