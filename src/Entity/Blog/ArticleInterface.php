@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Blog;
 
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\File\FileInterface;
 
 /**
  * @psalm-type S=array{
@@ -23,4 +24,6 @@ interface ArticleInterface extends ModelInterface
     public function getSlug(): string;
 
     public function getContent(): string;
+
+    public function getLogo(): ?FileInterface;
 }

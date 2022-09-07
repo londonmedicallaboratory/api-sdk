@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\TestLocation\Calender;
 
-use DateTimeInterface;
-
 interface DayInterface
 {
     public function format(): string;
@@ -13,7 +11,7 @@ interface DayInterface
     public function isAvailable(): bool;
 
     /**
-     * @return list<DateTimeInterface>
+     * @return list<SlotInterface>
      */
     public function getAvailableSlots();
 }
