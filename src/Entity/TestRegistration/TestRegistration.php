@@ -39,6 +39,7 @@ class TestRegistration implements TestRegistrationInterface
         protected array               $transitCountries = [],
         protected ?string             $doctorsNote = null,
         protected ?string             $doctorsName = null,
+        protected ?string             $downloadUrl = null,
         protected string              $id = '',
     )
     {
@@ -89,6 +90,11 @@ class TestRegistration implements TestRegistrationInterface
         return $this->doctorsName;
     }
 
+    public function getDownloadUrl(): ?string
+    {
+        return $this->downloadUrl;
+    }
+
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -111,6 +117,7 @@ class TestRegistration implements TestRegistrationInterface
             'uk_address'            => $this->getUkAddress()?->toArray(),
             'doctors_note'          => $this->getDoctorsNote(),
             'doctors_name'          => $this->getDoctorsName(),
+            'download_url'          => $this->getDownloadUrl(),
         ];
     }
 }

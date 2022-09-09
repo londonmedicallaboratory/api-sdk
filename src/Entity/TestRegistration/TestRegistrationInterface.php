@@ -41,6 +41,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      travel_number?: string,
  *      doctors_note?: ?string,
  *      doctors_name?: ?string,
+ *      download_url?: ?string,
  *      uk_address?: null|array{
  *          id: string,
  *          line1: string,
@@ -73,4 +74,6 @@ interface TestRegistrationInterface extends ModelInterface
      * @return list<ProductInterface>
      */
     public function getProducts(): array;
+
+    public function getDownloadUrl(): ?string;
 }
