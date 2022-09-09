@@ -25,12 +25,14 @@ class TestRegistration implements TestRegistrationInterface
      * @param list<string> $transitCountries
      * @param LazyValueInterface<list<ProductInterface>> $products
      * @param LazyValueInterface<?PatientInterface> $patient
+     * @param LazyValueInterface<?string> $downloadUrl
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
         protected LazyValueInterface  $products,
         protected LazyValueInterface  $patient,
+        protected LazyValueInterface  $downloadUrl,
         protected ?LazyValueInterface $resultsReady = null,
         protected DateTimeInterface   $createdAt = new DateTime(),
         protected ?DateTimeInterface  $completedAt = null,
@@ -39,7 +41,6 @@ class TestRegistration implements TestRegistrationInterface
         protected array               $transitCountries = [],
         protected ?string             $doctorsNote = null,
         protected ?string             $doctorsName = null,
-        protected ?string             $downloadUrl = null,
         protected string              $id = '',
     )
     {
@@ -92,7 +93,7 @@ class TestRegistration implements TestRegistrationInterface
 
     public function getDownloadUrl(): ?string
     {
-        return $this->downloadUrl;
+        return $this->downloadUrl->getValue();
     }
 
     public function toArray(): array

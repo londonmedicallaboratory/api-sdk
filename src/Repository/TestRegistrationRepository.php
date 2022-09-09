@@ -34,13 +34,13 @@ class TestRegistrationRepository extends AbstractRepository
         return new TestRegistration(
             products           : new LazyPromise($this->getProducts($id)),
             patient            : new LazyPromise($this->getPatient($id)),
+            downloadUrl        : new ResolvedValue($entity['download_url'] ?? null),
             resultsReady       : new ResolvedValue($entity['results_ready']),
             createdAt          : $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt        : $completedAt ? new DateTime($completedAt) : null,
             patientRegisteredAt: $patientRegisteredAt ? new DateTime($patientRegisteredAt) : null,
             doctorsNote        : $entity['doctors_note'] ?? null,
             doctorsName        : $entity['doctors_name'] ?? null,
-            downloadUrl        : $entity['download_url'] ?? null,
             id                 : $id,
         );
     }
