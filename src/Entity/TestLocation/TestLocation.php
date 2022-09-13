@@ -29,6 +29,11 @@ class TestLocation implements TestLocationInterface
     {
     }
 
+    public function __toString(): string
+    {
+        return $this->getFullAddress();
+    }
+
     public function getId(): string
     {
         return $this->id;

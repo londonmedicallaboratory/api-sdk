@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\TestLocation;
 
+use Stringable;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
@@ -19,7 +20,7 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
  *
  * @extends ModelInterface<S>
  */
-interface TestLocationInterface extends ModelInterface
+interface TestLocationInterface extends ModelInterface, Stringable
 {
     public function getName(): string;
 
