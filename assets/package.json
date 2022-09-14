@@ -8,7 +8,6 @@
         "controllers": {
             "calendar": {
                 "main": "controllers/calendar_controller.js",
-                "name": "lml/sdk-calendar",
                 "webpackMode": "eager",
                 "fetch": "lazy",
                 "enabled": true
