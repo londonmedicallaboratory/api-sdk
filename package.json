@@ -1,0 +1,25 @@
+{
+    "name": "@lml/sdk",
+    "description": "LML SDK",
+    "license": "MIT",
+    "private": true,
+    "version": "0.1.0",
+    "symfony": {
+        "controllers": {
+            "calendar": {
+                "main": "assets/controllers/calendar_controller.js",
+                "name": "lml/sdk-calendar",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
+            }
+        }
+    },
+    "peerDependencies": {
+        "@hotwired/stimulus": "^3.0.0"
+    },
+    "devDependencies": {
+        "@hotwired/stimulus": "^3.0.0",
+        "core-js": "^3.23.2"
+    }
+}

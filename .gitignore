@@ -4,3 +4,4 @@ lsp
 .phpunit.cache
 var
 phpunit.xml
+node_modules

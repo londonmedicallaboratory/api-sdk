@@ -4,6 +4,9 @@
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "keywords": [
+        "symfony-ux"
+    ],
     "authors": [
         {
             "name": "zmitic",
