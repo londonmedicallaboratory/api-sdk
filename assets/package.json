@@ -7,7 +7,7 @@
     "symfony": {
         "controllers": {
             "calendar": {
-                "main": "assets/controllers/calendar_controller.js",
+                "main": "controllers/calendar_controller.js",
                 "name": "lml/sdk-calendar",
                 "webpackMode": "eager",
                 "fetch": "lazy",
