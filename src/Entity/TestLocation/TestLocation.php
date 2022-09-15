@@ -46,6 +46,16 @@ class TestLocation implements TestLocationInterface
         return $this->getFullAddress();
     }
 
+    public function getNearestBusStation(): ?string
+    {
+        return $this->nearestBusStation;
+    }
+
+    public function getNearestTrainStation(): ?string
+    {
+        return $this->nearestTrainStation;
+    }
+
     public function getId(): string
     {
         return $this->id;
