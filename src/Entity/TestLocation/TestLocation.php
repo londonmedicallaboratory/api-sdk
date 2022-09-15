@@ -31,16 +31,6 @@ class TestLocation implements TestLocationInterface
     {
     }
 
-    public function getNearestBusStation(): ?string
-    {
-        return $this->nearestBusStation;
-    }
-
-    public function getNearestTrainStation(): ?string
-    {
-        return $this->nearestTrainStation;
-    }
-
     public function __toString(): string
     {
         return $this->getFullAddress();
