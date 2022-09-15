@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
+use RuntimeException;
+use LML\SDK\DTO\Payment;
 use React\EventLoop\Loop;
 use LML\SDK\Entity\Customer\Customer;
 use React\Http\Message\ResponseException;
@@ -22,7 +24,7 @@ class CustomerRepository extends AbstractRepository
     {
         try {
             $promise = $this->getClient()->post('/customer/auth', [
-                'email'    => $email,
+                'email' => $email,
                 'password' => $password,
             ]);
             $response = await($promise, Loop::get());
@@ -36,17 +38,28 @@ class CustomerRepository extends AbstractRepository
         }
     }
 
+    public function createFromPayment(Payment $payment): Customer
+    {
+        return new Customer(
+            id: '',
+            firstName: $payment->customersFirstName ?? throw new RuntimeException(),
+            lastName: $payment->customersLastName ?? throw new RuntimeException(),
+            email: $payment->customersEmail ?? throw new RuntimeException(),
+            phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
+        );
+    }
+
     protected function one($entity, $options, $optimizer): Customer
     {
         $id = $entity['id'];
 
         return new Customer(
-            id         : $id,
-            firstName  : $entity['first_name'],
-            lastName   : $entity['last_name'],
-            email      : $entity['email'],
+            id: $id,
+            firstName: $entity['first_name'],
+            lastName: $entity['last_name'],
+            email: $entity['email'],
             phoneNumber: $entity['phone_number'] ?? null,
-            foreignId  : $entity['foreign_id'] ?? null,
+            foreignId: $entity['foreign_id'] ?? null,
         );
     }
 }

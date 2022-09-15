@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use RuntimeException;
+use LML\SDK\DTO\Payment;
+use LML\SDK\Service\Basket;
 use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
@@ -25,6 +28,34 @@ use function sprintf;
  */
 class OrderRepository extends AbstractRepository
 {
+    public function __construct(
+        private CustomerRepository $customerRepository,
+        private AddressRepository $addressRepository,
+    ) {
+    }
+
+    public function create(Payment $payment, Basket $basket): Order
+    {
+        $customer = $this->customerRepository->createFromPayment($payment);
+        $address = $this->addressRepository->createFromPayment($payment);
+
+        $order = new Order(
+            id: '',
+            customer: new ResolvedValue($customer),
+            address: new ResolvedValue($address),
+            total: $basket->getTotal() ?? throw new RuntimeException(),
+            items: new LazyValue(fn() => $basket->getItems()),
+            companyName: $payment->customersCompany,
+            billingAddress: null,
+            shipping: new ResolvedValue($payment->shipping),
+        );
+
+        $this->persist($order);
+        $this->flush();
+
+        return $order;
+    }
+
     protected function one($entity, $options, $optimizer): Order
     {
         $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
@@ -32,8 +63,8 @@ class OrderRepository extends AbstractRepository
 
         $priceData = $entity['price'];
         $price = new Price(
-            amount        : $priceData['amount_minor'],
-            currency      : $priceData['currency'],
+            amount: $priceData['amount_minor'],
+            currency: $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
 
@@ -42,19 +73,19 @@ class OrderRepository extends AbstractRepository
         $shippingDate = $entity['shipping_date'] ?? null;
         $createdAt = $entity['created_at'] ?? null;
         $status = $entity['status'] ?? null;
-        
+
         return new Order(
-            id          : $id,
-            customer    : new ResolvedValue($customer),
+            id: $id,
+            customer: new ResolvedValue($customer),
             shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
-            address     : new ResolvedValue($address),
-            total       : $price,
-            companyName : $entity['company'],
-            items       : new LazyValue(fn() => $this->createItems($entity['items'])),
-            shipping    : new LazyPromise($this->getShipping($id)),
-            status      : $status ? OrderStatusEnum::tryFrom($status) : null,
-            createdAt   : $createdAt ? new DateTime($createdAt) : null,
-            orderNumber : $entity['order_number'] ?? null,
+            address: new ResolvedValue($address),
+            total: $price,
+            companyName: $entity['company'],
+            items: new LazyValue(fn() => $this->createItems($entity['items'])),
+            shipping: new LazyPromise($this->getShipping($id)),
+            status: $status ? OrderStatusEnum::tryFrom($status) : null,
+            createdAt: $createdAt ? new DateTime($createdAt) : null,
+            orderNumber: $entity['order_number'] ?? null,
         );
     }
 
