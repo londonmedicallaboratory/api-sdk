@@ -16,6 +16,7 @@ use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\VoucherRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
+use LML\SDK\Entity\Shipping\ShippingInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function array_filter;
 use function array_values;
@@ -193,6 +194,14 @@ class Basket
             $session->remove(self::VOUCHER_KEY);
         }
         $this->voucher = $voucher;
+    }
+
+    /**
+     * @return array<int, ShippingInterface>
+     */
+    public function getAvailableShippingMethods(): array
+    {
+        return array_intersect(...array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems()));
     }
 
     private function findItem(ProductInterface $product): ?BasketItem
