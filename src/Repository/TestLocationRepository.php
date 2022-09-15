@@ -111,6 +111,8 @@ class TestLocationRepository extends AbstractRepository
             name                   : $entity['name'],
             healthcareProfessionals: new LazyPromise($this->getProfessionals($id)),
             workHours              : new LazyPromise($this->getWorkHours($id)),
+            nearestBusStation      : $entity['nearest_bus_station'] ?? null,
+            nearestTrainStation    : $entity['nearest_train_station'] ?? null,
         );
     }
 

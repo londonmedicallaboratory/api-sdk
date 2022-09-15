@@ -16,6 +16,8 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
  *      full_address: string,
  *      city: string,
  *      postal_code: string,
+ *      nearest_bus_station?: ?string,
+ *      nearest_train_station?: ?string,
  * }
  *
  * @extends ModelInterface<S>
@@ -39,4 +41,8 @@ interface TestLocationInterface extends ModelInterface, Stringable
      * @return list<WorkingHoursInterface>
      */
     public function getWorkingHours(): array;
+
+    public function getNearestBusStation(): ?string;
+
+    public function getNearestTrainStation(): ?string;
 }

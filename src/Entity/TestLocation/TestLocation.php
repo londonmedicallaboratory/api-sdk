@@ -25,8 +25,20 @@ class TestLocation implements TestLocationInterface
         protected string           $name,
         private LazyValueInterface $healthcareProfessionals,
         private LazyValueInterface $workHours,
+        protected ?string          $nearestBusStation = null,
+        protected ?string          $nearestTrainStation = null,
     )
     {
+    }
+
+    public function getNearestBusStation(): ?string
+    {
+        return $this->nearestBusStation;
+    }
+
+    public function getNearestTrainStation(): ?string
+    {
+        return $this->nearestTrainStation;
     }
 
     public function __toString(): string
@@ -72,11 +84,13 @@ class TestLocation implements TestLocationInterface
     public function toArray(): array
     {
         return [
-            'id'           => $this->getId(),
-            'full_address' => $this->getFullAddress(),
-            'city'         => $this->getCity(),
-            'postal_code'  => $this->getPostalCode(),
-            'name'         => $this->getName(),
+            'id'                    => $this->getId(),
+            'full_address'          => $this->getFullAddress(),
+            'city'                  => $this->getCity(),
+            'postal_code'           => $this->getPostalCode(),
+            'name'                  => $this->getName(),
+            'nearest_bus_station'   => $this->getNearestBusStation(),
+            'nearest_train_station' => $this->getNearestTrainStation(),
         ];
     }
 }
