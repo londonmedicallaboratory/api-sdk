@@ -15,8 +15,9 @@ use LML\SDK\Service\Payment\Strategy\PaymentProcessorStrategyInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 
-class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInterface
+class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInterface, PrependExtensionInterface
 {
     use PriorityTaggedServiceTrait;
 
@@ -33,6 +34,21 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
             $definition->addMethodCall('setClient', [new Reference('lml_sdk.client')]);
             $definition->addMethodCall('setEntityManager', [new Reference(EntityManager::class)]);
         }
+    }
+
+    public function prepend(ContainerBuilder $container)
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+
+        if (!isset($bundles['TwigBundle'])) {
+            return;
+        }
+
+        $container->prependExtensionConfig('twig', [
+            'form_themes' => [
+                '@LMLSDK/forms/calendar_widget.html.twig',
+            ],
+        ]);
     }
 
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
