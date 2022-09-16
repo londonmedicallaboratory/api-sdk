@@ -100,12 +100,14 @@ class TestRegistration implements TestRegistrationInterface
     {
         $patient = $this->getPatient();
         $productIds = array_map(static fn(ProductInterface $product) => $product->getId(), $this->getProducts());
+        $productSkus = array_map(static fn(ProductInterface $product) => $product->getSku(), $this->getProducts());
 
         return [
             'id'                    => $this->getId(),
             'patient_id'            => $patient?->getId(),
             'results_ready'         => $this->resultsReady?->getValue() ?? false,
             'product_ids'           => $productIds,
+            'product_skus'          => $productSkus,
             'email'                 => $patient?->getEmail(),
             'date_of_birth'         => $patient?->getDateOfBirth()->format('Y-m-d'),
             'first_name'            => $patient?->getFirstName(),
