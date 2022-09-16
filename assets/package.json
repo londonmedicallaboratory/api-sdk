@@ -1,5 +1,5 @@
 {
-    "name": "@lml/sdk",
+    "name": "@londonmedicallaboratory/api-sdk",
     "description": "LML SDK",
     "license": "MIT",
     "private": true,
