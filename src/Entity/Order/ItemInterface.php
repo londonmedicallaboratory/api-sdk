@@ -11,6 +11,7 @@ use LML\SDK\Entity\Product\ProductInterface;
 /**
  * @psalm-type S=array{
  *      product_id: string,
+ *      product_sku: string,
  *      quantity: int,
  * }
  *
