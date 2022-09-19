@@ -9,8 +9,10 @@ use RuntimeException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use React\EventLoop\Loop;
+use Pagerfanta\Pagerfanta;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Pager\PromiseAdapter;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
@@ -52,6 +54,17 @@ abstract class AbstractRepository extends AbstractViewFactory
         $className = $this->extractTView();
 
         return $this->getEntityManager()->find($className, $id, $await);
+    }
+
+    /**
+     * @return Pagerfanta<TView>
+     */
+    public function pagerfanta(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null): Pagerfanta
+    {
+        $promise = $this->paginate($filters, $url, $page, $limit);
+        $adapter = new PromiseAdapter($promise);
+
+        return new Pagerfanta($adapter);
     }
 
     /**

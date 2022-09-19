@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Tests\Repository;
 
+use Pagerfanta\Pagerfanta;
 use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Repository\TestLocationRepository;
@@ -23,6 +24,16 @@ class TestLocationRepositoryTest extends AbstractTest
             self::assertInstanceOf(TestLocationInterface::class, $item);
             self::assertNotEmpty($item->getWorkingHours());
         }
+    }
+
+    public function testPagerfanta(): void
+    {
+        self::bootKernel();
+
+        $pagination = $this->getProductRepository()->pagerfanta();
+        self::assertInstanceOf(Pagerfanta::class, $pagination);
+        $results = $pagination->getCurrentPageResults();
+        self::assertNotEmpty($results);
     }
 
     private function getProductRepository(): TestLocationRepository
