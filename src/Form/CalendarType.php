@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 /**
- * @extends AbstractType<void>
+ * @extends AbstractType<DateTimeInterface>
  */
 class CalendarType extends AbstractType
 {

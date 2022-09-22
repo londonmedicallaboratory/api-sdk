@@ -17,7 +17,10 @@ class Slot implements SlotInterface
     {
     }
 
-    public function toArray()
+    /**
+     * @return array{available: bool, human_readable_format: string, time: string}
+     */
+    public function toArray(): array
     {
         return [
             'available'             => $this->isAvailable(),
