@@ -1,0 +1,15 @@
+.lml-calendar-widget {
+  .slot {
+    width: 25%;
+    display: inline-block;
+    margin-bottom: 3px;
+    text-align: center;
+    background-color: lightgrey;
+    cursor: pointer;
+
+    &.not-available {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  }
+}

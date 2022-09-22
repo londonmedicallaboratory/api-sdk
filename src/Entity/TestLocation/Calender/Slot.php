@@ -10,10 +10,20 @@ class Slot implements SlotInterface
 {
     public function __construct(
         protected DateTimeInterface $time,
+        private bool                $isAvailable,
         protected ?SlotInterface    $previous = null,
         protected ?SlotInterface    $next = null,
     )
     {
+    }
+
+    public function toArray()
+    {
+        return [
+            'available'             => $this->isAvailable(),
+            'human_readable_format' => $this->format('M, jS Y H:i'),
+            'time'                  => $this->time->format('Y-m-d H:i'),
+        ];
     }
 
     public function matches(int $hour, int $minute): bool
@@ -41,5 +51,10 @@ class Slot implements SlotInterface
     public function format(?string $format = null): string
     {
         return $this->getTime()->format($format ?? 'Y-m-d H:i');
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
     }
 }
