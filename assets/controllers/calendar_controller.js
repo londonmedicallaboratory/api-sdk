@@ -36,12 +36,12 @@ export default class calender_controller extends Controller {
 
     close() {
         this.fInstance?.destroy();
-        this.dialogTarget.style.visibility = 'hidden';
+        this.dialogTarget.classList.add('hidden');
     }
 
     // noinspection JSUnusedGlobalSymbols
     selectDate = () => {
-        this.dialogTarget.style.visibility = 'visible';
+        this.dialogTarget.classList.remove('hidden');
         this.fInstance?.destroy();
         this._createFlatpickr();
     }
@@ -83,8 +83,8 @@ export default class calender_controller extends Controller {
             enableTime: false,
             noCalendar: false,
             dateFormat: 'Y-m-d',
-            onMonthChange: (selectedDates, dateStr, instance) => this._onMonthOrYearChange(instance, dateStr),
-            onYearChange: (selectedDates, dateStr, instance) => this._onMonthOrYearChange(instance, dateStr),
+            onMonthChange: (selectedDates, dateStr, instance) => this._onMonthOrYearChange(instance),
+            onYearChange: (selectedDates, dateStr, instance) => this._onMonthOrYearChange(instance),
             onChange: (selectedDates, dateStr) => this._onDateSelect(dateStr),
         }
 
@@ -156,7 +156,7 @@ export default class calender_controller extends Controller {
                     let humanReadableFormat = json[time]['human_readable_format'];
 
                     slots.innerHTML += `
-                        <span class="slot ${isAvailable ? '' : 'not-available'}" 
+                        <span class="lml-calendar-widget-slot ${isAvailable ? '' : 'lml-calendar-widget-slot-not-available'}" 
                             ${isAvailable ? 'data-action="click->londonmedicallaboratory--api-sdk--calendar#selectSlot"' : ''}    
                             data-londonmedicallaboratory--api-sdk--calendar-time-param="${time}" 
                             data-londonmedicallaboratory--api-sdk--calendar-human_readable_format-param="${humanReadableFormat}" 
