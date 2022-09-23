@@ -8,6 +8,9 @@ use Traversable;
 use IteratorAggregate;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 
+/**
+ * @implements IteratorAggregate<WeeklyHoursPeriod>
+ */
 class WeeklyWorkingHours implements IteratorAggregate
 {
     /**
@@ -16,7 +19,6 @@ class WeeklyWorkingHours implements IteratorAggregate
     public function __construct(
         private array $workingDays,
     ) {
-
     }
 
     /**
