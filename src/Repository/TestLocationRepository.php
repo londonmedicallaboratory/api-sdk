@@ -6,11 +6,13 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use React\EventLoop\Loop;
+use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
 use React\Promise\PromiseInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\TestLocation\TestLocation;
+use LML\SDK\Entity\TestLocation\Calender\Slot;
 use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlock;
 use LML\SDK\Entity\TestLocation\TestLocationInterface;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
@@ -31,7 +33,12 @@ use function Clue\React\Block\await;
 class TestLocationRepository extends AbstractRepository
 {
     /**
-     * @return array{availability: array<string, bool>, id: string}
+     * Returns monthly availability array in format of
+     * <code>
+     *   "2022-12-31": true,
+     * </code>
+     *
+     * @return array<string, bool>
      */
     public function getMonthlyCalender(string $id, DateTime $when): array
     {
@@ -39,8 +46,9 @@ class TestLocationRepository extends AbstractRepository
 
         /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+        $resolved = await($promise, Loop::get());
 
-        return await($promise, Loop::get());
+        return $resolved['availability'];
     }
 
     /**
@@ -64,18 +72,25 @@ class TestLocationRepository extends AbstractRepository
     }
 
     /**
-     * @return list<DateTime>
+     * @return list<Slot>
      */
     public function getSlots(string $id, DateTime $when)
     {
         $url = sprintf('/test_location/%s/slots/%04d/%02d/%02d', $id, $when->format('Y'), $when->format('m'), $when->format('d'));
 
-        /** @var PromiseInterface<list<string>> $promise */
+        /** @var PromiseInterface<list<array<mixed>>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $slots = await($promise, Loop::get());
 
-        return array_map(static fn(string $date) => new DateTime($date), $slots);
+        $results = [];
+        foreach ($slots as $datum) {
+            Assert::string($date = $datum['time'] ?? null);
+            Assert::boolean($isAvailable = $datum['available'] ?? null);
+            $results[] = new Slot(new DateTime($date), $isAvailable);
+        }
+
+        return $results;
     }
 
     /**

@@ -18,11 +18,12 @@ class Slot implements SlotInterface
     }
 
     /**
-     * @return array{available: bool, human_readable_format: string, time: string}
+     * @return array{available: bool, human_readable_format: string, time: string, preview: string}
      */
     public function toArray(): array
     {
         return [
+            'preview'               => $this->format('H:i'),
             'available'             => $this->isAvailable(),
             'human_readable_format' => $this->format('M, jS Y H:i'),
             'time'                  => $this->time->format('Y-m-d H:i'),

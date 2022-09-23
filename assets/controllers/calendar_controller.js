@@ -154,13 +154,14 @@ export default class calender_controller extends Controller {
                 Object.keys(json).forEach((time) => {
                     let isAvailable = json[time]['available'];
                     let humanReadableFormat = json[time]['human_readable_format'];
+                    let preview = json[time]['preview'];
 
                     slots.innerHTML += `
                         <span class="lml-calendar-widget-slot ${isAvailable ? '' : 'lml-calendar-widget-slot-not-available'}" 
                             ${isAvailable ? 'data-action="click->londonmedicallaboratory--api-sdk--calendar#selectSlot"' : ''}    
                             data-londonmedicallaboratory--api-sdk--calendar-time-param="${time}" 
                             data-londonmedicallaboratory--api-sdk--calendar-human_readable_format-param="${humanReadableFormat}" 
-                            data-londonmedicallaboratory--api-sdk--calendar-available-param="${isAvailable ? 'true' : 'false'}">${time}
+                            data-londonmedicallaboratory--api-sdk--calendar-available-param="${isAvailable ? 'true' : 'false'}">${preview}
                         </span>
                     `;
                 })
