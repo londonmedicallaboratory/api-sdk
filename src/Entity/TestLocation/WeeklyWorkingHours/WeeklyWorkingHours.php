@@ -40,8 +40,8 @@ class WeeklyWorkingHours implements IteratorAggregate
         $workingHourPeriods = [];
         $periodStartDay = null;
 
-        foreach ($workingDays as $workingDay) {
-            $nextDay = next($workingDays);
+        foreach ($workingDays as $key => $workingDay) {
+            $nextDay = $workingDays[$key + 1] ?? null;
             if (!$nextDay) {
                 $workingHourPeriods[] = $this->generatePeriod($workingDay, $periodStartDay);
                 break;
