@@ -8,6 +8,7 @@ use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
+use LML\SDK\Entity\TestLocation\WeeklyWorkingHours\WeeklyWorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
 #[Entity(repositoryClass: TestLocationRepository::class, baseUrl: 'test_location')]
@@ -18,17 +19,16 @@ class TestLocation implements TestLocationInterface
      * @param LazyValueInterface<list<WorkingHoursInterface>> $workHours ,
      */
     public function __construct(
-        protected string           $id,
-        protected string           $fullAddress,
-        protected string           $city,
-        protected string           $postalCode,
-        protected string           $name,
+        protected string $id,
+        protected string $fullAddress,
+        protected string $city,
+        protected string $postalCode,
+        protected string $name,
         private LazyValueInterface $healthcareProfessionals,
         private LazyValueInterface $workHours,
-        protected ?string          $nearestBusStation = null,
-        protected ?string          $nearestTrainStation = null,
-    )
-    {
+        protected ?string $nearestBusStation = null,
+        protected ?string $nearestTrainStation = null,
+    ) {
     }
 
     public function __toString(): string
@@ -81,15 +81,20 @@ class TestLocation implements TestLocationInterface
         return $this->workHours->getValue();
     }
 
+    public function getWeeklyWorkingHours(): WeeklyWorkingHours
+    {
+        return new WeeklyWorkingHours($this->getWorkingHours());
+    }
+
     public function toArray(): array
     {
         return [
-            'id'                    => $this->getId(),
-            'full_address'          => $this->getFullAddress(),
-            'city'                  => $this->getCity(),
-            'postal_code'           => $this->getPostalCode(),
-            'name'                  => $this->getName(),
-            'nearest_bus_station'   => $this->getNearestBusStation(),
+            'id' => $this->getId(),
+            'full_address' => $this->getFullAddress(),
+            'city' => $this->getCity(),
+            'postal_code' => $this->getPostalCode(),
+            'name' => $this->getName(),
+            'nearest_bus_station' => $this->getNearestBusStation(),
             'nearest_train_station' => $this->getNearestTrainStation(),
         ];
     }
