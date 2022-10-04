@@ -51,7 +51,7 @@ class ProductRepository extends AbstractRepository
             name: $entity['name'],
             sku: $entity['sku'],
             slug: $entity['slug'] ?? throw new DataNotFoundException(),
-            description: $entity['description'],
+            description: $entity['description'] ?? throw new DataNotFoundException(),
             shortDescription: $entity['short_description'] ?? throw new DataNotFoundException(),
             previewImageUrl: $entity['preview_image_url'],
             isFeatured: $entity['is_featured'] ?? false,

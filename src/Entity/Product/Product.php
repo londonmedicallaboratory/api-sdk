@@ -133,7 +133,6 @@ class Product implements ProductInterface
             'id' => $this->getId(),
             'name' => $this->getName(),
             'sku' => $this->getSku(),
-            'description' => $this->getLongDescription(),
             'preview_image_url' => $this->getPreviewImageUrl(),
             'price' => $this->getPrice()->toArray(),
         ];

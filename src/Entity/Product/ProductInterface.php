@@ -19,7 +19,7 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  *      name: string,
  *      sku: string,
  *      slug?: ?string,
- *      description: string,
+ *      description?: string,
  *      short_description?: ?string,
  *      is_featured?: bool,
  *      preview_image_url: ?string,
