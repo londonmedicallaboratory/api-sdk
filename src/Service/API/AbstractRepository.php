@@ -21,6 +21,7 @@ use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function sprintf;
+use function React\Promise\resolve;
 use function Clue\React\Block\await;
 
 /**
@@ -49,8 +50,11 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function find(string $id, bool $await = false)
+    public function find(?string $id, bool $await = false)
     {
+        if (!$id) {
+            return resolve();
+        }
         $className = $this->extractTView();
 
         return $this->getEntityManager()->find($className, $id, $await);
@@ -137,6 +141,9 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findOrThrowException(string $id, bool $await = false)
     {
+        if (!$id) {
+            throw new RuntimeException();
+        }
         $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
         $client = $this->getClient();
 

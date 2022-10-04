@@ -16,7 +16,9 @@ use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Appointment\Appointment;
 use function sprintf;
+use function React\Promise\resolve;
 
 /**
  * @psalm-import-type S from OrderInterface
@@ -32,8 +34,8 @@ class OrderRepository extends AbstractRepository
 
         $priceData = $entity['price'];
         $price = new Price(
-            amount        : $priceData['amount_minor'],
-            currency      : $priceData['currency'],
+            amount: $priceData['amount_minor'],
+            currency: $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
 
@@ -42,20 +44,32 @@ class OrderRepository extends AbstractRepository
         $shippingDate = $entity['shipping_date'] ?? null;
         $createdAt = $entity['created_at'] ?? null;
         $status = $entity['status'] ?? null;
-        
+
         return new Order(
-            id          : $id,
-            customer    : new ResolvedValue($customer),
+            id: $id,
+            customer: new ResolvedValue($customer),
             shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
-            address     : new ResolvedValue($address),
-            total       : $price,
-            companyName : $entity['company'],
-            items       : new LazyValue(fn() => $this->createItems($entity['items'])),
-            shipping    : new LazyPromise($this->getShipping($id)),
-            status      : $status ? OrderStatusEnum::tryFrom($status) : null,
-            createdAt   : $createdAt ? new DateTime($createdAt) : null,
-            orderNumber : $entity['order_number'] ?? null,
+            address: new ResolvedValue($address),
+            total: $price,
+            companyName: $entity['company'],
+            items: new LazyValue(fn() => $this->createItems($entity['items'])),
+            shipping: new LazyPromise($this->getShipping($id)),
+            appointments: new LazyPromise($this->getAppointments($id)),
+            status: $status ? OrderStatusEnum::tryFrom($status) : null,
+            createdAt: $createdAt ? new DateTime($createdAt) : null,
+            orderNumber: $entity['order_number'] ?? null,
         );
+    }
+
+    /**
+     * @return PromiseInterface<list<Appointment>>
+     */
+    private function getAppointments(string $_id): PromiseInterface
+    {
+        return resolve([]);
+//        $url = sprintf('/order/%s/appointments', $id);
+//
+//        return $this->get(ShippingRepository::class)->findOneByUrl(url: $url);
     }
 
     /**

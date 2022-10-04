@@ -12,10 +12,19 @@ use React\Promise\Timer;
 use React\Promise\Timer\TimeoutException;
 
 /**
- * @template TResolved
+ * @template TAwait
  *
- * @param PromiseInterface<TResolved> $promise
+ * @param PromiseInterface<TAwait> $promise
  *
- * @return TResolved
+ * @return TAwait
  */
 function await(PromiseInterface $promise, LoopInterface $loop, $timeout = null){}
+
+/**
+ * @template TResolve
+ *
+ * @param null|TResolve $promiseOrValue
+ *
+ * @return PromiseInterface<TResolve>
+ */
+function resolve($promiseOrValue = null){}

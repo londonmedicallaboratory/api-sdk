@@ -28,7 +28,7 @@ use function Clue\React\Block\await;
  * @psalm-import-type S from TimeBlockInterface as TH
  * @psalm-import-type S from WorkingHoursInterface as WH
  *
- * @extends AbstractRepository<S, TestLocationInterface, array>
+ * @extends AbstractRepository<S, TestLocation, array>
  */
 class TestLocationRepository extends AbstractRepository
 {
@@ -62,9 +62,9 @@ class TestLocationRepository extends AbstractRepository
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $resolvedPromise = $promise->then(fn($data) => array_map(static fn($datum) => new TimeBlock(
-            id         : $datum['id'],
-            startsAt   : new DateTime($datum['starts_at']),
-            endsAt     : new DateTime($datum['ends_at']),
+            id: $datum['id'],
+            startsAt: new DateTime($datum['starts_at']),
+            endsAt: new DateTime($datum['ends_at']),
             description: $datum['description'],
         ), $data));
 
@@ -104,11 +104,11 @@ class TestLocationRepository extends AbstractRepository
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $resolvedPromise = $promise->then(fn($data) => array_map(static fn($datum) => new WorkingHours(
-            id       : $datum['id'],
+            id: $datum['id'],
             dayOfWeek: DayOfWeekEnum::fromShortcut($datum['day_of_week']),
-            startsAt : $datum['starts_at'],
-            endsAt   : $datum['ends_at'],
-            isActive : $datum['active'] ?? true,
+            startsAt: $datum['starts_at'],
+            endsAt: $datum['ends_at'],
+            isActive: $datum['active'] ?? true,
         ), $data));
 
         return $await ? await($resolvedPromise, Loop::get()) : $resolvedPromise;
@@ -119,15 +119,15 @@ class TestLocationRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new TestLocation(
-            id                     : $id,
-            fullAddress            : $entity['full_address'],
-            city                   : $entity['city'],
-            postalCode             : $entity['postal_code'],
-            name                   : $entity['name'],
+            id: $id,
+            fullAddress: $entity['full_address'],
+            city: $entity['city'],
+            postalCode: $entity['postal_code'],
+            name: $entity['name'],
             healthcareProfessionals: new LazyPromise($this->getProfessionals($id)),
-            workHours              : new LazyPromise($this->getWorkHours($id)),
-            nearestBusStation      : $entity['nearest_bus_station'] ?? null,
-            nearestTrainStation    : $entity['nearest_train_station'] ?? null,
+            workHours: new LazyPromise($this->getWorkHours($id)),
+            nearestBusStation: $entity['nearest_bus_station'] ?? null,
+            nearestTrainStation: $entity['nearest_train_station'] ?? null,
         );
     }
 

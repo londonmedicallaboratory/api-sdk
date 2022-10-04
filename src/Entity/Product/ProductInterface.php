@@ -17,10 +17,10 @@ use LML\SDK\Entity\Biomarker\BiomarkerInterface;
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
- *      slug: string,
  *      sku: string,
+ *      slug?: ?string,
  *      description: string,
- *      short_description: string,
+ *      short_description?: ?string,
  *      is_featured?: bool,
  *      preview_image_url: ?string,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
