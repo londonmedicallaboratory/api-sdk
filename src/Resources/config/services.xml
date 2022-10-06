@@ -113,6 +113,10 @@
             <tag name="controller.argument_value_resolver"/>
         </service>
 
+        <service id="LML\SDK\ArgumentValueResolver\PageParamResolver">
+            <tag name="controller.argument_value_resolver"/>
+        </service>
+
         <!-- Forms -->
         <service id="LML\SDK\Form\AddressType"/>
         <service id="LML\SDK\Form\CalendarType"/>
