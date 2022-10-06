@@ -57,7 +57,7 @@ export default class calender_controller extends Controller {
 
         let formElementId = this.formElementIdValue;
 
-        document.getElementById(formElementId).value = sprintf('%04d-%02d-%02dT%04s:00', selectedYear, selectedMonth, this.selectedDay, time);
+        document.getElementById(formElementId).value = sprintf('%04d-%02d-%02dT%02s:00', selectedYear, selectedMonth, this.selectedDay, time);
 
         this.close();
         this.prettyTimeTarget.innerHTML = humanReadableFormat;

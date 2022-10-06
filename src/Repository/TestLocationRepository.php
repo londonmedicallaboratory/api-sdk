@@ -9,6 +9,7 @@ use React\EventLoop\Loop;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
+use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\TestLocation\TestLocation;
@@ -117,6 +118,8 @@ class TestLocationRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): TestLocation
     {
         $id = $entity['id'];
+        $nextAvailableSlot = $entity['next_available_slot'] ?? null;
+        $slot = $nextAvailableSlot ? new Slot(new DateTime($nextAvailableSlot), isAvailable: true) : null;
 
         return new TestLocation(
             id: $id,
@@ -128,6 +131,7 @@ class TestLocationRepository extends AbstractRepository
             workHours: new LazyPromise($this->getWorkHours($id)),
             nearestBusStation: $entity['nearest_bus_station'] ?? null,
             nearestTrainStation: $entity['nearest_train_station'] ?? null,
+            nextAvailableSlot: new ResolvedValue($slot),
         );
     }
 

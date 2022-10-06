@@ -7,6 +7,7 @@ namespace LML\SDK\Entity\TestLocation;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
+use LML\SDK\Entity\TestLocation\Calender\Slot;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 use LML\SDK\Entity\TestLocation\WeeklyWorkingHours\WeeklyWorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
@@ -15,8 +16,9 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 class TestLocation implements TestLocationInterface
 {
     /**
-     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals ,
-     * @param LazyValueInterface<list<WorkingHoursInterface>> $workHours ,
+     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals
+     * @param LazyValueInterface<list<WorkingHoursInterface>> $workHours
+     * @param LazyValueInterface<?Slot> $nextAvailableSlot
      */
     public function __construct(
         protected string $id,
@@ -26,14 +28,21 @@ class TestLocation implements TestLocationInterface
         protected string $name,
         private LazyValueInterface $healthcareProfessionals,
         private LazyValueInterface $workHours,
+        protected LazyValueInterface $nextAvailableSlot,
         protected ?string $nearestBusStation = null,
         protected ?string $nearestTrainStation = null,
-    ) {
+    )
+    {
     }
 
     public function __toString(): string
     {
         return $this->getFullAddress();
+    }
+
+    public function getNextAvailableSlot(): ?Slot
+    {
+        return $this->nextAvailableSlot->getValue();
     }
 
     public function getNearestBusStation(): ?string
@@ -96,6 +105,7 @@ class TestLocation implements TestLocationInterface
             'name' => $this->getName(),
             'nearest_bus_station' => $this->getNearestBusStation(),
             'nearest_train_station' => $this->getNearestTrainStation(),
+            'next_available_slot' => $this->getNextAvailableSlot()?->format('Y-m-d H:i'),
         ];
     }
 }
