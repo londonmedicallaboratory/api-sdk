@@ -9,6 +9,9 @@ namespace LML\SDK\Entity;
  */
 interface ModelInterface
 {
+    /**
+     * @todo Consider changing this to null|string but: problems **will** happen in identity-map
+     */
     public function getId(): string;
 
     /**

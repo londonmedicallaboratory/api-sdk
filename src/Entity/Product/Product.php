@@ -28,15 +28,15 @@ class Product implements ProductInterface
      * @param LazyValueInterface<null|Video> $video
      */
     public function __construct(
-        protected string             $id,
-        protected string             $name,
-        protected string             $sku,
-        protected string             $slug,
-        protected string             $description,
-        protected bool               $isFeatured,
-        protected string             $shortDescription,
-        protected ?string            $previewImageUrl,
-        protected PriceInterface     $price,
+        protected string $id,
+        protected string $name,
+        protected string $sku,
+        protected string $slug,
+        protected string $description,
+        protected string $shortDescription,
+        protected bool $isFeatured,
+        protected ?string $previewImageUrl,
+        protected PriceInterface $price,
         protected LazyValueInterface $biomarkers,
         protected LazyValueInterface $shippingTypes,
         protected LazyValueInterface $files,
@@ -130,14 +130,11 @@ class Product implements ProductInterface
     public function toArray(): array
     {
         return [
-            'id'                => $this->getId(),
-            'name'              => $this->getName(),
-            'sku'               => $this->getSku(),
-            'slug'              => $this->getSlug(),
-            'description'       => $this->getLongDescription(),
-            'short_description' => $this->getShortDescription(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'sku' => $this->getSku(),
             'preview_image_url' => $this->getPreviewImageUrl(),
-            'price'             => $this->getPrice()->toArray(),
+            'price' => $this->getPrice()->toArray(),
         ];
     }
 }

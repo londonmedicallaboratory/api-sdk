@@ -9,8 +9,10 @@ use RuntimeException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use React\EventLoop\Loop;
+use Pagerfanta\Pagerfanta;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Pager\PromiseAdapter;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
@@ -19,6 +21,7 @@ use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function sprintf;
+use function React\Promise\resolve;
 use function Clue\React\Block\await;
 
 /**
@@ -47,11 +50,25 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function find(string $id, bool $await = false)
+    public function find(?string $id, bool $await = false)
     {
+        if (!$id) {
+            return resolve();
+        }
         $className = $this->extractTView();
 
         return $this->getEntityManager()->find($className, $id, $await);
+    }
+
+    /**
+     * @return Pagerfanta<TView>
+     */
+    public function pagerfanta(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null): Pagerfanta
+    {
+        $promise = $this->paginate($filters, $url, $page, $limit);
+        $adapter = new PromiseAdapter($promise);
+
+        return new Pagerfanta($adapter);
     }
 
     /**
@@ -124,6 +141,9 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findOrThrowException(string $id, bool $await = false)
     {
+        if (!$id) {
+            throw new RuntimeException();
+        }
         $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
         $client = $this->getClient();
 

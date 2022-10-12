@@ -10,11 +10,17 @@ use LML\SDK\Enum\OrderStatusEnum;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Entity\Money\PriceInterface;
+use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Entity\Customer\CustomerInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use function array_map;
 
+/**
+ * @template TAppointments of Appointment
+ *
+ * @see Appointment
+ */
 #[Entity(repositoryClass: OrderRepository::class, baseUrl: 'order')]
 class Order implements OrderInterface
 {
@@ -24,21 +30,23 @@ class Order implements OrderInterface
      * @param LazyValueInterface<CustomerInterface> $customer
      * @param LazyValueInterface<AddressInterface> $address
      * @param LazyValueInterface<?ShippingInterface> $shipping
+     * @param LazyValueInterface<list<TAppointments>> $appointments
      * @param LazyValueInterface<list<ItemInterface>> $items
      */
     public function __construct(
-        protected string             $id,
+        protected string $id,
         protected LazyValueInterface $customer,
         protected LazyValueInterface $address,
-        protected PriceInterface     $total,
+        protected PriceInterface $total,
         protected LazyValueInterface $items,
         protected LazyValueInterface $shipping,
+        protected LazyValueInterface $appointments,
         protected ?DateTimeInterface $shippingDate = null,
-        protected ?string            $companyName = null,
-        protected ?AddressInterface  $billingAddress = null,
-        protected ?OrderStatusEnum   $status = null,
+        protected ?string $companyName = null,
+        protected ?AddressInterface $billingAddress = null,
+        protected ?OrderStatusEnum $status = null,
         protected ?DateTimeInterface $createdAt = null,
-        protected ?int               $orderNumber = null,
+        protected ?int $orderNumber = null,
     )
     {
     }
@@ -108,18 +116,26 @@ class Order implements OrderInterface
         return $this->shippingDate;
     }
 
+    /**
+     * @return list<TAppointments>
+     */
+    public function getAppointments(): array
+    {
+        return $this->appointments->getValue();
+    }
+
     public function toArray(): array
     {
         return [
-            'id'            => $this->getId(),
-            'customer_id'   => $this->getCustomer()->getId(),
-            'shipping_id'   => $this->getShipping()?->getId(),
+            'id' => $this->getId(),
+            'customer_id' => $this->getCustomer()->getId(),
+            'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
-            'company'       => $this->getCompanyName(),
-            'customer'      => $this->getCustomer()->toArray(),
-            'address'       => $this->getAddress()->toArray(),
-            'price'         => $this->getTotal()->toArray(),
-            'items'         => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
+            'company' => $this->getCompanyName(),
+            'customer' => $this->getCustomer()->toArray(),
+            'address' => $this->getAddress()->toArray(),
+            'price' => $this->getTotal()->toArray(),
+            'items' => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
     }
 }

@@ -14,6 +14,7 @@ use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Entity\Product\ProductFaq;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Product\ProductInterface;
+use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
@@ -38,29 +39,29 @@ class ProductRepository extends AbstractRepository
         $priceData = $entity['price'];
 
         $price = new Price(
-            amount        : $priceData['amount_minor'],
-            currency      : $priceData['currency'],
+            amount: $priceData['amount_minor'],
+            currency: $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
 
         $id = $entity['id'];
 
         return new Product(
-            id              : $id,
-            name            : $entity['name'],
-            sku             : $entity['sku'],
-            slug            : $entity['slug'],
-            description     : $entity['description'],
-            shortDescription: $entity['short_description'],
-            previewImageUrl : $entity['preview_image_url'],
-            isFeatured      : $entity['is_featured'] ?? false,
-            price           : $price,
-            biomarkers      : new LazyPromise($this->getBiomarkers($id)),
-            shippingTypes   : new LazyPromise($this->getShippingTypes($id)),
-            files           : new LazyPromise($this->getFiles($id)),
-            categories      : new LazyPromise($this->getCategories($id)),
-            faqs            : new LazyPromise($this->getFaqs($id)),
-            video           : new LazyPromise($this->getVideo($id)),
+            id: $id,
+            name: $entity['name'],
+            sku: $entity['sku'],
+            slug: $entity['slug'] ?? throw new DataNotFoundException(),
+            description: $entity['description'] ?? throw new DataNotFoundException(),
+            shortDescription: $entity['short_description'] ?? throw new DataNotFoundException(),
+            previewImageUrl: $entity['preview_image_url'],
+            isFeatured: $entity['is_featured'] ?? false,
+            price: $price,
+            biomarkers: new LazyPromise($this->getBiomarkers($id)),
+            shippingTypes: new LazyPromise($this->getShippingTypes($id)),
+            files: new LazyPromise($this->getFiles($id)),
+            categories: new LazyPromise($this->getCategories($id)),
+            faqs: new LazyPromise($this->getFaqs($id)),
+            video: new LazyPromise($this->getVideo($id)),
         );
     }
 

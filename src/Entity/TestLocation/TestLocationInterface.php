@@ -18,6 +18,7 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
  *      postal_code: string,
  *      nearest_bus_station?: ?string,
  *      nearest_train_station?: ?string,
+ *      next_available_slot?: ?string,
  * }
  *
  * @extends ModelInterface<S>

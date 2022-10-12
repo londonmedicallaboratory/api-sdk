@@ -1,0 +1,41 @@
+/**
+ * Isolate widget as much as possible, we don't want class collisions with other elements.
+ * It is up to user to override it with CSS specificity.
+ */
+.lml-calendar-widget {
+  // Use-case: position: absolute, borders etc
+  .lml-calendar-widget-dialog {
+    &:not(.hidden) {
+      //position: absolute;
+      //background-color: green;
+    }
+
+    // class `hidden` is standard now, no need for namespace
+    &.hidden {
+      display: none;
+    }
+
+    // customize the looks of content itself
+    .lml-calendar-widget-dialog-content {
+    }
+  }
+
+  .lml-calendar-widget-dialog-close::before {
+    content: 'X';
+  }
+
+  .lml-calendar-widget-slot {
+    all: initial;
+    width: 25%;
+    display: inline-block;
+    margin-bottom: 3px;
+    text-align: center;
+    background-color: lightgrey;
+    cursor: pointer;
+
+    &.lml-calendar-widget-slot-not-available {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  }
+}

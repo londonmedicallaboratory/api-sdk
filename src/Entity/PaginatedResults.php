@@ -8,13 +8,15 @@ use Traversable;
 use IteratorAggregate;
 
 /**
- * @template T
+ * @template-covariant T
  * @implements IteratorAggregate<T>
  */
 class PaginatedResults implements IteratorAggregate
 {
     /**
      * @param list<T> $items
+     * @param int<0, max> $nrOfPages
+     * @param int<0, max> $resultsPerPage
      */
     public function __construct(
         protected int   $currentPage,
@@ -42,6 +44,9 @@ class PaginatedResults implements IteratorAggregate
         return $this->currentPage;
     }
 
+    /**
+     * @return int<0, max>
+     */
     public function getNrOfPages(): int
     {
         return $this->nrOfPages;

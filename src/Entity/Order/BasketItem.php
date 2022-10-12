@@ -42,8 +42,9 @@ class BasketItem implements ItemInterface
     public function toArray(): array
     {
         return [
-            'product_id' => $this->getProduct()->getId(),
-            'quantity'   => $this->getQuantity(),
+            'product_id'  => $this->getProduct()->getId(),
+            'product_sku' => $this->getProduct()->getSku(),
+            'quantity'    => $this->getQuantity(),
         ];
     }
 
