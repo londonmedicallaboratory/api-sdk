@@ -14,6 +14,10 @@ interface PriceInterface
 
     public function multiply(int $by): PriceInterface;
 
+    public function plus(PriceInterface $price): PriceInterface;
+
+    public function minus(PriceInterface $price): PriceInterface;
+
     /**
      * @return array{amount_minor: int, currency: string, formatted_value: string}
      */

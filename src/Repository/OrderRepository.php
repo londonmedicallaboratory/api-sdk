@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use RuntimeException;
+use LML\SDK\DTO\Payment;
+use LML\SDK\Service\Basket;
 use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
@@ -27,6 +30,37 @@ use function React\Promise\resolve;
  */
 class OrderRepository extends AbstractRepository
 {
+    public function create(Payment $payment, Basket $basket): Order
+    {
+        $customerRepository = $this->get(CustomerRepository::class);
+        $addressRepository = $this->get(AddressRepository::class);
+
+        $customer = $customerRepository->createFromPayment($payment);
+        $customerRepository->persist($customer);
+        $customerRepository->flush();
+
+        $address = $addressRepository->createFromPayment($payment);
+        $addressRepository->persist($address);
+        $addressRepository->flush();
+
+        $order = new Order(
+            id: '',
+            customer: new ResolvedValue($customer),
+            address: new ResolvedValue($address),
+            total: $basket->getTotal() ?? throw new RuntimeException(),
+            items: new LazyValue(fn() => $basket->getItems()),
+            companyName: $payment->customersCompany,
+            billingAddress: null,
+            shipping: new ResolvedValue($payment->shipping),
+            appointments: new LazyValue(fn() => []),
+        );
+
+        $this->persist($order);
+        $this->flush();
+
+        return $order;
+    }
+
     protected function one($entity, $options, $optimizer): Order
     {
         $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
