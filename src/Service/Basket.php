@@ -7,12 +7,13 @@ namespace LML\SDK\Service;
 use RuntimeException;
 use Brick\Money\Money;
 use React\EventLoop\Loop;
-use Brick\Math\RoundingMode;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\VoucherRepository;
+use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -24,6 +25,7 @@ class Basket
 {
     private const SESSION_KEY = 'basket';
     private const VOUCHER_KEY = 'voucher';
+    private const SHIPPING_KEY = 'shipping';
 
     /**
      * @var null|list<BasketItem>
@@ -32,10 +34,13 @@ class Basket
 
     private ?Voucher $voucher = null;
 
+    private ?ShippingInterface $shipping = null;
+
     public function __construct(
         private RequestStack $requestStack,
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
+        private ShippingRepository $shippingRepository,
     ) {
     }
 
@@ -78,17 +83,25 @@ class Basket
         return array_values($filtered);
     }
 
-    public function getTotal(): ?Price
+    public function getSubtotal(): ?PriceInterface
     {
         $total = array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getTotal()->getAmount() + $carry, 0);
-
         if (!$total) {
             return null;
         }
 
-        $money = $this->applyVoucher(Money::ofMinor($total, 'GBP'));
+        return Price::fromMoney(Money::ofMinor($total, 'GBP'));
+    }
 
-        return Price::fromMoney($money);
+    public function getTotal(): ?PriceInterface
+    {
+        $subtotal = $this->getSubtotal();
+        if (!$subtotal) {
+            return null;
+        }
+        $newPrice = $this->applyVoucher($subtotal);
+
+        return $this->shipping ? $newPrice->plus($this->shipping->getPrice()) : $newPrice;
     }
 
     public function getTotalQuantity(): int
@@ -130,8 +143,8 @@ class Basket
 
     public function setVoucher(?Voucher $voucher): void
     {
-        $session = $this->requestStack->getSession();
         if (!$voucher) {
+            $session = $this->requestStack->getSession();
             $session->remove(self::VOUCHER_KEY);
         }
         $this->voucher = $voucher;
@@ -143,6 +156,37 @@ class Basket
     public function getAvailableShippingMethods(): array
     {
         return array_intersect(...array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems()));
+    }
+
+    public function getDiscount(): ?PriceInterface
+    {
+        $voucher = $this->getVoucher();
+        $subtotalAmount = $this->getSubtotal()?->getAmount();
+        if (!$voucher || !$subtotalAmount) {
+            return null;
+        }
+
+        $discountAMount = match ($voucher->getType()) {
+            'percent' => $subtotalAmount * ($voucher->getValue() / 100),
+            'amount' => $voucher->getValue() * 100,
+            default => throw new RuntimeException('Unsupported voucher type'),
+        };
+
+        return Price::fromMoney(Money::ofMinor($discountAMount, 'GBP'));
+    }
+
+    public function getShipping(): ?ShippingInterface
+    {
+        return $this->shipping ??= $this->doGetShipping();
+    }
+
+    public function setShipping(?ShippingInterface $shipping): void
+    {
+        $this->shipping = $shipping;
+        if (!$shipping) {
+            $session = $this->requestStack->getSession();
+            $session->remove(self::VOUCHER_KEY);
+        }
     }
 
     private function findItem(ProductInterface $product): ?BasketItem
@@ -168,20 +212,14 @@ class Basket
         return $item;
     }
 
-    private function applyVoucher(Money $amount): Money
+    private function applyVoucher(PriceInterface $price): PriceInterface
     {
-        $voucher = $this->getVoucher();
-        if (!$voucher) {
-            return $amount;
+        $discount = $this->getDiscount();
+        if (!$discount) {
+            return $price;
         }
 
-        $reducedPrice = match ($voucher->getType()) {
-            'percent' => $amount->minus($amount->multipliedBy($voucher->getValue() / 100), RoundingMode::UP),
-            'amount' => $amount->minus(Money::of($voucher->getValue(), 'GBP'), RoundingMode::UP),
-            default => throw new RuntimeException('Unsupported voucher type'),
-        };
-
-        return $reducedPrice->getAmount()->toInt() > 0 ? $reducedPrice : Money::of(0, 'GBP');
+        return $price->getAmount() < $discount->getAmount() ? Price::fromMoney(Money::ofMinor(0, 'GBP')) : $price->minus($discount);
     }
 
     /**
@@ -218,5 +256,16 @@ class Basket
         }
 
         return $this->voucherRepository->find($id, true);
+    }
+
+    private function doGetShipping(): ?ShippingInterface
+    {
+        $session = $this->requestStack->getSession();
+        $id = (string)$session->get(self::SHIPPING_KEY);
+        if (!$id) {
+            return null;
+        }
+
+        return $this->shippingRepository->find($id, true);
     }
 }

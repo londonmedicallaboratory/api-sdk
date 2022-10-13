@@ -97,7 +97,8 @@
         <service id="LML\SDK\Service\Basket">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="LML\SDK\Repository\ProductRepository"/>
-            <argument type="service" id="LML\SDK\Repository\OrderRepository"/>
+            <argument type="service" id="LML\SDK\Repository\VoucherRepository"/>
+            <argument type="service" id="LML\SDK\Repository\ShippingRepository"/>
         </service>
 
         <service id="LML\SDK\Service\API\EntityManager">

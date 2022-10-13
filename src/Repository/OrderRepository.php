@@ -39,7 +39,12 @@ class OrderRepository extends AbstractRepository
     public function create(Payment $payment, Basket $basket): Order
     {
         $customer = $this->customerRepository->createFromPayment($payment);
+        $this->customerRepository->persist($customer);
+        $this->customerRepository->flush();
+
         $address = $this->addressRepository->createFromPayment($payment);
+        $this->addressRepository->persist($address);
+        $this->addressRepository->flush();
 
         $order = new Order(
             id: '',
@@ -50,6 +55,7 @@ class OrderRepository extends AbstractRepository
             companyName: $payment->customersCompany,
             billingAddress: null,
             shipping: new ResolvedValue($payment->shipping),
+            appointments: new LazyValue(fn() => []),
         );
 
         $this->persist($order);

@@ -9,11 +9,10 @@ use Brick\Money\Money;
 class Price implements PriceInterface
 {
     public function __construct(
-        protected int    $amount,
+        protected int $amount,
         protected string $currency,
         protected string $formattedValue,
-    )
-    {
+    ) {
     }
 
     public static function fromMoney(Money $money): Price
@@ -28,10 +27,17 @@ class Price implements PriceInterface
 
     public function multiply(int $by): PriceInterface
     {
-        $newAmount = $this->amount * $by;
-        $money = Money::ofMinor($newAmount, $this->currency);
+        return $this->createPriceFromAmount($this->amount * $by);
+    }
 
-        return new Price($newAmount, $this->currency, $money->formatTo('en'));
+    public function plus(PriceInterface $price): PriceInterface
+    {
+        return $this->createPriceFromAmount($this->amount + $price->getAmount());
+    }
+
+    public function minus(PriceInterface $price): PriceInterface
+    {
+        return $this->createPriceFromAmount($this->amount - $price->getAmount());
     }
 
     public function getAmount(): int
@@ -52,9 +58,16 @@ class Price implements PriceInterface
     public function toArray(): array
     {
         return [
-            'amount_minor'    => $this->amount,
-            'currency'        => $this->currency,
+            'amount_minor' => $this->amount,
+            'currency' => $this->currency,
             'formatted_value' => $this->formattedValue,
         ];
+    }
+
+    private function createPriceFromAmount(int $amount): PriceInterface
+    {
+        $money = Money::ofMinor($amount, $this->currency);
+
+        return new Price($amount, $this->currency, $money->formatTo('en'));
     }
 }
