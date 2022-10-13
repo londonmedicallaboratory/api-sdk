@@ -30,21 +30,18 @@ use function React\Promise\resolve;
  */
 class OrderRepository extends AbstractRepository
 {
-    public function __construct(
-        private CustomerRepository $customerRepository,
-        private AddressRepository $addressRepository,
-    ) {
-    }
-
     public function create(Payment $payment, Basket $basket): Order
     {
-        $customer = $this->customerRepository->createFromPayment($payment);
-        $this->customerRepository->persist($customer);
-        $this->customerRepository->flush();
+        $customerRepository = $this->get(CustomerRepository::class);
+        $addressRepository = $this->get(AddressRepository::class);
 
-        $address = $this->addressRepository->createFromPayment($payment);
-        $this->addressRepository->persist($address);
-        $this->addressRepository->flush();
+        $customer = $customerRepository->createFromPayment($payment);
+        $customerRepository->persist($customer);
+        $customerRepository->flush();
+
+        $address = $addressRepository->createFromPayment($payment);
+        $addressRepository->persist($address);
+        $addressRepository->flush();
 
         $order = new Order(
             id: '',
