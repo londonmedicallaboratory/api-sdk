@@ -185,7 +185,7 @@ class Basket
         $this->shipping = $shipping;
         if (!$shipping) {
             $session = $this->requestStack->getSession();
-            $session->remove(self::VOUCHER_KEY);
+            $session->remove(self::SHIPPING_KEY);
         }
     }
 
