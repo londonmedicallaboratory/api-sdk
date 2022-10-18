@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\DependencyInjection;
 
-use LML\SDK\Form\AddressType;
+use LML\SDK\Form\Type\AddressType;
 use LML\SDK\Service\API\EntityManager;
 use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;

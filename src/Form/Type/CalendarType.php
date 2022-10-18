@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Form;
+namespace LML\SDK\Form\Type;
 
 use DateTimeInterface;
 use Webmozart\Assert\Assert;
@@ -27,11 +27,11 @@ class CalendarType extends AbstractType
         $resolver->setRequired('calendar_url');
         $resolver->setRequired('daily_slots_url');
         $resolver->setDefaults([
-            'input'        => 'datetime_immutable',
-            'widget'       => 'single_text',
-            'html5'        => false,
+            'input' => 'datetime_immutable',
+            'widget' => 'single_text',
+            'html5' => false,
             'input_format' => 'Y-m-d H:i',
-            'empty_data'   => ['2022-09-22'],
+            'empty_data' => ['2022-09-22'],
         ]);
     }
 

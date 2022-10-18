@@ -119,11 +119,11 @@
         </service>
 
         <!-- Forms -->
-        <service id="LML\SDK\Form\AddressType"/>
-        <service id="LML\SDK\Form\CalendarType"/>
-        <service id="LML\SDK\Form\Extension\CountryTypeLimited"/>
-        <service id="LML\SDK\Form\Extension\DateTypeExtendedYearsRange"/>
-        <service id="LML\SDK\Form\Choice\EthnicityChoiceType"/>
+        <service id="LML\SDK\Form\Type\AddressType"/>
+        <service id="LML\SDK\Form\Type\CalendarType"/>
+        <service id="LML\SDK\Form\Type\CountryTypeLimited"/>
+        <service id="LML\SDK\Form\Type\DateTypeExtendedYearsRange"/>
+        <service id="LML\SDK\Form\Type\EthnicityChoiceType"/>
 
     </services>
 </container>
