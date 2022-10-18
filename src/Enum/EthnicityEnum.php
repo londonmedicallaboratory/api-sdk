@@ -63,31 +63,17 @@ enum EthnicityEnum: string implements NameableInterface
         };
     }
 
-    /**
-     * @return array<string, array<string, EthnicityEnum>>
-     */
-    public static function getAsFormGroupChoices(): array
+    public function getGroupName(): string
     {
-        $groups = [];
-        foreach (self::cases() as $enum) {
-            $groupName = self::getGroupName($enum->name);
-            $groups[$groupName][$enum->value] = $enum;
-        }
-
-        return $groups;
-    }
-
-    private static function getGroupName(string $enum): string
-    {
-        $enum = strtolower($enum);
+        $value = $this->value;
 
         return match (true) {
-            str_starts_with($enum, 'white_') => 'White',
-            str_starts_with($enum, 'mixed_') => 'Mixed / Multiple ethnic groups',
-            str_starts_with($enum, 'asian_') => 'Asian / Asian British',
-            str_starts_with($enum, 'black_') => 'Black / African / Caribbean / Black British',
-            str_starts_with($enum, 'other_') => 'Other ethnic group',
-            default => throw new RuntimeException(sprintf('Enum "%s" is not supported.', $enum)),
+            str_starts_with($value, 'white_') => 'White',
+            str_starts_with($value, 'mixed_') => 'Mixed / Multiple ethnic groups',
+            str_starts_with($value, 'asian_') => 'Asian / Asian British',
+            str_starts_with($value, 'black_') => 'Black / African / Caribbean / Black British',
+            str_starts_with($value, 'other_') => 'Other ethnic group',
+            default => throw new RuntimeException(sprintf('Case \'%s\' is not supported.', $value)),
         };
     }
 }

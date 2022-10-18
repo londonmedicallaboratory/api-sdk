@@ -123,6 +123,7 @@
         <service id="LML\SDK\Form\CalendarType"/>
         <service id="LML\SDK\Form\Extension\CountryTypeLimited"/>
         <service id="LML\SDK\Form\Extension\DateTypeExtendedYearsRange"/>
+        <service id="LML\SDK\Form\Choice\EthnicityChoiceType"/>
 
     </services>
 </container>
