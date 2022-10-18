@@ -11,6 +11,12 @@
                 "webpackMode": "eager",
                 "fetch": "lazy",
                 "enabled": true
+            },
+            "form-address": {
+                "main": "controllers/form-address_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
             }
         }
     },

@@ -1,0 +1,13 @@
+{% block lml_sdk_address_widget %}
+    <div {{ stimulus_controller('@londonmedicallaboratory/api-sdk/form-address', {
+        country: form.countryCode.vars.id,
+        line1: form.line1.vars.id,
+        line2: form.line2.vars.id,
+        line3: form.line3.vars.id,
+        city: form.city.vars.id,
+        postalCode: form.postalCode.vars.id,
+        apiKey: form.vars.api_key,
+    }) }}>
+        {{ form_widget(form) }}
+    </div>
+{% endblock %}
