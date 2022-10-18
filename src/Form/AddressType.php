@@ -57,9 +57,6 @@ class AddressType extends AbstractType
             'required' => false,
             'get_value' => fn(Address $address) => $address->getAddressLine3(),
             'update_value' => fn(?string $line, Address $address) => $address->setLine3($line),
-            'constraints' => [
-                new NotNull(),
-            ],
         ]);
 
         $builder->add('city', TextType::class, [
