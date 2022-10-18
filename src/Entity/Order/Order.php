@@ -28,22 +28,23 @@ class Order implements OrderInterface
      * @see OrderRepository::one()
      *
      * @param LazyValueInterface<CustomerInterface> $customer
-     * @param LazyValueInterface<AddressInterface> $billingAddress
+     * @param LazyValueInterface<AddressInterface> $address
      * @param LazyValueInterface<?ShippingInterface> $shipping
      * @param LazyValueInterface<list<TAppointments>> $appointments
+     * @param LazyValueInterface<?AddressInterface> $billingAddress
      * @param LazyValueInterface<list<ItemInterface>> $items
      */
     public function __construct(
         protected string $id,
         protected LazyValueInterface $customer,
-        protected LazyValueInterface $billingAddress,
+        protected LazyValueInterface $address,
         protected PriceInterface $total,
         protected LazyValueInterface $items,
         protected LazyValueInterface $shipping,
         protected LazyValueInterface $appointments,
+        protected LazyValueInterface $billingAddress,
         protected ?DateTimeInterface $shippingDate = null,
         protected ?string $companyName = null,
-        protected ?AddressInterface $deliveryAddress = null,
         protected ?OrderStatusEnum $status = null,
         protected ?DateTimeInterface $createdAt = null,
         protected ?int $orderNumber = null,
@@ -86,14 +87,14 @@ class Order implements OrderInterface
         return $this->companyName;
     }
 
-    public function getBillingAddress(): AddressInterface
+    public function getAddress(): AddressInterface
     {
-        return $this->billingAddress->getValue();
+        return $this->address->getValue();
     }
 
-    public function getDeliveryAddress(): ?AddressInterface
+    public function getBillingAddress(): ?AddressInterface
     {
-        return $this->deliveryAddress;
+        return $this->billingAddress->getValue();
     }
 
     public function getId(): string
@@ -133,12 +134,12 @@ class Order implements OrderInterface
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
-            'address' => $this->getBillingAddress()->toArray(),
+            'address' => $this->getAddress()->toArray(),
             'price' => $this->getTotal()->toArray(),
             'items' => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
-        if ($deliveryAddress = $this->getDeliveryAddress()) {
-            $data['delivery_address'] = $deliveryAddress->toArray();
+        if ($billingAddress = $this->getBillingAddress()) {
+            $data['billing_address'] = $billingAddress->toArray();
         }
 
         return $data;
