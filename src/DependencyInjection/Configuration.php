@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
             ?->scalarNode('cache_pool')->defaultValue(null)->end()
             ?->integerNode('cache_expiration')->defaultValue(0)->end()
             ?->booleanNode('faker')->defaultValue(false)->end()
+            ?->scalarNode('loqate_api_key')->isRequired()->end()
             ?->end();
 
         return $treeBuilder;

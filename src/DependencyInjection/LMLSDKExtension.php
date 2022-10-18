@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\DependencyInjection;
 
+use LML\SDK\Form\AddressType;
 use LML\SDK\Service\API\EntityManager;
 use LML\SDK\Service\Client\FakerClient;
 use Symfony\Component\Config\FileLocator;
@@ -47,6 +48,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
         $container->prependExtensionConfig('twig', [
             'form_themes' => [
                 '@LMLSDK/forms/calendar_widget.html.twig',
+                '@LMLSDK/forms/address_widget.html.twig',
             ],
         ]);
     }
@@ -65,6 +67,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
         }
 
         $this->configureClient($mergedConfig, $container);
+        $this->configureAddressType($mergedConfig, $container);
     }
 
     private function configureClient(array $mergedConfig, ContainerBuilder $container): void
@@ -83,5 +86,11 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
             ->setArgument(1, $mergedConfig['api_token'])
             ->setArgument(2, $mergedConfig['cache_pool'] ? new Reference($mergedConfig['cache_pool']) : null)
             ->setArgument(3, $mergedConfig['cache_expiration']);
+    }
+
+    private function configureAddressType(array $mergedConfig, ContainerBuilder $container): void
+    {
+        $definition = $container->getDefinition(AddressType::class);
+        $definition->setArgument(0, $mergedConfig['loqate_api_key']);
     }
 }

@@ -2,7 +2,7 @@
 framework:
     cache:
         pools:
-            view_cache_pool:    # default pool name; use redis if possible
+            view_cache_pool: # default pool name; use redis if possible
                 tags: true      # adapter must allow tagging items
 
 lml_sdk:
@@ -11,3 +11,4 @@ lml_sdk:
     cache_pool: cache.app       # use default cache pool or create your own
     cache_expiration: 3600
     faker: false
+    loqate_api_key: 'loqate key used for address autocomplete'

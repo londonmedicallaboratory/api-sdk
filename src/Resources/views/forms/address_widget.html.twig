@@ -1,13 +1,24 @@
 {% block lml_sdk_address_widget %}
-    <div {{ stimulus_controller('@londonmedicallaboratory/api-sdk/form-address', {
-        country: form.countryCode.vars.id,
-        line1: form.line1.vars.id,
-        line2: form.line2.vars.id,
-        line3: form.line3.vars.id,
-        city: form.city.vars.id,
-        postalCode: form.postalCode.vars.id,
-        apiKey: form.vars.api_key,
-    }) }}>
-        {{ form_widget(form) }}
+    <div class="lml-address-widget"
+            {{ stimulus_controller('@londonmedicallaboratory/api-sdk/form-address', {
+                line1: form.line1.vars.id,
+                line2: form.line2.vars.id,
+                line3: form.line3.vars.id,
+                city: form.city.vars.id,
+                country: form.countryCode.vars.id,
+                postalCode: form.postalCode.vars.id,
+                apiKey: form.vars.api_key,
+            }) }}>
+
+        {{ form_row(form.line1) }}
+
+        <a class="lml-address-widget-show-button{{ form.vars.is_populated ? ' d-none' }}"
+                {{ stimulus_action('@londonmedicallaboratory/api-sdk/form-address', 'showRest') }}
+                {{ stimulus_target('@londonmedicallaboratory/api-sdk/form-address', 'editManuallyButton') }} >Enter address manually</a>
+
+        <div {{ stimulus_target('@londonmedicallaboratory/api-sdk/form-address', 'rest') }} class="{{ not form.vars.is_populated ? 'd-none' }}">
+            {{ form_rest(form) }}
+        </div>
+
     </div>
 {% endblock %}

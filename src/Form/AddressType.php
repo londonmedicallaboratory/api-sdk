@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Form;
 
+use Webmozart\Assert\Assert;
 use LML\SDK\Entity\Address\Address;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
 use LML\SDK\Entity\Address\AddressInterface;
 use LML\SDK\Form\Extension\CountryTypeLimited;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,26 +22,17 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class AddressType extends AbstractType
 {
+    public function __construct(
+        private string $loqateApiKey,
+    )
+    {
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'factory' => fn(
-                string $line1,
-                ?string $line2,
-                ?string $line3,
-                string $country,
-                string $postalCode,
-                string $city,
-            ) => new Address(
-                id: '',
-                line1: $line1,
-                line2: $line2,
-                line3: $line3,
-                countryName: 'UK',
-                countryCode: $country,
-                postalCode: $postalCode,
-                city: $city,
-            ),
+            'show_company' => false,
+            'factory' => $this->factory(...),
         ]);
     }
 
@@ -62,6 +57,9 @@ class AddressType extends AbstractType
             'required' => false,
             'get_value' => fn(Address $address) => $address->getAddressLine3(),
             'update_value' => fn(?string $line, Address $address) => $address->setLine3($line),
+            'constraints' => [
+                new NotNull(),
+            ],
         ]);
 
         $builder->add('city', TextType::class, [
@@ -82,14 +80,45 @@ class AddressType extends AbstractType
             ],
         ]);
 
-        $builder->add('country', CountryTypeLimited::class, [
+        $builder->add('countryCode', CountryTypeLimited::class, [
             'get_value' => fn(Address $address) => $address->getCountryCode(),
             'update_value' => fn(string $country, Address $address) => $address->setCountryCode($country),
         ]);
+
+        Assert::boolean($showCompany = $options['show_company'] ?? null);
+        if ($showCompany) {
+            $builder->add('company', TextType::class, [
+                'get_value' => fn(Address $address) => $address->getCompany(),
+                'update_value' => fn(?string $company, Address $address) => $address->setCompany($company),
+                'constraints' => [
+                    new Length(max: 35),
+                ],
+            ]);
+        }
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['api_key'] = $this->loqateApiKey;
+        $view->vars['is_populated'] = (bool)($form->get('line1')->getData());
     }
 
     public function getBlockPrefix(): string
     {
         return 'lml_sdk_address';
+    }
+
+    private function factory(string $line1, ?string $line2, ?string $line3, string $countryCode, string $postalCode, string $city): Address
+    {
+        return new Address(
+            id: '',
+            line1: $line1,
+            line2: $line2,
+            line3: $line3,
+            countryName: 'UK',
+            countryCode: $countryCode,
+            postalCode: $postalCode,
+            city: $city,
+        );
     }
 }

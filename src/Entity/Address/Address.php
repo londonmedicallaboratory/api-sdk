@@ -13,12 +13,12 @@ use function array_filter;
 class Address implements AddressInterface
 {
     public function __construct(
-        private string  $id,
-        private string  $line1,
-        private string  $postalCode,
-        private string  $countryCode,
-        private string  $countryName,
-        private string  $city,
+        private string $id,
+        private string $line1,
+        private string $postalCode,
+        private string $countryCode,
+        private string $countryName,
+        private string $city,
         private ?string $line2 = null,
         private ?string $line3 = null,
         private ?string $company = null,
@@ -136,18 +136,23 @@ class Address implements AddressInterface
         return $this->company;
     }
 
+    public function setCompany(?string $company): void
+    {
+        $this->company = $company;
+    }
+
     public function toArray()
     {
         return [
-            'id'           => $this->getId(),
-            'line1'        => $this->getLine1(),
-            'line2'        => $this->getLine2(),
-            'line3'        => $this->getLine3(),
-            'postal_code'  => $this->getPostalCode(),
+            'id' => $this->getId(),
+            'line1' => $this->getLine1(),
+            'line2' => $this->getLine2(),
+            'line3' => $this->getLine3(),
+            'postal_code' => $this->getPostalCode(),
             'country_name' => $this->getCountryName(),
             'country_code' => $this->getCountryCode(),
-            'city'         => $this->getCity(),
-            'company'      => $this->getCompany(),
+            'city' => $this->getCity(),
+            'company' => $this->getCompany(),
         ];
     }
 }
