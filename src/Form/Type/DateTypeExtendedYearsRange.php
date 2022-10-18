@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Form\Extension;
+namespace LML\SDK\Form\Type;
 
 use DateTime;
 use Symfony\Component\Form\AbstractType;

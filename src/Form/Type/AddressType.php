@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Form;
+namespace LML\SDK\Form\Type;
 
 use Webmozart\Assert\Assert;
 use LML\SDK\Entity\Address\Address;
@@ -10,7 +10,6 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use LML\SDK\Entity\Address\AddressInterface;
-use LML\SDK\Form\Extension\CountryTypeLimited;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;

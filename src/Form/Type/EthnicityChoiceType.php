@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Form\Choice;
+namespace LML\SDK\Form\Type;
 
 use LML\SDK\Enum\EthnicityEnum;
 use Symfony\Component\Form\AbstractType;
