@@ -30,7 +30,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *          line3?: ?string,
  *          postal_code: string
  *      },
- *      delivery_address?: ?array{
+ *      billing_address?: ?array{
  *          id: string,
  *          city: string,
  *          country_code: string,
@@ -68,9 +68,9 @@ interface OrderInterface extends ModelInterface
 
     public function getCompanyName(): ?string;
 
-    public function getBillingAddress(): AddressInterface;
+    public function getAddress(): AddressInterface;
 
-    public function getDeliveryAddress(): ?AddressInterface;
+    public function getBillingAddress(): ?AddressInterface;
 
     /**
      * @return list<ItemInterface>
