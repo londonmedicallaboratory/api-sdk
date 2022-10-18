@@ -46,11 +46,11 @@ class OrderRepository extends AbstractRepository
         $order = new Order(
             id: '',
             customer: new ResolvedValue($customer),
-            address: new ResolvedValue($address),
+            billingAddress: new ResolvedValue($address),
             total: $basket->getTotal() ?? throw new RuntimeException(),
             items: new LazyValue(fn() => $basket->getItems()),
             companyName: $payment->customersCompany,
-            billingAddress: null,
+            deliveryAddress: null,
             shipping: new ResolvedValue($payment->shipping),
             appointments: new LazyValue(fn() => []),
         );
@@ -83,7 +83,7 @@ class OrderRepository extends AbstractRepository
             id: $id,
             customer: new ResolvedValue($customer),
             shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
-            address: new ResolvedValue($address),
+            billingAddress: new ResolvedValue($address),
             total: $price,
             companyName: $entity['company'],
             items: new LazyValue(fn() => $this->createItems($entity['items'])),

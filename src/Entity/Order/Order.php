@@ -28,7 +28,7 @@ class Order implements OrderInterface
      * @see OrderRepository::one()
      *
      * @param LazyValueInterface<CustomerInterface> $customer
-     * @param LazyValueInterface<AddressInterface> $address
+     * @param LazyValueInterface<AddressInterface> $billingAddress
      * @param LazyValueInterface<?ShippingInterface> $shipping
      * @param LazyValueInterface<list<TAppointments>> $appointments
      * @param LazyValueInterface<list<ItemInterface>> $items
@@ -36,14 +36,14 @@ class Order implements OrderInterface
     public function __construct(
         protected string $id,
         protected LazyValueInterface $customer,
-        protected LazyValueInterface $address,
+        protected LazyValueInterface $billingAddress,
         protected PriceInterface $total,
         protected LazyValueInterface $items,
         protected LazyValueInterface $shipping,
         protected LazyValueInterface $appointments,
         protected ?DateTimeInterface $shippingDate = null,
         protected ?string $companyName = null,
-        protected ?AddressInterface $billingAddress = null,
+        protected ?AddressInterface $deliveryAddress = null,
         protected ?OrderStatusEnum $status = null,
         protected ?DateTimeInterface $createdAt = null,
         protected ?int $orderNumber = null,
@@ -86,14 +86,14 @@ class Order implements OrderInterface
         return $this->companyName;
     }
 
-    public function getAddress(): AddressInterface
+    public function getBillingAddress(): AddressInterface
     {
-        return $this->address->getValue();
+        return $this->billingAddress->getValue();
     }
 
-    public function getBillingAddress(): ?AddressInterface
+    public function getDeliveryAddress(): ?AddressInterface
     {
-        return $this->billingAddress;
+        return $this->deliveryAddress;
     }
 
     public function getId(): string
@@ -126,16 +126,21 @@ class Order implements OrderInterface
 
     public function toArray(): array
     {
-        return [
+        $data = [
             'id' => $this->getId(),
             'customer_id' => $this->getCustomer()->getId(),
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
             'customer' => $this->getCustomer()->toArray(),
-            'address' => $this->getAddress()->toArray(),
+            'address' => $this->getBillingAddress()->toArray(),
             'price' => $this->getTotal()->toArray(),
             'items' => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
+        if ($deliveryAddress = $this->getDeliveryAddress()) {
+            $data['delivery_address'] = $deliveryAddress->toArray();
+        }
+
+        return $data;
     }
 }
