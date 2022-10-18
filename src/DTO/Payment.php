@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\DTO;
 
 use Closure;
+use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Exception\PaymentFailureException;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @noinspection TypoSafeNamingInspection
  */
+
 class Payment
 {
     /**
@@ -44,12 +46,14 @@ class Payment
         public ?string $deliveryPostalCode = null,
         public ?string $deliveryCity = null,
         public ?string $deliveryCountry = null,
+        public ?Address $deliveryAddress = null,
 
         public ?string $cardFirstName = null,
         public ?string $cardLastName = null,
         public ?string $cardNumber = null,
         public ?string $cardCVV = null,
         public ?string $cardExpirationDate = null,
+        public ?Address $billingAddress = null,
 
         public ?string $successUrl = null,
         public ?string $failureUrl = null,
@@ -61,8 +65,7 @@ class Payment
         public ?Closure $paymentExceptionHandler = null,
 
         public bool $isTest = true,
-    )
-    {
+    ) {
         if ($isTest) {
             $this->populateTestData();
         }
