@@ -33,24 +33,21 @@ class OrderRepository extends AbstractRepository
     public function create(Payment $payment, Basket $basket): Order
     {
         $customerRepository = $this->get(CustomerRepository::class);
-        $addressRepository = $this->get(AddressRepository::class);
 
         $customer = $customerRepository->createFromPayment($payment);
         $customerRepository->persist($customer);
         $customerRepository->flush();
 
-        $address = $addressRepository->createFromPayment($payment);
-        $addressRepository->persist($address);
-        $addressRepository->flush();
+        $deliveryAddress = $payment->deliveryAddress ?? $payment->billingAddress;
 
         $order = new Order(
             id: '',
             customer: new ResolvedValue($customer),
-            address: new ResolvedValue($address),
+            address: new ResolvedValue($deliveryAddress ?? throw new RuntimeException()),
             total: $basket->getTotal() ?? throw new RuntimeException(),
             items: new LazyValue(fn() => $basket->getItems()),
             companyName: $payment->customersCompany,
-            billingAddress: new ResolvedValue(null),
+            billingAddress: new ResolvedValue($payment->deliveryAddress ? null : $payment->billingAddress),
             shipping: new ResolvedValue($payment->shipping),
             appointments: new LazyValue(fn() => []),
         );
