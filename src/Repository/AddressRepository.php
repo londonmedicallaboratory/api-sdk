@@ -13,7 +13,7 @@ use LML\SDK\Entity\Address\AddressInterface;
 /**
  * @psalm-import-type S from AddressInterface
  *
- * @extends AbstractRepository<S, AddressInterface, array>
+ * @extends AbstractRepository<S, Address, array>
  */
 class AddressRepository extends AbstractRepository
 {

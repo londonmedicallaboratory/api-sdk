@@ -7,7 +7,11 @@ namespace LML\SDK\Repository;
 use RuntimeException;
 use LML\SDK\DTO\Payment;
 use React\EventLoop\Loop;
+use LML\SDK\Lazy\LazyPromise;
+use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Customer\Customer;
+use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Customer\CustomerInterface;
@@ -57,9 +61,30 @@ class CustomerRepository extends AbstractRepository
             id: $id,
             firstName: $entity['first_name'],
             lastName: $entity['last_name'],
+            billingAddress: $this->getBillingAddress($entity),
             email: $entity['email'],
             phoneNumber: $entity['phone_number'] ?? null,
             foreignId: $entity['foreign_id'] ?? null,
         );
+    }
+
+    /**
+     * @param S $entity
+     *
+     * @return LazyValueInterface<?Address>
+     */
+    private function getBillingAddress(array $entity): LazyValueInterface
+    {
+        if (!$id = $entity['id']) {
+            return new ResolvedValue(null);
+        }
+        if (!isset($entity['billing_address_id'])) {
+            return new ResolvedValue(null);
+        }
+
+        $url = sprintf('/customer/%s/billing_address', $id);
+        $promise = $this->get(AddressRepository::class)->findOneByUrl(url: $url);
+
+        return new LazyPromise($promise);
     }
 }

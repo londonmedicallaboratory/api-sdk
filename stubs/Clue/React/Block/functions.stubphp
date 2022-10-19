@@ -23,7 +23,7 @@ function await(PromiseInterface $promise, LoopInterface $loop, $timeout = null){
 /**
  * @template TResolve
  *
- * @param null|TResolve $promiseOrValue
+ * @param TResolve $promiseOrValue
  *
  * @return PromiseInterface<TResolve>
  */

@@ -6,6 +6,9 @@ namespace LML\SDK\Entity\Customer;
 
 use LogicException;
 use LML\SDK\Attribute\Entity;
+use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\Address\Address;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\CustomerRepository;
 use function sprintf;
 
@@ -15,14 +18,18 @@ use function sprintf;
 #[Entity(repositoryClass: CustomerRepository::class, baseUrl: 'customer')]
 class Customer implements CustomerInterface
 {
+    /**
+     * @param ?LazyValueInterface<?Address> $billingAddress
+     */
     public function __construct(
-        private string  $firstName,
-        private string  $lastName,
-        private string  $email,
+        private string $firstName,
+        private string $lastName,
+        private string $email,
         private ?string $phoneNumber = null,
         private ?string $foreignId = null,
         private ?string $id = null,
         private ?string $password = null,
+        protected ?LazyValueInterface $billingAddress = null,
     )
     {
     }
@@ -101,15 +108,25 @@ class Customer implements CustomerInterface
         return $this->getEmail();
     }
 
+    public function getBillingAddress(): ?Address
+    {
+        return $this->billingAddress?->getValue();
+    }
+
+    public function setBillingAddress(?Address $billingAddress): void
+    {
+        $this->billingAddress = new ResolvedValue($billingAddress);
+    }
+
     public function toArray()
     {
         $data = [
-            'id'           => $this->id,
-            'first_name'   => $this->getFirstName(),
-            'last_name'    => $this->getLastName(),
+            'id' => $this->id,
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
             'phone_number' => $this->getPhoneNumber(),
-            'email'        => $this->getEmail(),
-            'foreign_id'   => $this->foreignId,
+            'email' => $this->getEmail(),
+            'foreign_id' => $this->foreignId,
         ];
         if (!$this->id && $password = $this->getPassword()) {
             $data['password'] = $password;
