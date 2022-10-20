@@ -26,12 +26,12 @@ class ProductCategoryRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new ProductCategory(
-            id          : $id,
-            name        : $entity['name'],
-            slug        : $entity['slug'],
+            id: $id,
+            name: $entity['name'],
+            slug: $entity['slug'],
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
-            description : $entity['description'],
-            logo        : new LazyPromise($this->getLogo($id)),
+            description: $entity['description'],
+            logo: new LazyPromise($this->getLogo($id)),
         );
     }
 
@@ -42,6 +42,6 @@ class ProductCategoryRepository extends AbstractRepository
     {
         $url = sprintf('/product_categories/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneByUrl(url: $url);
+        return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
 }

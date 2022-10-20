@@ -6,8 +6,10 @@ namespace LML\SDK\Entity\Order;
 
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Enum\OrderStatusEnum;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Appointment\Appointment;
@@ -75,6 +77,11 @@ class Order implements OrderInterface
     public function getShipping(): ?ShippingInterface
     {
         return $this->shipping->getValue();
+    }
+
+    public function setShipping(?Shipping $shipping): void
+    {
+        $this->shipping = new ResolvedValue($shipping);
     }
 
     public function getCustomer(): CustomerInterface

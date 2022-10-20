@@ -6,7 +6,6 @@ namespace LML\SDK\Repository;
 
 use RuntimeException;
 use LML\SDK\DTO\Payment;
-use React\EventLoop\Loop;
 use LML\SDK\Lazy\LazyPromise;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Address\Address;
@@ -31,7 +30,7 @@ class CustomerRepository extends AbstractRepository
                 'email' => $email,
                 'password' => $password,
             ]);
-            $response = await($promise, Loop::get());
+            $response = await($promise);
             $body = (string)$response->getBody();
             $data = (array)json_decode($body, false, 512, JSON_THROW_ON_ERROR);
 
@@ -83,7 +82,7 @@ class CustomerRepository extends AbstractRepository
         }
 
         $url = sprintf('/customer/%s/billing_address', $id);
-        $promise = $this->get(AddressRepository::class)->findOneByUrl(url: $url);
+        $promise = $this->get(AddressRepository::class)->findOneBy(url: $url);
 
         return new LazyPromise($promise);
     }

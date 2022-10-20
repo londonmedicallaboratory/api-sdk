@@ -6,7 +6,6 @@ namespace LML\SDK\Service\API;
 
 use LogicException;
 use ReflectionClass;
-use React\EventLoop\Loop;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
@@ -14,6 +13,7 @@ use LML\SDK\Entity\PaginatedResults;
 use Psr\Http\Message\ResponseInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
+use LML\SDK\Exception\DataNotFoundException;
 use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use function Clue\React\Block\await;
@@ -48,7 +48,7 @@ class EntityManager implements ResetInterface
      * @param ServiceLocator<class-string, AbstractRepository> $repositories
      */
     public function __construct(
-        private ServiceLocator  $repositories,
+        private ServiceLocator $repositories,
         private ClientInterface $client,
     )
     {
@@ -71,6 +71,31 @@ class EntityManager implements ResetInterface
      * @template TView of ModelInterface
      * @param class-string<TView> $className
      *
+     * @return ($await is true ? TView : PromiseInterface<?TView>)
+     */
+    public function findOneBy(string $className, array $filters = [], ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
+    {
+        $paginated = $this->paginate($className, filters: $filters, url: $url);
+        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
+
+        return $await ? await($promise) : $promise;
+    }
+
+    /**
+     * @template TView of ModelInterface
+     * @param class-string<TView> $className
+     *
+     * @return PromiseInterface<list<TView>>
+     */
+    public function findBy(string $className, array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
+    {
+        return $this->findByRecursive($className, $filters, $url, $page);
+    }
+
+    /**
+     * @template TView of ModelInterface
+     * @param class-string<TView> $className
+     *
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      *
      * @psalm-suppress all
@@ -80,7 +105,7 @@ class EntityManager implements ResetInterface
         $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
         $client = $this->client;
 
-        $promise = $client->getAsync($url, cacheTimeout: 30, tag: $className)
+        $promise = $client->getAsync($url, tag: $className)
             ->then(function ($data) use ($className) {
                 if (!$data) {
                     return null;
@@ -91,16 +116,36 @@ class EntityManager implements ResetInterface
                 return null;
             });
 
-        return $await ? await($promise, Loop::get()) : $promise;
+        return $await ? await($promise) : $promise;
     }
 
     /**
-     * @template TPag of ModelInterface
-     * @param class-string<TPag> $className
+     * @template TView of ModelInterface
      *
-     * @return ($await is true ? PaginatedResults<TPag> : PromiseInterface<PaginatedResults<TPag>>)
+     * @param class-string<TView> $className
      *
-     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
+     * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
+     */
+    public function fetch(string $className, string $id, bool $await = false): ModelInterface|PromiseInterface
+    {
+        $promise = $this->find($className, $id)
+            ->then(/** @param ?TView $data */ function (?ModelInterface $data) {
+                if (!$data) {
+                    throw new DataNotFoundException();
+                }
+
+                return $data;
+            });
+
+        return $await ? await($promise) : $promise;
+    }
+
+    /**
+     * @template TView of ModelInterface
+     *
+     * @param class-string<TView> $className
+     *
+     * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
      *
      * @psalm-suppress all
      */
@@ -124,16 +169,16 @@ class EntityManager implements ResetInterface
                 }
 
                 return new PaginatedResults(
-                    currentPage   : $data['current_page'] ?? 1,
-                    nrOfPages     : $data['nr_of_pages'] ?? 1,
+                    currentPage: $data['current_page'] ?? 1,
+                    nrOfPages: $data['nr_of_pages'] ?? 1,
                     resultsPerPage: $data['results_per_page'] ?? 10,
-                    nextPage      : $data['next_page'] ?? null,
-                    nrOfResults   : $data['nr_of_results'] ?? 0,
-                    items         : $views,
+                    nextPage: $data['next_page'] ?? null,
+                    nrOfResults: $data['nr_of_results'] ?? 0,
+                    items: $views,
                 );
             });
 
-        return $await ? await($paginationPromise, Loop::get()) : $paginationPromise;
+        return $await ? await($paginationPromise) : $paginationPromise;
     }
 
     public function persist(ModelInterface $model): void
@@ -227,6 +272,36 @@ class EntityManager implements ResetInterface
         $url = $attribute?->getBaseUrl() ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
 
         return trim($url, '/');
+    }
+
+    /**
+     * @template TView of ModelInterface
+     * @param class-string<TView> $className
+     *
+     * @param list<TView> $stored
+     * @param-in list<TView> $stored
+     * @param-out list<TView> $stored
+     *
+     * @return PromiseInterface<list<TView>>
+     *
+     * @psalm-suppress all
+     */
+    private function findByRecursive(string $className, array $filters = [], ?string $url = null, int $page = 1, array &$stored = []): PromiseInterface
+    {
+        $promise = $this->paginate($className, $filters, $url, $page);
+
+        return $promise->then(function (PaginatedResults $paginatedResults) use ($className, $filters, $url, &$stored) {
+            /** @noinspection MissUsingForeachInspection */
+            foreach ($paginatedResults->getItems() as $item) {
+                $stored[] = $item;
+            }
+            $nextPage = $paginatedResults->getNextPage();
+            if (!$nextPage) {
+                return $stored;
+            }
+
+            return $this->findByRecursive($className, $filters, $url, $nextPage, $stored);
+        });
     }
 
     /**

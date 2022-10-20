@@ -17,6 +17,7 @@ use LML\SDK\Enum\OrderStatusEnum;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
@@ -84,8 +85,8 @@ class OrderRepository extends AbstractRepository
             billingAddress: new ResolvedValue(null),
             total: $price,
             companyName: $entity['company'],
-            items: new LazyValue(fn() => $this->createItems($entity['items'])),
-            shipping: new LazyPromise($this->getShipping($id)),
+            items: new ResolvedValue($this->createItems($entity['items'])),
+            shipping: $this->getShipping($entity),
             appointments: new LazyPromise($this->getAppointments($id)),
             status: $status ? OrderStatusEnum::tryFrom($status) : null,
             createdAt: $createdAt ? new DateTime($createdAt) : null,
@@ -105,13 +106,24 @@ class OrderRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<?Shipping>
+     * @param S $entity
+     *
+     * @return LazyValueInterface<?Shipping>
      */
-    private function getShipping(string $id): PromiseInterface
+    private function getShipping(array $entity): LazyValueInterface
     {
-        $url = sprintf('/order/%s/shipping', $id);
+        if (!$id = $entity['id']) {
+            return new ResolvedValue(null);
+        }
+        $shippingId = $entity['shipping_id'] ?? null;
+        if (!$shippingId) {
+            return new ResolvedValue(null);
+        }
 
-        return $this->get(ShippingRepository::class)->findOneByUrl(url: $url);
+        $url = sprintf('/order/%s/shipping', $id);
+        $promise = $this->get(ShippingRepository::class)->findOneBy(url: $url);
+
+        return new LazyPromise($promise);
     }
 
     /**
@@ -121,12 +133,10 @@ class OrderRepository extends AbstractRepository
      */
     private function createItems(array $items): array
     {
-        $list = [];
-        foreach ($items as ['product_id' => $productId, 'quantity' => $quantity]) {
-            $product = $this->get(ProductRepository::class)->findOrThrowException(id: $productId, await: true);
-            $list[] = new BasketItem($product, $quantity);
-        }
+        return array_map(function (array $item) {
+            $productPromise = $this->get(ProductRepository::class)->fetch(id: $item['product_id']);
 
-        return $list;
+            return new BasketItem(new LazyPromise($productPromise), $item['quantity']);
+        }, $items);
     }
 }

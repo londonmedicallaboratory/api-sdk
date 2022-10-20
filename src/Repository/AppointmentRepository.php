@@ -48,7 +48,7 @@ class AppointmentRepository extends AbstractRepository
      */
     private function getTestLocation(string $id): PromiseInterface
     {
-        return $this->get(TestLocationRepository::class)->findOrThrowException($id);
+        return $this->get(TestLocationRepository::class)->fetch($id);
     }
 
     /**

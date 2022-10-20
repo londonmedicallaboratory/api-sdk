@@ -16,3 +16,4 @@ lml_sdk:
     cache_pool: test_api_pool
     cache_expiration: '%env(int:API_CACHE_EXPIRATION)%'
     faker: false
+    loqate_api_key: '%env(resolve:LOQATE_KEY)%'

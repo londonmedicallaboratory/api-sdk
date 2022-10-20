@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
-use React\EventLoop\Loop;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
@@ -47,7 +46,7 @@ class TestLocationRepository extends AbstractRepository
 
         /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
-        $resolved = await($promise, Loop::get());
+        $resolved = await($promise);
 
         return $resolved['availability'];
     }
@@ -69,7 +68,7 @@ class TestLocationRepository extends AbstractRepository
             description: $datum['description'],
         ), $data));
 
-        return $await ? await($resolvedPromise, Loop::get()) : $resolvedPromise;
+        return $await ? await($resolvedPromise) : $resolvedPromise;
     }
 
     /**
@@ -82,7 +81,7 @@ class TestLocationRepository extends AbstractRepository
         /** @var PromiseInterface<list<array<mixed>>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
-        $slots = await($promise, Loop::get());
+        $slots = await($promise);
 
         $results = [];
         foreach ($slots as $datum) {
@@ -112,7 +111,7 @@ class TestLocationRepository extends AbstractRepository
             isActive: $datum['active'] ?? true,
         ), $data));
 
-        return $await ? await($resolvedPromise, Loop::get()) : $resolvedPromise;
+        return $await ? await($resolvedPromise) : $resolvedPromise;
     }
 
     protected function one($entity, $options, $optimizer): TestLocation

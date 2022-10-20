@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Pager;
 
-use React\EventLoop\Loop;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
 use Pagerfanta\Adapter\AdapterInterface;
@@ -55,6 +54,6 @@ class PromiseAdapter implements AdapterInterface
      */
     private function doGetPaginatedResults(): PaginatedResults
     {
-        return await($this->promise, Loop::get());
+        return await($this->promise);
     }
 }

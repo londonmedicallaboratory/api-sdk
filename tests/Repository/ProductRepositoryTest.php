@@ -8,6 +8,7 @@ use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Repository\ProductRepository;
+use LML\SDK\Entity\Category\CategoryInterface;
 
 class ProductRepositoryTest extends AbstractTest
 {
@@ -20,12 +21,25 @@ class ProductRepositoryTest extends AbstractTest
         self::assertNotEmpty($pagination->getItems());
     }
 
-    public function testProductFiles(): void
+    public function testFindOneBySlug(): void
     {
         self::bootKernel();
 
         $product = $this->getProductRepository()->findOneBySlug('book', true);
         self::assertInstanceOf(Product::class, $product);
+
+        $categories = $product->getCategories();
+        self::assertNotEmpty($categories);
+        foreach ($categories as $category) {
+            self::assertInstanceOf(CategoryInterface::class, $category);
+        }
+    }
+
+    public function testFetchOneBy(): void
+    {
+        self::bootKernel();
+        $product = $this->getProductRepository()->fetch('8b94cbda-5eee-48c6-a741-4995ef2d71c5', await: true);
+        dd($product);
     }
 
     private function getProductRepository(): ProductRepository

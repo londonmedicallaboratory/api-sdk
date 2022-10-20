@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use RuntimeException;
 use LML\SDK\Entity\File\Video;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\File\VideoInterface;
@@ -22,14 +21,9 @@ class VideoRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Video(
-            id             : $id,
-            embedHtml      : new ResolvedValue($entity['embed_html']),
+            id: $id,
+            embedHtml: new ResolvedValue($entity['embed_html']),
             previewImageUrl: new ResolvedValue($entity['preview_image_url']),
         );
-    }
-
-    protected function getBaseUrl(): never
-    {
-        throw new RuntimeException('Not supported');
     }
 }

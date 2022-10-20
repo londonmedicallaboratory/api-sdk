@@ -27,6 +27,7 @@
         <env name="API_BASE_URL" value="https://example.com" force="true"/>
         <env name="API_TOKEN" value="123123123" force="true"/>
         <env name="API_CACHE_EXPIRATION" value="600" force="true"/>
+        <env name="LOQATE_KEY" value="change_me" force="true"/>
     </php>
 
 

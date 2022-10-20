@@ -26,11 +26,11 @@ class ArticleRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Article(
-            id     : $id,
-            title  : $entity['title'],
-            slug   : $entity['slug'],
+            id: $id,
+            title: $entity['title'],
+            slug: $entity['slug'],
             content: $entity['content'],
-            logo   : new LazyPromise($this->getLogo($id)),
+            logo: new LazyPromise($this->getLogo($id)),
         );
     }
 
@@ -41,6 +41,6 @@ class ArticleRepository extends AbstractRepository
     {
         $url = sprintf('/blog/article/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneByUrl(url: $url);
+        return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
 }

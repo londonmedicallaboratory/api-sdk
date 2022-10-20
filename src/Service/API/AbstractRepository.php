@@ -8,15 +8,12 @@ use LogicException;
 use RuntimeException;
 use ReflectionMethod;
 use ReflectionNamedType;
-use React\EventLoop\Loop;
 use Pagerfanta\Pagerfanta;
 use Webmozart\Assert\Assert;
-use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Pager\PromiseAdapter;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
-use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
@@ -34,11 +31,6 @@ use function Clue\React\Block\await;
 abstract class AbstractRepository extends AbstractViewFactory
 {
     /**
-     * @var array<string, TView>
-     */
-    private array $cache = [];
-
-    /**
      * @var null|class-string<TView>
      */
     private ?string $tViewClassName = null;
@@ -50,14 +42,75 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function find(?string $id, bool $await = false)
+    public function find(?string $id, bool $await = false): null|ModelInterface|PromiseInterface
     {
         if (!$id) {
-            return resolve();
+            return $await ? resolve() : null;
         }
         $className = $this->extractTView();
 
         return $this->getEntityManager()->find($className, $id, $await);
+    }
+
+    /**
+     * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
+     */
+    public function fetch(?string $id, bool $await = false): ModelInterface|PromiseInterface
+    {
+        if (!$id) {
+            throw new DataNotFoundException();
+        }
+        $className = $this->extractTView();
+
+        return $this->getEntityManager()->fetch($className, $id, $await);
+    }
+
+    /**
+     * @return ($await is true ? null|TView : PromiseInterface<null|TView>)
+     */
+    public function findOneBy(array $filters = [], ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
+    {
+        $paginated = $this->paginate($filters, $url, limit: 1);
+        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
+
+        return $await ? await($promise) : $promise;
+    }
+
+    /**
+     * Finding one by slug is mostly used query so this method is just a shortcut.
+     *
+     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
+     */
+    public function findOneBySlug(string $slug, bool $await = false): null|ModelInterface|PromiseInterface
+    {
+        $className = $this->extractTView();
+        $promise = $this->getEntityManager()->findOneBy($className, ['slug' => $slug]);
+
+        return $await ? await($promise) : $promise;
+    }
+
+    /**
+     * Retrieve one entity, or throw Exception if none found.
+     *
+     * @return ($await is true ? TView : PromiseInterface<TView>)
+     */
+    public function fetchOneBy(?string $url = null, array $filters = [], bool $await = false): ModelInterface|PromiseInterface
+    {
+        $promise = $this->findOneBy(url: $url, filters: $filters);
+
+        $one = $promise->then(/** @param ?TView $entity */ fn(?ModelInterface $entity) => $entity ?? throw new DataNotFoundException());
+
+        return $await ? await($one) : $one;
+    }
+
+    /**
+     * @return PromiseInterface<list<TView>>
+     */
+    public function findBy(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
+    {
+        $className = $this->extractTView();
+
+        return $this->getEntityManager()->findBy($className, $filters, $url, $page);
     }
 
     /**
@@ -73,177 +126,12 @@ abstract class AbstractRepository extends AbstractViewFactory
 
     /**
      * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
-     *
-     * @noinspection PhpDocSignatureInspection Bug in PHPStorm
-     *
-     * psalm-suppress all
      */
     public function paginate(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
     {
         $className = $this->extractTView();
 
         return $this->getEntityManager()->paginate($className, $filters, $url, $page, $limit, $await);
-    }
-
-    /**
-     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
-     *
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress InvalidArgument
-     */
-    public function findOneByUrl(string $url, array $filters = [], bool $await = false)
-    {
-        $client = $this->getClient();
-
-        $promise = $client->getAsync($url, $filters, cacheTimeout: $this->getCacheTimeout())
-            ->then(/** @param null|TData $data */ function (null|array $data) {
-                if (null === $data) {
-                    return null;
-                }
-                $id = $data['id'] ?? null;
-                if (!$id) {
-                    return null;
-                }
-
-                return $this->cache[(string)$id] ??= $this->buildOne($data);
-            });
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
-     * Retrieve one entity, and throw Exception if none found.
-     *
-     * @return PromiseInterface<TView>
-     *
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedArgumentTypeCoercion
-     * @psalm-suppress InvalidArgument
-     */
-    public function fetchOneBy(string $url, array $filters = []): PromiseInterface
-    {
-        $client = $this->getClient();
-
-        /** @var PromiseInterface<TData> $promise */
-        $promise = $client->getAsync($url, $filters, 1, cacheTimeout: $this->getCacheTimeout());
-
-        return $promise->then(function (array $data) {
-            $id = $data['id'] ?? throw new DataNotFoundException();
-
-            return $this->cache[(string)$id] ??= $this->buildOne($data);
-        });
-    }
-
-    /**
-     * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
-     *
-     * @psalm-suppress MixedArrayAccess
-     */
-    public function findOrThrowException(string $id, bool $await = false)
-    {
-        if (!$id) {
-            throw new RuntimeException();
-        }
-        $url = sprintf('%s/%s', $this->getBaseUrl(), $id);
-        $client = $this->getClient();
-
-        $promise = $client->getAsync($url, cacheTimeout: $this->getCacheTimeout())
-            ->then(function ($data) {
-                if (!$data) {
-                    throw new RuntimeException();
-                }
-                $id = (string)$data['id'];
-
-                /** @psalm-suppress MixedArgument */
-                return $this->cache[$id] ??= $this->buildOne($data);
-            });
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
-     * @param TFilters $filters
-     *
-     * @return LazyValueInterface<?TView>
-     */
-    public function findLazy(array $filters = [], ?string $url = null): LazyValueInterface
-    {
-        $promise = $this->findOneBy($filters, $url);
-
-        return new LazyPromise($promise);
-    }
-
-    /**
-     * Finding one by slug is mostly used query so this method is just a shortcut.
-     *
-     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
-     */
-    public function findOneBySlug(string $slug, bool $await = false)
-    {
-        $promise = $this->findOneBy(['slug' => $slug]);
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
-     * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
-     */
-    public function findOneBy(array $filters = [], ?string $url = null, bool $await = false)
-    {
-        $paginated = $this->paginate($filters, $url, limit: 1);
-        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
-     * @psalm-return ($await is true ? list<TView> : PromiseInterface<list<TView>>)
-     */
-    public function findAll(bool $await = false)
-    {
-        $promise = $this->findBy();
-
-        return $await ? await($promise, Loop::get()) : $promise;
-    }
-
-    /**
-     * @param list<TView> $stored
-     * @param-in list<TView> $stored
-     * @param-out list<TView> $stored
-     *
-     * @return PromiseInterface<list<TView>>
-     *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
-     * @psalm-suppress MixedArrayAssignment
-     * @psalm-suppress MixedArgument
-     *
-     * @todo Fix this mess
-     */
-    public function findBy(array $filters = [], ?string $url = null, int $page = 1, array &$stored = []): PromiseInterface
-    {
-        $promise = $this->paginate($filters, $url, $page);
-
-        return $promise->then(function (PaginatedResults $paginatedResults) use ($filters, $url, &$stored) {
-            /** @noinspection MissUsingForeachInspection */
-            foreach ($paginatedResults->getItems() as $item) {
-                $stored[] = $item;
-            }
-            $nextPage = $paginatedResults->getNextPage();
-            if (!$nextPage) {
-                return $stored;
-            }
-
-            return $this->findBy($filters, $url, $nextPage, $stored);
-        });
-    }
-
-    /**
-     * @param TFilters $filters
-     */
-    public function findFromUrl(string $url, array $filters = []): PromiseInterface
-    {
-        return $this->findBy(filters: $filters, url: $url);
     }
 
     /**
@@ -272,7 +160,7 @@ abstract class AbstractRepository extends AbstractViewFactory
         $this->getEntityManager()->flush();
     }
 
-    public function getEntityManager(): EntityManager
+    protected function getEntityManager(): EntityManager
     {
         return $this->entityManager ?? throw new RuntimeException('Entity manager is not defined.');
     }
@@ -300,13 +188,6 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
-    }
-
-    protected function getBaseUrl(): string
-    {
-        $tViewClassName = $this->extractTView();
-
-        return $this->getEntityManager()->getBaseUrl($tViewClassName);
     }
 
     /**

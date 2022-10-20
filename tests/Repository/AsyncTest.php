@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace LML\SDK\Tests\Repository;
 
 use LML\SDK\Tests\AbstractTest;
-use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\ProductRepository;
 use Symfony\Component\Stopwatch\Stopwatch;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Category\CategoryInterface;
-use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function count;
 
@@ -46,29 +44,5 @@ class AsyncTest extends AbstractTest
         self::assertIsArray($files);
 
         self::assertLessThan(5000, $time);
-    }
-
-    public function testFindOneAsync(): void
-    {
-        self::bootKernel();
-        $repo = $this->getService(ProductRepository::class);
-
-        $lazyValue = $repo->findLazy(['slug' => 'book']);
-        $book = $lazyValue->getValue();
-
-        self::assertInstanceOf(ProductInterface::class, $book);
-
-        foreach ($book->getCategories() as $category) {
-            self::assertInstanceOf(CategoryInterface::class, $category);
-        }
-        foreach ($book->getBiomarkers() as $biomarker) {
-            self::assertInstanceOf(BiomarkerInterface::class, $biomarker);
-        }
-        foreach ($book->getFiles() as $biomarker) {
-            self::assertInstanceOf(FileInterface::class, $biomarker);
-        }
-        foreach ($book->getShippingTypes() as $biomarker) {
-            self::assertInstanceOf(ShippingInterface::class, $biomarker);
-        }
     }
 }

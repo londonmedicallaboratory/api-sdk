@@ -27,10 +27,10 @@ class Client implements ClientInterface
     private Browser $browser;
 
     public function __construct(
-        private string                    $baseUrl,
-        private string                    $apiToken,
+        private string $baseUrl,
+        private string $apiToken,
         private ?TagAwareAdapterInterface $cache,
-        private int                       $cacheExpiration,
+        private int $cacheExpiration,
     )
     {
         $this->browser = new Browser();
@@ -69,8 +69,6 @@ class Client implements ClientInterface
 
     /**
      * @param int|null $cacheTimeout *
-     *
-     * @return PromiseInterface<mixed>
      */
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {

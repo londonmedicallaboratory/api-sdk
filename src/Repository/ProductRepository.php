@@ -82,7 +82,7 @@ class ProductRepository extends AbstractRepository
     {
         $url = sprintf('/product/%s/video', $id);
 
-        return $this->get(VideoRepository::class)->findOneByUrl(url: $url);
+        return $this->get(VideoRepository::class)->findOneBy(url: $url);
     }
 
     /**

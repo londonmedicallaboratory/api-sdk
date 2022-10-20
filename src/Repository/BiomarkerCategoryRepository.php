@@ -22,15 +22,15 @@ class BiomarkerCategoryRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): BiomarkerCategory
     {
         return new BiomarkerCategory(
-            id          : $entity['id'],
-            name        : $entity['name'],
-            slug        : $entity['slug'],
+            id: $entity['id'],
+            name: $entity['name'],
+            slug: $entity['slug'],
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
-            description : $entity['description'],
-            logo        : new LazyPromise($this->getLogo($entity['id'])),
+            description: $entity['description'],
+            logo: new LazyPromise($this->getLogo($entity['id'])),
         );
     }
-    
+
     /**
      * @return PromiseInterface<?FileInterface>
      */
@@ -38,6 +38,6 @@ class BiomarkerCategoryRepository extends AbstractRepository
     {
         $url = sprintf('/biomarker_categories/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneByUrl(url: $url);
+        return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
 }

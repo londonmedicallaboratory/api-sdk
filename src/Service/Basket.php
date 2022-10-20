@@ -6,8 +6,8 @@ namespace LML\SDK\Service;
 
 use RuntimeException;
 use Brick\Money\Money;
-use React\EventLoop\Loop;
 use LML\SDK\Entity\Money\Price;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Money\PriceInterface;
@@ -41,7 +41,8 @@ class Basket
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    ) {
+    )
+    {
     }
 
     public function empty(): void
@@ -95,8 +96,7 @@ class Basket
 
     public function getTotal(): ?PriceInterface
     {
-        $subtotal = $this->getSubtotal();
-        if (!$subtotal) {
+        if (!$subtotal = $this->getSubtotal()) {
             return null;
         }
         $newPrice = $this->applyVoucher($subtotal);
@@ -206,7 +206,7 @@ class Basket
             return $item;
         }
 
-        $item = new BasketItem($product, 0);
+        $item = new BasketItem(new ResolvedValue($product), 0);
         $this->items[] = $item;
 
         return $item;
@@ -234,13 +234,12 @@ class Basket
 
         $promises = [];
         foreach ($values as $id => $quantity) {
-            /** @noinspection NullPointerExceptionInspection psalm takes care of this */
             $promises[] = $repository->find((string)$id)
-                ->then(fn(?ProductInterface $product) => $product ? new BasketItem($product, $quantity) : null, fn() => null);
+                ->then(fn(?ProductInterface $product) => $product ? new BasketItem(new ResolvedValue($product), $quantity) : null, fn() => null);
         }
 
         /** @var list<?BasketItem> $responses */
-        $responses = awaitAll($promises, Loop::get());
+        $responses = awaitAll($promises);
 
         $filtered = array_filter($responses, fn(?BasketItem $item) => (bool)$item);
 

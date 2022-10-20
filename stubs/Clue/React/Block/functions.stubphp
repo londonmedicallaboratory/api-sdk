@@ -18,7 +18,7 @@ use React\Promise\Timer\TimeoutException;
  *
  * @return TAwait
  */
-function await(PromiseInterface $promise, LoopInterface $loop, $timeout = null){}
+function await(PromiseInterface $promise, LoopInterface $loop = null, $timeout = null){}
 
 /**
  * @template TResolve

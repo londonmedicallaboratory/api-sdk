@@ -23,11 +23,11 @@ class ProductCollectionRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new ProductCollection(
-            id         : $id,
-            name       : $entity['name'],
-            slug       : $entity['slug'],
+            id: $id,
+            name: $entity['name'],
+            slug: $entity['slug'],
             description: $entity['description'],
-            logo       : new LazyPromise($this->getLogo($id)),
+            logo: new LazyPromise($this->getLogo($id)),
         );
     }
 
@@ -38,6 +38,6 @@ class ProductCollectionRepository extends AbstractRepository
     {
         $url = sprintf('/product_collection/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneByUrl(url: $url);
+        return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
 }
