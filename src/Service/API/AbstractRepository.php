@@ -45,7 +45,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function find(?string $id, bool $await = false): null|ModelInterface|PromiseInterface
     {
         if (!$id) {
-            return $await ? resolve() : null;
+            return $await ? null : resolve();
         }
         $className = $this->extractTView();
 
