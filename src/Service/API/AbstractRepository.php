@@ -47,9 +47,8 @@ abstract class AbstractRepository extends AbstractViewFactory
         if (!$id) {
             return $await ? null : resolve();
         }
-        $className = $this->extractTView();
 
-        return $this->getEntityManager()->find($className, $id, $await);
+        return $this->getEntityManager()->find(className: $this->extractTView(), id: $id, await: $await);
     }
 
     /**
@@ -60,9 +59,8 @@ abstract class AbstractRepository extends AbstractViewFactory
         if (!$id) {
             throw new DataNotFoundException();
         }
-        $className = $this->extractTView();
 
-        return $this->getEntityManager()->fetch($className, $id, $await);
+        return $this->getEntityManager()->fetch(className: $this->extractTView(), id: $id, await: $await);
     }
 
     /**
@@ -96,11 +94,10 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function fetchOneBy(?string $url = null, array $filters = [], bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->findOneBy(url: $url, filters: $filters);
+        $paginated = $this->paginate(filters: $filters, url: $url, limit: 1);
+        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first() ?? throw new DataNotFoundException());
 
-        $one = $promise->then(/** @param ?TView $entity */ fn(?ModelInterface $entity) => $entity ?? throw new DataNotFoundException());
-
-        return $await ? await($one) : $one;
+        return $await ? await($promise) : $promise;
     }
 
     /**
@@ -108,9 +105,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findBy(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
     {
-        $className = $this->extractTView();
-
-        return $this->getEntityManager()->findBy($className, $filters, $url, $page);
+        return $this->getEntityManager()->findBy(className: $this->extractTView(), filters: $filters, url: $url, page: $page);
     }
 
     /**
@@ -129,9 +124,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function paginate(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
     {
-        $className = $this->extractTView();
-
-        return $this->getEntityManager()->paginate($className, $filters, $url, $page, $limit, $await);
+        return $this->getEntityManager()->paginate(className: $this->extractTView(), filters: $filters, url: $url, page: $page, limit: $limit, await: $await);
     }
 
     /**

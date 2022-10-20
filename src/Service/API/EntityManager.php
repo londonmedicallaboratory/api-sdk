@@ -290,8 +290,7 @@ class EntityManager implements ResetInterface
     {
         $promise = $this->paginate($className, $filters, $url, $page);
 
-        return $promise->then(function (PaginatedResults $paginatedResults) use ($className, $filters, $url, &$stored) {
-            /** @noinspection MissUsingForeachInspection */
+        return $promise->then(/** @param PaginatedResults<TView> $paginatedResults */ function (PaginatedResults $paginatedResults) use ($className, $filters, $url, &$stored) {
             foreach ($paginatedResults->getItems() as $item) {
                 $stored[] = $item;
             }
@@ -318,6 +317,28 @@ class EntityManager implements ResetInterface
         $this->managed[spl_object_hash($entity)] = $entity;
 
         return $entity;
+    }
+
+    /**
+     * @todo Use this method to assert identity-map for multiple calls
+     *
+     * @template TClass of ModelInterface
+     *
+     * @param class-string<TClass> $className
+     *
+     * @return TClass
+     *
+     * @psalm-suppress all
+     */
+    private function doStore(string $className, array $data): ModelInterface
+    {
+        $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
+
+        $this->fetchedValues[$className][$id] = $data;
+        $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
+        $repo = $this->getRepository($repoName);
+
+        return $repo->buildOne($data);
     }
 
     /**
