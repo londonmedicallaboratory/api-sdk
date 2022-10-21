@@ -76,7 +76,7 @@ class EntityManager implements ResetInterface
     public function findOneBy(string $className, array $filters = [], ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
         $paginated = $this->paginate($className, filters: $filters, url: $url);
-        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
+        $promise = $paginated->then(onFulfilled: fn(PaginatedResults $results) => $results->first());
 
         return $await ? await($promise) : $promise;
     }
@@ -106,15 +106,10 @@ class EntityManager implements ResetInterface
         $client = $this->client;
 
         $promise = $client->getAsync($url, tag: $className)
-            ->then(function ($data) use ($className) {
-                if (!$data) {
-                    return null;
-                }
-
-                return $this->store($className, $data);
-            }, onRejected: function () {
-                return null;
-            });
+            ->then(
+                onFulfilled: fn($data) => $data ? $this->store($className, $data) : null,
+                onRejected: fn() => null,
+            );
 
         return $await ? await($promise) : $promise;
     }
@@ -129,13 +124,7 @@ class EntityManager implements ResetInterface
     public function fetch(string $className, string $id, bool $await = false): ModelInterface|PromiseInterface
     {
         $promise = $this->find($className, $id)
-            ->then(/** @param ?TView $data */ function (?ModelInterface $data) {
-                if (!$data) {
-                    throw new DataNotFoundException();
-                }
-
-                return $data;
-            });
+            ->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
 
         return $await ? await($promise) : $promise;
     }
@@ -160,23 +149,14 @@ class EntityManager implements ResetInterface
         $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className);
 
         $paginationPromise = $promise
-            ->then(function (array $data) use ($className) {
-                $views = [];
-                $items = $data['items'] ?? [];
-                foreach ($items as $item) {
-                    $view = $this->store($className, $item);
-                    $views[] = $view;
-                }
-
-                return new PaginatedResults(
-                    currentPage: $data['current_page'] ?? 1,
-                    nrOfPages: $data['nr_of_pages'] ?? 1,
-                    resultsPerPage: $data['results_per_page'] ?? 10,
-                    nextPage: $data['next_page'] ?? null,
-                    nrOfResults: $data['nr_of_results'] ?? 0,
-                    items: $views,
-                );
-            });
+            ->then(fn(array $data) => new PaginatedResults(
+                currentPage: $data['current_page'] ?? 1,
+                nrOfPages: $data['nr_of_pages'] ?? 1,
+                resultsPerPage: $data['results_per_page'] ?? 10,
+                nextPage: $data['next_page'] ?? null,
+                nrOfResults: $data['nr_of_results'] ?? 0,
+                items: array_map(fn($item) => $this->store($className, $item), $data['items'] ?? []),
+            ));
 
         return $await ? await($paginationPromise) : $paginationPromise;
     }

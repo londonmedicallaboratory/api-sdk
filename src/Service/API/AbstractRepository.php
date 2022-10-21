@@ -101,11 +101,21 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
-     * @return PromiseInterface<list<TView>>
+     * @return ($await is true ? list<TView> : PromiseInterface<list<TView>>)
      */
-    public function findBy(array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
+    public function findAll(bool $await = false): array|PromiseInterface
     {
-        return $this->getEntityManager()->findBy(className: $this->extractTView(), filters: $filters, url: $url, page: $page);
+        return $this->findBy(await: $await);
+    }
+
+    /**
+     * @return ($await is true ? list<TView> : PromiseInterface<list<TView>>)
+     */
+    public function findBy(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): array|PromiseInterface
+    {
+        $promise = $this->getEntityManager()->findBy(className: $this->extractTView(), filters: $filters, url: $url, page: $page);
+
+        return $await ? await($promise) : $promise;
     }
 
     /**
