@@ -94,10 +94,13 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function fetchOneBy(?string $url = null, array $filters = [], bool $await = false): ModelInterface|PromiseInterface
     {
-        $paginated = $this->paginate(filters: $filters, url: $url, limit: 1);
-        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first() ?? throw new DataNotFoundException());
+        $promise = $this->getEntityManager()->fetch($this->extractTView(), url: $url);
 
         return $await ? await($promise) : $promise;
+//        $paginated = $this->paginate(filters: $filters, url: $url, limit: 1);
+//        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first() ?? throw new DataNotFoundException());
+//
+//        return $await ? await($promise) : $promise;
     }
 
     /**

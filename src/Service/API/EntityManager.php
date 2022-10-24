@@ -100,9 +100,9 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    public function find(string $className, string $id, bool $await = false): null|ModelInterface|PromiseInterface
+    public function find(string $className, ?string $id = null, ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
-        $url = sprintf('%s/%s', $this->getBaseUrl($className), $id);
+        $url ??= sprintf('%s/%s', $this->getBaseUrl($className), $id);
         $client = $this->client;
 
         $promise = $client->getAsync($url, tag: $className)
@@ -121,9 +121,9 @@ class EntityManager implements ResetInterface
      *
      * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
      */
-    public function fetch(string $className, string $id, bool $await = false): ModelInterface|PromiseInterface
+    public function fetch(string $className, ?string $id = null, ?string $url = null, bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->find($className, $id)
+        $promise = $this->find($className, id: $id, url: $url)
             ->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
 
         return $await ? await($promise) : $promise;
@@ -149,14 +149,16 @@ class EntityManager implements ResetInterface
         $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className);
 
         $paginationPromise = $promise
-            ->then(fn(array $data) => new PaginatedResults(
-                currentPage: $data['current_page'] ?? 1,
-                nrOfPages: $data['nr_of_pages'] ?? 1,
-                resultsPerPage: $data['results_per_page'] ?? 10,
-                nextPage: $data['next_page'] ?? null,
-                nrOfResults: $data['nr_of_results'] ?? 0,
-                items: array_map(fn($item) => $this->store($className, $item), $data['items'] ?? []),
-            ));
+            ->then(function (array $data) use ($className) {
+                return new PaginatedResults(
+                    currentPage: $data['current_page'] ?? 1,
+                    nrOfPages: $data['nr_of_pages'] ?? 1,
+                    resultsPerPage: $data['results_per_page'] ?? 10,
+                    nextPage: $data['next_page'] ?? null,
+                    nrOfResults: $data['nr_of_results'] ?? 0,
+                    items: array_map(fn($item) => $this->store($className, $item), $data['items'] ?? []),
+                );
+            });
 
         return $await ? await($paginationPromise) : $paginationPromise;
     }
