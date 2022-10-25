@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use DateTimeInterface;
 use LML\SDK\Lazy\LazyPromise;
 use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
@@ -18,7 +19,10 @@ use LML\SDK\Entity\Appointment\AppointmentInterface;
 /**
  * @psalm-import-type S from AppointmentInterface
  *
- * @extends AbstractRepository<S, Appointment, array>
+ * @extends AbstractRepository<S, Appointment, array{
+ *     start_date?: ?string|DateTimeInterface,
+ *     end_date?: ?string|DateTimeInterface,
+ * }>
  */
 class AppointmentRepository extends AbstractRepository
 {
