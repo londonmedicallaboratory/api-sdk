@@ -35,6 +35,7 @@ class Order implements OrderInterface
      * @param LazyValueInterface<list<TAppointments>> $appointments
      * @param LazyValueInterface<?AddressInterface> $billingAddress
      * @param LazyValueInterface<list<ItemInterface>> $items
+     * @param LazyValueInterface<?string> $trackingNumber
      */
     public function __construct(
         protected string $id,
@@ -50,6 +51,8 @@ class Order implements OrderInterface
         protected ?OrderStatusEnum $status = null,
         protected ?DateTimeInterface $createdAt = null,
         protected ?int $orderNumber = null,
+        protected ?CarrierEnum $carrier = null,
+        protected ?LazyValueInterface $trackingNumber = null,
     )
     {
     }
@@ -132,10 +135,22 @@ class Order implements OrderInterface
         return $this->appointments->getValue();
     }
 
+    public function getTrackingNumber(): ?string
+    {
+        return $this->trackingNumber?->getValue();
+    }
+
+    public function getCarrier(): ?CarrierEnum
+    {
+        return $this->carrier;
+    }
+
     public function toArray(): array
     {
         $data = [
             'id' => $this->getId(),
+            'carrier' => $this->getCarrier()?->value,
+            'tracking_number' => $this->getTrackingNumber(),
             'customer_id' => $this->getCustomer()->getId(),
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),

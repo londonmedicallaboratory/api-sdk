@@ -32,6 +32,8 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      created_at?: ?string,
  *      order_number?: ?int,
  *      voucher_id?: ?string,
+ *      carrier?: ?string,
+ *      tracking_number?: ?string,
  * }
  *
  * @extends ModelInterface<S>

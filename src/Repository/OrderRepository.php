@@ -18,6 +18,7 @@ use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Order\CarrierEnum;
 use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
@@ -77,6 +78,8 @@ class OrderRepository extends AbstractRepository
         $createdAt = $entity['created_at'] ?? null;
         $status = $entity['status'] ?? null;
 
+        $carrier = $entity['carrier'] ?? null;
+
         return new Order(
             id: $id,
             customer: new ResolvedValue($customer),
@@ -91,6 +94,8 @@ class OrderRepository extends AbstractRepository
             status: $status ? OrderStatusEnum::tryFrom($status) : null,
             createdAt: $createdAt ? new DateTime($createdAt) : null,
             orderNumber: $entity['order_number'] ?? null,
+            carrier: $carrier ? CarrierEnum::from($carrier) : null,
+            trackingNumber: new ResolvedValue($entity['tracking_number'] ?? null),
         );
     }
 
