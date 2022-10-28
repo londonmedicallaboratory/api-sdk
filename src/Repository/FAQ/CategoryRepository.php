@@ -24,9 +24,4 @@ class CategoryRepository extends AbstractRepository
             type: new ResolvedValue(CategoryTypeEnum::from($entity['type'])),
         );
     }
-
-    protected function getCacheTimeout(): int
-    {
-        return 600;
-    }
 }

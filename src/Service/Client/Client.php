@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Service\Client;
 
 use Closure;
+use JsonException;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
@@ -90,8 +91,12 @@ class Client implements ClientInterface
         return $this->browser->get($url, $this->getAuthHeaders())
             ->then(static function (ResponseInterface $response) use ($item, $cache, $cacheTimeout, $tag): array {
                 $body = (string)$response->getBody();
-                /** @var array<string, mixed> $data */
-                $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                try {
+                    /** @var array<string, mixed> $data */
+                    $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                } catch (JsonException) {
+                    $data = [];
+                }
 
                 $item->expiresAfter($cacheTimeout);
                 $item->set($data);

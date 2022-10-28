@@ -145,11 +145,22 @@ class EntityManager implements ResetInterface
             $url = $this->getBaseUrl($className);
             $url = rtrim($url, '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
-        /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
+        /** @var PromiseInterface<null|array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
         $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className, cacheTimeout: $cacheTimeout);
 
         $paginationPromise = $promise
-            ->then(function (array $data) use ($className) {
+            ->then(function (?array $data) use ($className) {
+                if (null === $data) {
+                    return new PaginatedResults(
+                        currentPage: 1,
+                        nrOfPages: 1,
+                        resultsPerPage: 100,
+                        nextPage: null,
+                        nrOfResults: 0,
+                        items: [],
+                    );
+                }
+
                 return new PaginatedResults(
                     currentPage: $data['current_page'] ?? 1,
                     nrOfPages: $data['nr_of_pages'] ?? 1,

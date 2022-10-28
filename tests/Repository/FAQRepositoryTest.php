@@ -14,7 +14,7 @@ class FAQRepositoryTest extends AbstractTest
     {
         self::bootKernel();
         $repo = $this->getRepository();
-        $results = $repo->findAll(await: true);
+        $results = $repo->findBy(filters: ['category' => 'qweqwewqe'], await: true);
         self::assertNotEmpty($results);
         foreach ($results as $faq) {
             self::assertInstanceOf(FAQ::class, $faq);

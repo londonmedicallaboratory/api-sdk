@@ -20,18 +20,6 @@ use LML\SDK\Exception\GhostEntityException;
  */
 class FAQRepository extends AbstractRepository
 {
-    public function create(Category $category, string $question, string $answer): FAQ
-    {
-        $faq = new FAQ(
-            category: new ResolvedValue($category),
-            question: new ResolvedValue($question),
-            answer: new ResolvedValue($answer),
-        );
-        $this->persist($faq);
-
-        return $faq;
-    }
-
     protected function one($entity, $options, $optimizer): FAQ
     {
         return new FAQ(
