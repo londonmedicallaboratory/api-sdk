@@ -73,9 +73,9 @@ class EntityManager implements ResetInterface
      *
      * @return ($await is true ? TView : PromiseInterface<?TView>)
      */
-    public function findOneBy(string $className, array $filters = [], ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
+    public function findOneBy(string $className, array $filters = [], ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
-        $paginated = $this->paginate($className, filters: $filters, url: $url);
+        $paginated = $this->paginate($className, filters: $filters, url: $url, cacheTimeout: $cacheTimeout);
         $promise = $paginated->then(onFulfilled: fn(PaginatedResults $results) => $results->first());
 
         return $await ? await($promise) : $promise;
@@ -87,9 +87,9 @@ class EntityManager implements ResetInterface
      *
      * @return PromiseInterface<list<TView>>
      */
-    public function findBy(string $className, array $filters = [], ?string $url = null, int $page = 1): PromiseInterface
+    public function findBy(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $cacheTimeout = null): PromiseInterface
     {
-        return $this->findByRecursive($className, $filters, $url, $page);
+        return $this->findByRecursive($className, $filters, $url, $page, cacheTimeout: $cacheTimeout);
     }
 
     /**
@@ -100,12 +100,12 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    public function find(string $className, ?string $id = null, ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
+    public function find(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
         $url ??= sprintf('%s/%s', $this->getBaseUrl($className), $id);
         $client = $this->client;
 
-        $promise = $client->getAsync($url, tag: $className)
+        $promise = $client->getAsync($url, cacheTimeout: $cacheTimeout, tag: $className)
             ->then(
                 onFulfilled: fn($data) => $data ? $this->store($className, $data) : null,
                 onRejected: fn() => null,
@@ -121,9 +121,9 @@ class EntityManager implements ResetInterface
      *
      * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
      */
-    public function fetch(string $className, ?string $id = null, ?string $url = null, bool $await = false): ModelInterface|PromiseInterface
+    public function fetch(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->find($className, id: $id, url: $url)
+        $promise = $this->find($className, id: $id, url: $url, cacheTimeout: $cacheTimeout)
             ->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
 
         return $await ? await($promise) : $promise;
@@ -138,7 +138,7 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
+    public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, bool $await = false): PromiseInterface|PaginatedResults
     {
         $client = $this->client;
         if (!$url) {
@@ -146,7 +146,7 @@ class EntityManager implements ResetInterface
             $url = rtrim($url, '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
         /** @var PromiseInterface<array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
-        $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className);
+        $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className, cacheTimeout: $cacheTimeout);
 
         $paginationPromise = $promise
             ->then(function (array $data) use ($className) {
@@ -268,11 +268,11 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    private function findByRecursive(string $className, array $filters = [], ?string $url = null, int $page = 1, array &$stored = []): PromiseInterface
+    private function findByRecursive(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $cacheTimeout = null, array &$stored = []): PromiseInterface
     {
-        $promise = $this->paginate($className, $filters, $url, $page);
+        $promise = $this->paginate($className, $filters, $url, $page, cacheTimeout: $cacheTimeout);
 
-        return $promise->then(/** @param PaginatedResults<TView> $paginatedResults */ function (PaginatedResults $paginatedResults) use ($className, $filters, $url, &$stored) {
+        return $promise->then(/** @param PaginatedResults<TView> $paginatedResults */ function (PaginatedResults $paginatedResults) use ($className, $filters, $url, $cacheTimeout, &$stored) {
             foreach ($paginatedResults->getItems() as $item) {
                 $stored[] = $item;
             }
@@ -281,7 +281,7 @@ class EntityManager implements ResetInterface
                 return $stored;
             }
 
-            return $this->findByRecursive($className, $filters, $url, $nextPage, $stored);
+            return $this->findByRecursive($className, $filters, $url, $nextPage, $cacheTimeout, $stored);
         });
     }
 

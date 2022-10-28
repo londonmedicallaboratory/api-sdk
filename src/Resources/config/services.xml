@@ -79,6 +79,15 @@
             <tag name="lml_sdk.repository"/>
         </service>
 
+        <!-- >FAQ-->
+        <service id="LML\SDK\Repository\FAQ\FAQRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
+        <service id="LML\SDK\Repository\FAQ\CategoryRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
+        <!-- <FAQ-->
+
         <service id="LML\SDK\Twig\AwaitFilter">
             <tag name="twig.extension"/>
         </service>

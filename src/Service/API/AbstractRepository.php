@@ -48,7 +48,7 @@ abstract class AbstractRepository extends AbstractViewFactory
             return $await ? null : resolve();
         }
 
-        return $this->getEntityManager()->find(className: $this->extractTView(), id: $id, await: $await);
+        return $this->getEntityManager()->find(className: $this->extractTView(), id: $id, cacheTimeout: $this->getCacheTimeout(), await: $await);
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AbstractRepository extends AbstractViewFactory
             throw new DataNotFoundException();
         }
 
-        return $this->getEntityManager()->fetch(className: $this->extractTView(), id: $id, await: $await);
+        return $this->getEntityManager()->fetch(className: $this->extractTView(), id: $id, cacheTimeout: $this->getCacheTimeout(), await: $await);
     }
 
     /**
@@ -82,7 +82,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function findOneBySlug(string $slug, bool $await = false): null|ModelInterface|PromiseInterface
     {
         $className = $this->extractTView();
-        $promise = $this->getEntityManager()->findOneBy($className, ['slug' => $slug]);
+        $promise = $this->getEntityManager()->findOneBy($className, ['slug' => $slug], cacheTimeout: $this->getCacheTimeout());
 
         return $await ? await($promise) : $promise;
     }
@@ -94,7 +94,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function fetchOneBy(?string $url = null, array $filters = [], bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->getEntityManager()->fetch($this->extractTView(), url: $url);
+        $promise = $this->getEntityManager()->fetch($this->extractTView(), url: $url, cacheTimeout: $this->getCacheTimeout());
 
         return $await ? await($promise) : $promise;
 //        $paginated = $this->paginate(filters: $filters, url: $url, limit: 1);
@@ -116,7 +116,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function findBy(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): array|PromiseInterface
     {
-        $promise = $this->getEntityManager()->findBy(className: $this->extractTView(), filters: $filters, url: $url, page: $page);
+        $promise = $this->getEntityManager()->findBy(className: $this->extractTView(), filters: $filters, url: $url, page: $page, cacheTimeout: $this->getCacheTimeout());
 
         return $await ? await($promise) : $promise;
     }
@@ -137,7 +137,7 @@ abstract class AbstractRepository extends AbstractViewFactory
      */
     public function paginate(array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, bool $await = false): PromiseInterface|PaginatedResults
     {
-        return $this->getEntityManager()->paginate(className: $this->extractTView(), filters: $filters, url: $url, page: $page, limit: $limit, await: $await);
+        return $this->getEntityManager()->paginate(className: $this->extractTView(), filters: $filters, url: $url, page: $page, limit: $limit, await: $await, cacheTimeout: $this->getCacheTimeout());
     }
 
     /**

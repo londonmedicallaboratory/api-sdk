@@ -5,7 +5,7 @@ namespace LML\SDK\Entity\FAQ;
 
 use LML\SDK\Enum\Model\NameableInterface;
 
-enum FAQCategoryTypeEnum: string implements NameableInterface
+enum CategoryTypeEnum: string implements NameableInterface
 {
     case CUSTOMER = 'customer';
     case HEALTH_CHECK = 'health_check';
