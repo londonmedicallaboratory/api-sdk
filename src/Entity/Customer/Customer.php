@@ -19,12 +19,14 @@ use function sprintf;
 class Customer implements CustomerInterface
 {
     /**
+     * @param LazyValueInterface<bool> $isSubscribedToNewsletter
      * @param ?LazyValueInterface<?Address> $billingAddress
      */
     public function __construct(
         private string $firstName,
         private string $lastName,
         private string $email,
+        protected LazyValueInterface $isSubscribedToNewsletter,
         private ?string $phoneNumber = null,
         private ?string $foreignId = null,
         private ?string $id = null,
@@ -118,6 +120,21 @@ class Customer implements CustomerInterface
         $this->billingAddress = new ResolvedValue($billingAddress);
     }
 
+    public function isSubscribedToNewsletter(): bool
+    {
+        return $this->isSubscribedToNewsletter->getValue();
+    }
+
+    public function setIsSubscribedToNewsletter(bool $isSubscribedToNewsletter): void
+    {
+        $this->isSubscribedToNewsletter = new ResolvedValue($isSubscribedToNewsletter);
+    }
+
+    public function getForeignId(): ?string
+    {
+        return $this->foreignId;
+    }
+
     public function toArray()
     {
         $data = [
@@ -127,6 +144,7 @@ class Customer implements CustomerInterface
             'phone_number' => $this->getPhoneNumber(),
             'email' => $this->getEmail(),
             'foreign_id' => $this->foreignId,
+            'is_subscribed_to_newsletter' => $this->isSubscribedToNewsletter(),
         ];
         if (!$this->id && $password = $this->getPassword()) {
             $data['password'] = $password;

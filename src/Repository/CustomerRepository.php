@@ -49,6 +49,7 @@ class CustomerRepository extends AbstractRepository
             lastName: $payment->customersLastName ?? throw new RuntimeException(),
             email: $payment->customersEmail ?? throw new RuntimeException(),
             phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
+            isSubscribedToNewsletter: new ResolvedValue(false),
         );
     }
 
@@ -64,6 +65,7 @@ class CustomerRepository extends AbstractRepository
             email: $entity['email'],
             phoneNumber: $entity['phone_number'] ?? null,
             foreignId: $entity['foreign_id'] ?? null,
+            isSubscribedToNewsletter: new ResolvedValue($entity['is_subscribed_to_newsletter'] ?? false),
         );
     }
 

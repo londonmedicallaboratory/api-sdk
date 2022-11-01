@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
  *      foreign_id?: ?string,
  *      password?: string,
  *      billing_address_id?: ?string,
+ *      is_subscribed_to_newsletter?: bool,
  * }
  *
  * @extends ModelInterface<S>
