@@ -41,8 +41,7 @@ class Basket
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    )
-    {
+    ) {
     }
 
     public function empty(): void
@@ -64,6 +63,9 @@ class Basket
         $session->set(self::SESSION_KEY, $data);
         if ($this->voucher) {
             $session->set(self::VOUCHER_KEY, $this->voucher->getId());
+        }
+        if ($this->shipping) {
+            $session->set(self::SHIPPING_KEY, $this->shipping->getId());
         }
     }
 
