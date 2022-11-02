@@ -16,6 +16,7 @@ use LML\SDK\Exception\GhostEntityException;
  *
  * @extends AbstractRepository<S, FAQ, array{
  *     category?: string,
+ *     category_type?: string,
  * }>
  */
 class FAQRepository extends AbstractRepository
