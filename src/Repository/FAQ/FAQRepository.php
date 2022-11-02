@@ -44,6 +44,7 @@ class FAQRepository extends AbstractRepository
             id: $id,
             type: new LazyValue(fn() => throw new GhostEntityException()),
             name: new LazyValue(fn() => throw new GhostEntityException()),
+            faqs: new LazyValue(fn() => throw new GhostEntityException()),
         );
     }
 }

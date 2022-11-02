@@ -25,11 +25,13 @@ class Category implements ModelInterface
     /**
      * @param LazyValueInterface<CategoryTypeEnum> $type
      * @param LazyValueInterface<string> $name
+     * @param LazyValueInterface<list<FAQ>> $faqs
      * @param string|null $id
      */
     public function __construct(
         protected LazyValueInterface $type,
         protected LazyValueInterface $name,
+        protected LazyValueInterface $faqs,
         protected ?string $id = null,
     )
     {
@@ -48,6 +50,14 @@ class Category implements ModelInterface
     public function getName(): string
     {
         return $this->name->getValue();
+    }
+
+    /**
+     * @return list<FAQ>
+     */
+    public function getFaqs(): array
+    {
+        return $this->faqs->getValue();
     }
 
     public function toArray()

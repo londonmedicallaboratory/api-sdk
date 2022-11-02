@@ -10,7 +10,7 @@ use LML\SDK\Repository\FAQ\CategoryRepository;
 
 class FAQCategoryRepositoryTest extends AbstractTest
 {
-    public function testInvalidCode(): void
+    public function testFetch(): void
     {
         self::bootKernel();
         $repo = $this->getRepository();
