@@ -7,7 +7,7 @@ import '../styles.scss'
 import {sprintf} from "printj/printj.mjs";
 
 /* stimulusFetch: 'lazy' */
-// noinspection JSUnresolvedVariable
+// noinspection JSUnresolvedVariable,JSUnusedGlobalSymbols
 export default class calender_controller extends Controller {
     static values = {
         calendarUrl: String,
