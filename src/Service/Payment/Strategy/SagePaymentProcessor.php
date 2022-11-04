@@ -27,8 +27,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
 {
     public function __construct(
         private InformationBooth $informationBooth,
-    )
-    {
+    ) {
     }
 
     public static function getName(): string
@@ -63,23 +62,24 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         $splitCardExpire = sscanf($payment->cardExpirationDate ?? throw new RuntimeException(), '%d/%d');
         $month = $splitCardExpire[0] ?? throw new RuntimeException();
         $year = $splitCardExpire[1] ?? throw new RuntimeException();
+        $billingAddress = $payment->billingAddress ?? throw new RuntimeException();
 
         $card = new CreditCard([
-            'firstName'   => $payment->cardFirstName ?? throw new RuntimeException(),
-            'lastName'    => $payment->cardLastName ?? throw new RuntimeException(),
-            'number'      => $payment->cardNumber ?? throw new RuntimeException(),
-            'cvv'         => $payment->cardCVV ?? throw new RuntimeException(),
+            'firstName' => $payment->cardFirstName ?? throw new RuntimeException(),
+            'lastName' => $payment->cardLastName ?? throw new RuntimeException(),
+            'number' => $payment->cardNumber ?? throw new RuntimeException(),
+            'cvv' => $payment->cardCVV ?? throw new RuntimeException(),
             'expiryMonth' => $month,
-            'expiryYear'  => $year,
-            'address1'    => $payment->customersAddressLine1 ?? throw new RuntimeException(),
-            'city'        => $payment->customersCity ?? throw new RuntimeException(),
-            'postcode'    => $payment->customersPostalCode ?? throw new RuntimeException(),
-            'country'     => 'GB',
+            'expiryYear' => $year,
+            'address1' => $billingAddress->getAddressLine1(),
+            'city' => $billingAddress->getCity(),
+            'postcode' => $billingAddress->getPostalCode(),
+            'country' => 'GB',
         ]);
 
         $gateway->createCard([
             'currency' => 'GBP',
-            'card'     => $card,
+            'card' => $card,
         ]);
 
         $info = $this->informationBooth->getWebsiteInfo();
@@ -88,13 +88,13 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         $price = $payment->price ?? throw new RuntimeException();
         $amount = number_format($price->getAmount() / 100, 2);
         $requestMessage = $gateway->purchase([
-            'amount'        => $amount,
-            'currency'      => 'GBP',
-            'card'          => $card,
-            'description'   => $description,
+            'amount' => $amount,
+            'currency' => 'GBP',
+            'card' => $card,
+            'description' => $description,
             'transactionId' => $payment->id ?? throw new RuntimeException(),
-            'returnUrl'     => $payment->successUrl,
-            'failureUrl'    => $payment->failureUrl,
+            'returnUrl' => $payment->successUrl,
+            'failureUrl' => $payment->failureUrl,
         ]);
 
         $responseMessage = $requestMessage->send();
@@ -109,8 +109,8 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         $encryptionKey = $info['sage_auth']['encryption_key'] ?? throw new RuntimeException();
 
         return Omnipay::create('SagePay\Direct')->initialize([
-            'vendor'        => $vendor,
-            'testMode'      => true,
+            'vendor' => $vendor,
+            'testMode' => true,
             'encryptionKey' => $encryptionKey,
         ]);
     }
