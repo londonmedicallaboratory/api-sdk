@@ -147,21 +147,28 @@ class Order implements OrderInterface
 
     public function toArray(): array
     {
+        $customerId = $this->getCustomer()->getId();
+        $customer = $this->getCustomer()->toArray();
+
         $data = [
             'id' => $this->getId(),
             'carrier' => $this->getCarrier()?->value,
             'tracking_number' => $this->getTrackingNumber(),
-            'customer_id' => $this->getCustomer()->getId(),
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
-            'customer' => $this->getCustomer()->toArray(),
             'address' => $this->getAddress()->toArray(),
             'price' => $this->getTotal()->toArray(),
             'items' => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
         ];
         if ($billingAddress = $this->getBillingAddress()) {
             $data['billing_address'] = $billingAddress->toArray();
+        }
+
+        if ($customerId) {
+            $data['customer_id'] = $customerId;
+        } else {
+            $data['customer'] = $customer;
         }
 
         return $data;

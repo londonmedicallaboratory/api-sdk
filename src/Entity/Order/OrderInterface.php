@@ -25,7 +25,7 @@ use LML\SDK\Entity\Shipping\ShippingInterface;
  *      customer_id?: ?string,
  *      address: TAddress,
  *      billing_address?: ?TAddress,
- *      customer: TCustomer,
+ *      customer?: TCustomer,
  *      items: list<Item>,
  *      price: array{amount_minor: int, currency: string, formatted_value: string},
  *      status?: ?string,

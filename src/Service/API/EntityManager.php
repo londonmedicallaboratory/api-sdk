@@ -224,13 +224,10 @@ class EntityManager implements ResetInterface
         }
 
         foreach ($this->managed as $entity) {
-            $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
-            // no changes to entity
-            if ($fetchedValues === $entity->toArray()) {
-                continue;
+            if ($this->isEntityChanged($entity)) {
+                $baseUrl = $this->getBaseUrl(get_class($entity));
+                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
             }
-            $baseUrl = $this->getBaseUrl(get_class($entity));
-            $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
         }
 
         foreach ($this->entitiesToBeDeleted as $entity) {
@@ -239,6 +236,7 @@ class EntityManager implements ResetInterface
         }
 
         awaitAll($promises);
+
 
         foreach ($this->newEntities as $oid => $entity) {
             $this->managed[$oid] = $entity;
@@ -257,6 +255,20 @@ class EntityManager implements ResetInterface
 
         $this->newEntities = [];
         $this->entitiesToBeDeleted = [];
+    }
+
+    public function isEntityChanged(ModelInterface $entity): bool
+    {
+        $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
+        $currentValues = $entity->toArray();
+        /** @psalm-suppress MixedAssignment */
+        foreach ($fetchedValues as $key => $fetchedValue) {
+            if (array_key_exists($key, $currentValues) && $fetchedValue !== $currentValues[$key]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

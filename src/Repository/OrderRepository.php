@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use LogicException;
 use RuntimeException;
 use LML\SDK\DTO\Payment;
 use LML\SDK\Service\Basket;
@@ -19,6 +20,7 @@ use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\CarrierEnum;
+use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
@@ -62,7 +64,6 @@ class OrderRepository extends AbstractRepository
 
     protected function one($entity, $options, $optimizer): Order
     {
-        $customer = $this->get(CustomerRepository::class)->buildOne($entity['customer']);
         $address = $this->get(AddressRepository::class)->buildOne($entity['address']);
 
         $priceData = $entity['price'];
@@ -82,7 +83,7 @@ class OrderRepository extends AbstractRepository
 
         return new Order(
             id: $id,
-            customer: new ResolvedValue($customer),
+            customer: new LazyPromise($this->getCustomer($entity)),
             shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
             address: new ResolvedValue($address),
             billingAddress: new ResolvedValue(null),
@@ -97,6 +98,22 @@ class OrderRepository extends AbstractRepository
             carrier: $carrier ? CarrierEnum::from($carrier) : null,
             trackingNumber: new ResolvedValue($entity['tracking_number'] ?? null),
         );
+    }
+
+    /**
+     * @param S $entity
+     *
+     * @return PromiseInterface<Customer>
+     */
+    private function getCustomer($entity): PromiseInterface
+    {
+        $customerRepository = $this->get(CustomerRepository::class);
+        if ($customerId = $entity['customer_id'] ?? null) {
+            return $customerRepository->fetch($customerId);
+        }
+        $struct = $entity['customer'] ?? throw new LogicException();
+
+        return resolve($customerRepository->buildOne($struct));
     }
 
     /**
