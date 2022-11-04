@@ -36,6 +36,7 @@ class AppointmentRepository extends AbstractRepository
             testLocation: new LazyPromise($this->getTestLocation($entity['test_location_id'])),
             product: new LazyPromise($this->getProduct($entity['product_id'])),
             patient: new LazyPromise($this->getPatient($entity['patient_id'])),
+            isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
         );
     }
 

@@ -21,6 +21,7 @@ use LML\SDK\Entity\TestLocation\TestLocation;
  *     appointment_time: string,
  *     product_id: ?string,
  *     patient_id: ?string,
+ *     confirmed?: ?bool,
  * }
  *
  * @extends ModelInterface<S>

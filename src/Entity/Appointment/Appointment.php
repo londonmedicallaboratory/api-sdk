@@ -28,12 +28,14 @@ class Appointment implements AppointmentInterface
      * @param LazyValueInterface<DateTimeInterface> $appointmentTime
      * @param LazyValueInterface<?Product> $product
      * @param LazyValueInterface<?Patient> $patient
+     * @param LazyValueInterface<bool> $isConfirmed
      */
     public function __construct(
         protected LazyValueInterface $testLocation,
         protected LazyValueInterface $appointmentTime,
         protected LazyValueInterface $product,
         protected LazyValueInterface $patient,
+        protected LazyValueInterface $isConfirmed,
         protected ?string $id = null,
     )
     {
@@ -59,6 +61,11 @@ class Appointment implements AppointmentInterface
         return $this->patient->getValue();
     }
 
+    public function isConfirmed(): bool
+    {
+        return $this->isConfirmed->getValue();
+    }
+
     public function getId(): string
     {
         return $this->id ?? throw new LogicException('You must flush this entity first.');
@@ -72,6 +79,7 @@ class Appointment implements AppointmentInterface
             'appointment_time' => $this->getAppointmentTime()->format('Y-m-d H:i'),
             'product_id' => $this->getProduct()?->getId(),
             'patient_id' => $this->getPatient()?->getId(),
+            'confirmed' => $this->isConfirmed(),
         ];
     }
 }
