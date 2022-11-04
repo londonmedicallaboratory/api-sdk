@@ -8,6 +8,7 @@ use DateTime;
 use LogicException;
 use InvalidArgumentException;
 use LML\SDK\Tests\AbstractTest;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Repository\CustomerRepository;
 
@@ -28,8 +29,9 @@ class CustomerRepositoryTest extends AbstractTest
 
         $customer = new Customer(
             firstName: 'Test',
-            lastName : 'Test',
-            email    : $this->getRandomEmail(),
+            lastName: 'Test',
+            email: 'my_test@example.com',
+            isSubscribedToNewsletter: new ResolvedValue(false)
         );
         $repo->persist($customer);
         $repo->flush();

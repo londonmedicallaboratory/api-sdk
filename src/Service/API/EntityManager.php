@@ -10,7 +10,9 @@ use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
+use LML\SDK\Exception\FlushException;
 use Psr\Http\Message\ResponseInterface;
+use React\Http\Message\ResponseException;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
 use LML\SDK\Exception\DataNotFoundException;
@@ -194,21 +196,31 @@ class EntityManager implements ResetInterface
         $this->entitiesToBeDeleted[$oid] = $model;
     }
 
+    /**
+     * @throws FlushException
+     *
+     * @noinspection PhpDocRedundantThrowsInspection
+     */
     public function flush(): void
     {
         $promises = [];
         foreach ($this->newEntities as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
 
-            $promises[] = $this->client->post($baseUrl, $entity->toArray())->then(function (ResponseInterface $response) use ($entity) {
-                $body = (string)$response->getBody();
-                $data = (array)json_decode($body, false, 512, JSON_THROW_ON_ERROR);
-                $id = (string)($data['id']);
-                $rc = new ReflectionClass($entity);
-                $property = $rc->getProperty('id');
-                $property->setAccessible(true);
-                $property->setValue($entity, $id);
-            });
+            $promises[] = $this->client->post($baseUrl, $entity->toArray())->then(
+                onFulfilled: function (ResponseInterface $response) use ($entity) {
+                    $body = (string)$response->getBody();
+                    $data = (array)json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+                    $id = (string)($data['id']);
+                    $rc = new ReflectionClass($entity);
+                    $property = $rc->getProperty('id');
+                    $property->setAccessible(true);
+                    $property->setValue($entity, $id);
+                },
+                onRejected: function (ResponseException $x) {
+                    throw new FlushException(previous: $x);
+                }
+            );
         }
 
         foreach ($this->managed as $entity) {

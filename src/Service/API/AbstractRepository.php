@@ -14,6 +14,7 @@ use LML\SDK\Pager\PromiseAdapter;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
+use LML\SDK\Exception\FlushException;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
@@ -161,6 +162,9 @@ abstract class AbstractRepository extends AbstractViewFactory
         $this->getEntityManager()->clear();
     }
 
+    /**
+     * @throws FlushException
+     */
     public function flush(): void
     {
         $this->getEntityManager()->flush();
