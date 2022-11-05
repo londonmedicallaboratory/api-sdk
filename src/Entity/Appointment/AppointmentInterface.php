@@ -17,7 +17,7 @@ use LML\SDK\Entity\TestLocation\TestLocation;
  *
  * @psalm-type S=array{
  *     id?: ?string,
- *     test_location_id: string,
+ *     testlocation_id: string,
  *     appointment_time: string,
  *     product_id: ?string,
  *     patient_id: ?string,

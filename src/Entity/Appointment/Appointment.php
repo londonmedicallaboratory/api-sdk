@@ -75,7 +75,7 @@ class Appointment implements AppointmentInterface
     {
         return [
             'id' => $this->id,
-            'test_location_id' => $this->getTestLocation()->getId(),
+            'testlocation_id' => $this->getTestLocation()->getId(),
             'appointment_time' => $this->getAppointmentTime()->format('Y-m-d H:i'),
             'product_id' => $this->getProduct()?->getId(),
             'patient_id' => $this->getPatient()?->getId(),
