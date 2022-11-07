@@ -22,9 +22,11 @@ class PSARepository extends AbstractRepository
         $id = $entity['id'];
 
         return new PSA(
-            id     : $id,
+            id: $id,
             message: $entity['message'],
-            type   : $entity['type'],
+            type: $entity['type'],
+            link: $entity['link'],
+            backgroundColor: $entity['background_color'],
         );
     }
 }

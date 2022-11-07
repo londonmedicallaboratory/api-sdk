@@ -8,9 +8,11 @@ use LML\SDK\Entity\ModelInterface;
 
 /**
  * @psalm-type S=array{
- *      id: string,
- *      message: string,
- *      type: ?string,
+ *     id: string,
+ *     message: string,
+ *     type: ?string,
+ *     link: ?string,
+ *     background_color: ?string,
  * }
  *
  * @extends ModelInterface<S>

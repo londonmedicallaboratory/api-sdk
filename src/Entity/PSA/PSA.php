@@ -11,9 +11,11 @@ use LML\SDK\Repository\PSARepository;
 class PSA implements PSAInterface
 {
     public function __construct(
-        protected string  $id,
-        protected string  $message,
+        protected string $id,
+        protected string $message,
         protected ?string $type,
+        protected ?string $link,
+        protected ?string $backgroundColor,
     )
     {
     }
@@ -33,12 +35,24 @@ class PSA implements PSAInterface
         return $this->type;
     }
 
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function getBackgroundColor(): ?string
+    {
+        return $this->backgroundColor;
+    }
+
     public function toArray()
     {
         return [
-            'id'      => $this->getId(),
+            'id' => $this->getId(),
             'message' => $this->getMessage(),
-            'type'    => $this->getType(),
+            'type' => $this->getType(),
+            'link' => $this->getLink(),
+            'background_color' => $this->getBackgroundColor(),
         ];
     }
 }
