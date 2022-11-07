@@ -7,6 +7,7 @@ namespace LML\SDK\Entity\TestRegistration;
 use DateTime;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
+use LML\View\Lazy\ResolvedValue;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Entity\Address\AddressInterface;
@@ -30,18 +31,18 @@ class TestRegistration implements TestRegistrationInterface
      * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
-        protected LazyValueInterface  $products,
-        protected LazyValueInterface  $patient,
-        protected LazyValueInterface  $downloadUrl,
+        protected LazyValueInterface $products,
+        protected LazyValueInterface $patient,
+        protected LazyValueInterface $downloadUrl,
         protected ?LazyValueInterface $resultsReady = null,
-        protected DateTimeInterface   $createdAt = new DateTime(),
-        protected ?DateTimeInterface  $completedAt = null,
-        protected ?DateTimeInterface  $patientRegisteredAt = null,
+        protected DateTimeInterface $createdAt = new DateTime(),
+        protected ?DateTimeInterface $completedAt = null,
+        protected ?DateTimeInterface $patientRegisteredAt = null,
         protected ?LazyValueInterface $ukAddress = null,
-        protected array               $transitCountries = [],
-        protected ?string             $doctorsNote = null,
-        protected ?string             $doctorsName = null,
-        protected string              $id = '',
+        protected array $transitCountries = [],
+        protected ?string $doctorsNote = null,
+        protected ?string $doctorsName = null,
+        protected string $id = '',
     )
     {
     }
@@ -49,6 +50,11 @@ class TestRegistration implements TestRegistrationInterface
     public function getPatient(): ?PatientInterface
     {
         return $this->patient->getValue();
+    }
+
+    public function setPatient(?PatientInterface $patient): void
+    {
+        $this->patient = new ResolvedValue($patient);
     }
 
     public function getProducts(): array
@@ -103,24 +109,24 @@ class TestRegistration implements TestRegistrationInterface
         $productSkus = array_map(static fn(ProductInterface $product) => $product->getSku(), $this->getProducts());
 
         return [
-            'id'                    => $this->getId(),
-            'patient_id'            => $patient?->getId(),
-            'results_ready'         => $this->resultsReady?->getValue() ?? false,
-            'product_ids'           => $productIds,
-            'product_skus'          => $productSkus,
-            'email'                 => $patient?->getEmail(),
-            'date_of_birth'         => $patient?->getDateOfBirth()->format('Y-m-d'),
-            'first_name'            => $patient?->getFirstName(),
-            'last_name'             => $patient?->getLastName(),
-            'ethnicity'             => $patient?->getEthnicity()?->value,
-            'gender'                => $patient?->getGender()->value,
-            'created_at'            => $this->getCreatedAt()->format('Y-m-d'),
-            'completed_at'          => $this->getCompletedAt()?->format('Y-m-d'),
+            'id' => $this->getId(),
+            'patient_id' => $patient?->getId(),
+            'results_ready' => $this->resultsReady?->getValue() ?? false,
+            'product_ids' => $productIds,
+            'product_skus' => $productSkus,
+            'email' => $patient?->getEmail(),
+            'date_of_birth' => $patient?->getDateOfBirth()->format('Y-m-d'),
+            'first_name' => $patient?->getFirstName(),
+            'last_name' => $patient?->getLastName(),
+            'ethnicity' => $patient?->getEthnicity()?->value,
+            'gender' => $patient?->getGender()->value,
+            'created_at' => $this->getCreatedAt()->format('Y-m-d'),
+            'completed_at' => $this->getCompletedAt()?->format('Y-m-d'),
             'patient_registered_at' => $this->getPatientRegisteredAt()?->format('Y-m-d'),
-            'uk_address'            => $this->getUkAddress()?->toArray(),
-            'doctors_note'          => $this->getDoctorsNote(),
-            'doctors_name'          => $this->getDoctorsName(),
-            'download_url'          => $this->getDownloadUrl(),
+            'uk_address' => $this->getUkAddress()?->toArray(),
+            'doctors_note' => $this->getDoctorsNote(),
+            'doctors_name' => $this->getDoctorsName(),
+            'download_url' => $this->getDownloadUrl(),
         ];
     }
 }
