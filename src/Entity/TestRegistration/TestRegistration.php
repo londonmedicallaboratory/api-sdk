@@ -27,6 +27,7 @@ class TestRegistration implements TestRegistrationInterface
      * @param LazyValueInterface<list<ProductInterface>> $products
      * @param LazyValueInterface<?PatientInterface> $patient
      * @param LazyValueInterface<?string> $downloadUrl
+     * @param LazyValueInterface<?string> $trfCode
      * @param ?LazyValueInterface<?AddressInterface> $ukAddress
      * @param ?LazyValueInterface<bool> $resultsReady
      */
@@ -34,6 +35,7 @@ class TestRegistration implements TestRegistrationInterface
         protected LazyValueInterface $products,
         protected LazyValueInterface $patient,
         protected LazyValueInterface $downloadUrl,
+        protected LazyValueInterface $trfCode,
         protected ?LazyValueInterface $resultsReady = null,
         protected DateTimeInterface $createdAt = new DateTime(),
         protected ?DateTimeInterface $completedAt = null,
@@ -100,6 +102,11 @@ class TestRegistration implements TestRegistrationInterface
     public function getDownloadUrl(): ?string
     {
         return $this->downloadUrl->getValue();
+    }
+
+    public function getTrfCode(): ?string
+    {
+        return $this->trfCode->getValue();
     }
 
     public function toArray(): array

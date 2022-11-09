@@ -42,6 +42,7 @@ use LML\SDK\Entity\Address\AddressInterface;
  *      doctors_note?: ?string,
  *      doctors_name?: ?string,
  *      download_url?: ?string,
+ *      trf_code?: ?string,
  *      uk_address?: null|array{
  *          id: string,
  *          line1: string,

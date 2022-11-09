@@ -12,7 +12,7 @@ use LML\SDK\Service\API\AbstractRepository;
  * @psalm-import-type S from PSAInterface
  *
  * @extends AbstractRepository<S, PSA, array{
- *     type?: null|'product',
+ *     type?: null|'product'|'home',
  * }>
  */
 class PSARepository extends AbstractRepository

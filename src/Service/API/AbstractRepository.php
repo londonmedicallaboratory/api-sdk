@@ -113,6 +113,8 @@ abstract class AbstractRepository extends AbstractViewFactory
     }
 
     /**
+     * @param TFilters $filters
+     *
      * @return ($await is true ? list<TView> : PromiseInterface<list<TView>>)
      */
     public function findBy(array $filters = [], ?string $url = null, int $page = 1, bool $await = false): array|PromiseInterface
