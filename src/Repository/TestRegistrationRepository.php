@@ -20,6 +20,7 @@ use function sprintf;
  *
  * @extends AbstractRepository<S, TestRegistrationInterface, array{
  *     customer?: string,
+ *     order?: string,
  * }>
  */
 class TestRegistrationRepository extends AbstractRepository
