@@ -48,13 +48,13 @@ class TestRegistrationRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<Patient>
+     * @return PromiseInterface<?Patient>
      */
     private function getPatient(string $id): PromiseInterface
     {
         $url = sprintf('/test_registration/%s/patient', $id);
 
-        return $this->get(PatientRepository::class)->fetchOneBy(url: $url);
+        return $this->get(PatientRepository::class)->findOneBy(url: $url);
     }
 
     /**

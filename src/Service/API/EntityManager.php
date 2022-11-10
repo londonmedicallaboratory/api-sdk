@@ -122,6 +122,8 @@ class EntityManager implements ResetInterface
      * @param class-string<TView> $className
      *
      * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
+     *
+     * @throws DataNotFoundException
      */
     public function fetch(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): ModelInterface|PromiseInterface
     {
