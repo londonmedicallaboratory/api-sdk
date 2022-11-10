@@ -5,18 +5,28 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestLocation\TimeBlock;
 
 use DateTimeInterface;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\TestLocationRepository;
 
 /**
  * @see TestLocationRepository::getTimeBlocks
+ *
+ * @psalm-type S=array{
+ *      id: string,
+ *      starts_at: string,
+ *      ends_at: string,
+ *      description: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
  */
-class TimeBlock implements TimeBlockInterface
+class TimeBlock implements ModelInterface
 {
     public function __construct(
-        protected string            $id,
+        protected string $id,
         protected DateTimeInterface $startsAt,
         protected DateTimeInterface $endsAt,
-        protected ?string           $description,
+        protected ?string $description,
     )
     {
     }
@@ -60,9 +70,9 @@ class TimeBlock implements TimeBlockInterface
     public function toArray()
     {
         return [
-            'id'          => $this->getId(),
-            'starts_at'   => $this->getStartsAt()->format('Y-m-d'),
-            'ends_at'     => $this->getEndsAt()->format('Y-m-d'),
+            'id' => $this->getId(),
+            'starts_at' => $this->getStartsAt()->format('Y-m-d'),
+            'ends_at' => $this->getEndsAt()->format('Y-m-d'),
             'description' => $this->getDescription(),
         ];
     }

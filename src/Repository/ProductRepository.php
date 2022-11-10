@@ -5,22 +5,21 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Shipping\Shipping;
-use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Entity\Product\ProductFaq;
+use LML\SDK\Entity\Biomarker\Biomarker;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Product\ProductInterface;
 use LML\SDK\Exception\DataNotFoundException;
-use LML\SDK\Entity\Category\CategoryInterface;
-use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**
- * @psalm-import-type S from ProductInterface
+ * @psalm-import-type S from Product
  *
  * @extends AbstractRepository<S, Product, array{
  *     slug?: string,
@@ -66,7 +65,7 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<list<CategoryInterface>>
+     * @return PromiseInterface<list<Category>>
      */
     private function getCategories(string $id): PromiseInterface
     {
@@ -86,7 +85,7 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<list<FileInterface>>
+     * @return PromiseInterface<list<File>>
      */
     private function getFiles(string $id): PromiseInterface
     {
@@ -96,7 +95,7 @@ class ProductRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<list<BiomarkerInterface>>
+     * @return PromiseInterface<list<Biomarker>>
      */
     private function getBiomarkers(string $id): PromiseInterface
     {

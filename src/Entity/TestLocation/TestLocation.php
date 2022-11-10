@@ -4,20 +4,36 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\TestLocation;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\TestLocationRepository;
 use LML\SDK\Entity\TestLocation\Calender\Slot;
-use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
+use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
+use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
 use LML\SDK\Entity\TestLocation\WeeklyWorkingHours\WeeklyWorkingHours;
-use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessionalInterface;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      full_address: string,
+ *      city: string,
+ *      postal_code: string,
+ *      nearest_bus_station?: ?string,
+ *      nearest_train_station?: ?string,
+ *      next_available_slot?: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: TestLocationRepository::class, baseUrl: 'test_location')]
-class TestLocation implements TestLocationInterface
+class TestLocation implements ModelInterface, Stringable
 {
     /**
-     * @param LazyValueInterface<list<HealthcareProfessionalInterface>> $healthcareProfessionals
-     * @param LazyValueInterface<list<WorkingHoursInterface>> $workHours
+     * @param LazyValueInterface<list<HealthcareProfessional>> $healthcareProfessionals
+     * @param LazyValueInterface<list<WorkingHours>> $workHours
      * @param LazyValueInterface<?Slot> $nextAvailableSlot
      */
     public function __construct(
@@ -80,11 +96,17 @@ class TestLocation implements TestLocationInterface
         return $this->name;
     }
 
+    /**
+     * @return list<HealthcareProfessional>
+     */
     public function getHealthcareProfessionals()
     {
         return $this->healthcareProfessionals->getValue();
     }
 
+    /**
+     * @return list<WorkingHours>
+     */
     public function getWorkingHours(): array
     {
         return $this->workHours->getValue();

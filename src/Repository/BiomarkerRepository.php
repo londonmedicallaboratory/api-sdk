@@ -6,16 +6,15 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
 use React\Promise\PromiseInterface;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Entity\Biomarker\Biomarker;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Category\CategoryInterface;
-use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 use function sprintf;
 
 /**
- * @psalm-import-type S from BiomarkerInterface
+ * @psalm-import-type S from Biomarker
  *
- * @extends AbstractRepository<S, BiomarkerInterface, array{product_id?: string}>
+ * @extends AbstractRepository<S, Biomarker, array{product_id?: string}>
  */
 class BiomarkerRepository extends AbstractRepository
 {
@@ -24,17 +23,17 @@ class BiomarkerRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Biomarker(
-            id         : $id,
-            name       : $entity['name'],
-            slug       : $entity['slug'],
-            code       : $entity['code'],
+            id: $id,
+            name: $entity['name'],
+            slug: $entity['slug'],
+            code: $entity['code'],
             description: $entity['description'],
-            category   : new LazyPromise($this->getCategory($id)),
+            category: new LazyPromise($this->getCategory($id)),
         );
     }
 
     /**
-     * @return PromiseInterface<CategoryInterface>
+     * @return PromiseInterface<Category>
      */
     private function getCategory(string $id): PromiseInterface
     {

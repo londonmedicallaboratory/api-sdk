@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\PSA;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\PSARepository;
 
+/**
+ * @psalm-type S=array{
+ *     id: string,
+ *     message: string,
+ *     type: ?string,
+ *     link: ?string,
+ *     background_color: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: PSARepository::class, baseUrl: 'psa')]
-class PSA implements PSAInterface
+class PSA implements ModelInterface, Stringable
 {
     public function __construct(
         protected string $id,
@@ -18,6 +31,11 @@ class PSA implements PSAInterface
         protected ?string $backgroundColor,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->message;
     }
 
     public function getId(): string

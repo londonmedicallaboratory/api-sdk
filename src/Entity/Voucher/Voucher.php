@@ -4,15 +4,27 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Voucher;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\VoucherRepository;
 
 /**
- * @psalm-import-type TType from VoucherInterface
+ * @psalm-type TType = 'percent'|'amount'
+ *
+ * @psalm-type S=array{
+ *     id: string,
+ *     type: TType,
+ *     value: float,
+ *     code: string,
+ *     promotion_name: string,
+ * }
+ *
+ * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: VoucherRepository::class, baseUrl: 'voucher')]
-class Voucher implements VoucherInterface
+class Voucher implements ModelInterface, Stringable
 {
     /**
      * @param LazyValueInterface<TType> $type
@@ -21,7 +33,7 @@ class Voucher implements VoucherInterface
      * @param LazyValueInterface<string> $promotionName
      */
     public function __construct(
-        protected string           $id,
+        protected string $id,
         private LazyValueInterface $type,
         private LazyValueInterface $value,
         private LazyValueInterface $code,
@@ -72,10 +84,10 @@ class Voucher implements VoucherInterface
     public function toArray()
     {
         return [
-            'id'             => $this->getId(),
-            'type'           => $this->getType(),
-            'value'          => $this->getValue(),
-            'code'           => $this->getCode(),
+            'id' => $this->getId(),
+            'type' => $this->getType(),
+            'value' => $this->getValue(),
+            'code' => $this->getCode(),
             'promotion_name' => $this->getPromotionName(),
         ];
     }

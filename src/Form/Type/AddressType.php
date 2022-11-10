@@ -9,7 +9,6 @@ use LML\SDK\Entity\Address\Address;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
-use LML\SDK\Entity\Address\AddressInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -17,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
- * @extends AbstractType<AddressInterface>
+ * @extends AbstractType<Address>
  */
 class AddressType extends AbstractType
 {

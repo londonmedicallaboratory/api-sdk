@@ -5,15 +5,27 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestLocation\WorkingHours;
 
 use LML\SDK\Enum\DayOfWeekEnum;
+use LML\SDK\Entity\ModelInterface;
 
-class WorkingHours implements WorkingHoursInterface
+/**
+ * @psalm-type S=array{
+ *     id: string,
+ *     day_of_week: string,
+ *     starts_at: string,
+ *     ends_at: string,
+ *     active?: bool,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
+class WorkingHours implements ModelInterface
 {
     public function __construct(
-        protected string        $id,
+        protected string $id,
         protected DayOfWeekEnum $dayOfWeek,
-        protected string        $startsAt,
-        protected string        $endsAt,
-        protected bool          $isActive = true,
+        protected string $startsAt,
+        protected string $endsAt,
+        protected bool $isActive = true,
     )
     {
     }
@@ -46,11 +58,11 @@ class WorkingHours implements WorkingHoursInterface
     public function toArray(): array
     {
         return [
-            'id'          => $this->getId(),
+            'id' => $this->getId(),
             'day_of_week' => $this->getDayOfWeek()->getShortcut(),
-            'starts_at'   => $this->getStartsAt(),
-            'ends_at'     => $this->getEndsAt(),
-            'active'      => $this->isActive(),
+            'starts_at' => $this->getStartsAt(),
+            'ends_at' => $this->getEndsAt(),
+            'active' => $this->isActive(),
         ];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\FAQ;
 
+use Stringable;
 use LogicException;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
@@ -20,7 +21,7 @@ use LML\SDK\Repository\FAQ\CategoryRepository;
  * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: CategoryRepository::class, baseUrl: 'faq/category')]
-class Category implements ModelInterface
+class Category implements ModelInterface, Stringable
 {
     /**
      * @param LazyValueInterface<CategoryTypeEnum> $type
@@ -35,6 +36,11 @@ class Category implements ModelInterface
         protected ?string $id = null,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): string

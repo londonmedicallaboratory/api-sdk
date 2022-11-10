@@ -9,13 +9,13 @@ use Brick\Money\Money;
 use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Voucher\Voucher;
+use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\VoucherRepository;
 use LML\SDK\Repository\ShippingRepository;
-use LML\SDK\Entity\Product\ProductInterface;
-use LML\SDK\Entity\Shipping\ShippingInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function array_filter;
 use function array_values;
@@ -34,14 +34,15 @@ class Basket
 
     private ?Voucher $voucher = null;
 
-    private ?ShippingInterface $shipping = null;
+    private ?Shipping $shipping = null;
 
     public function __construct(
         private RequestStack $requestStack,
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    ) {
+    )
+    {
     }
 
     public function empty(): void
@@ -69,7 +70,7 @@ class Basket
         }
     }
 
-    public function addProduct(ProductInterface $product, int $quantity): void
+    public function addProduct(Product $product, int $quantity): void
     {
         $item = $this->findItemOrCreateNew($product);
         $item->setQuantity($item->getQuantity() + $quantity);
@@ -111,28 +112,28 @@ class Basket
         return array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getQuantity() + $carry, 0);
     }
 
-    public function removeProduct(ProductInterface $product): void
+    public function removeProduct(Product $product): void
     {
         if ($item = $this->findItem($product)) {
             $item->setQuantity(0);
         }
     }
 
-    public function reduceQuantityForProduct(ProductInterface $product): void
+    public function reduceQuantityForProduct(Product $product): void
     {
         $item = $this->findItemOrCreateNew($product);
         $quantity = $item->getQuantity();
         $item->setQuantity($quantity - 1);
     }
 
-    public function incrementQuantityForProduct(ProductInterface $product): void
+    public function incrementQuantityForProduct(Product $product): void
     {
         $item = $this->findItemOrCreateNew($product);
         $quantity = $item->getQuantity();
         $item->setQuantity($quantity + 1);
     }
 
-    public function setQuantityForProduct(ProductInterface $product, int $quantity): void
+    public function setQuantityForProduct(Product $product, int $quantity): void
     {
         $item = $this->findItemOrCreateNew($product);
         $item->setQuantity($quantity);
@@ -153,7 +154,7 @@ class Basket
     }
 
     /**
-     * @return array<int, ShippingInterface>
+     * @return array<int, Shipping>
      */
     public function getAvailableShippingMethods(): array
     {
@@ -177,12 +178,12 @@ class Basket
         return Price::fromMoney(Money::ofMinor($discountAMount, 'GBP'));
     }
 
-    public function getShipping(): ?ShippingInterface
+    public function getShipping(): ?Shipping
     {
         return $this->shipping ??= $this->doGetShipping();
     }
 
-    public function setShipping(?ShippingInterface $shipping): void
+    public function setShipping(?Shipping $shipping): void
     {
         $this->shipping = $shipping;
         if (!$shipping) {
@@ -191,7 +192,7 @@ class Basket
         }
     }
 
-    private function findItem(ProductInterface $product): ?BasketItem
+    private function findItem(Product $product): ?BasketItem
     {
         foreach ($this->getItems() as $item) {
             if ($product->getId() === $item->getProduct()->getId()) {
@@ -202,7 +203,7 @@ class Basket
         return null;
     }
 
-    private function findItemOrCreateNew(ProductInterface $product): BasketItem
+    private function findItemOrCreateNew(Product $product): BasketItem
     {
         if ($item = $this->findItem($product)) {
             return $item;
@@ -237,7 +238,7 @@ class Basket
         $promises = [];
         foreach ($values as $id => $quantity) {
             $promises[] = $repository->find((string)$id)
-                ->then(fn(?ProductInterface $product) => $product ? new BasketItem(new ResolvedValue($product), $quantity) : null, fn() => null);
+                ->then(fn(?Product $product) => $product ? new BasketItem(new ResolvedValue($product), $quantity) : null, fn() => null);
         }
 
         /** @var list<?BasketItem> $responses */
@@ -259,7 +260,7 @@ class Basket
         return $this->voucherRepository->find($id, true);
     }
 
-    private function doGetShipping(): ?ShippingInterface
+    private function doGetShipping(): ?Shipping
     {
         $session = $this->requestStack->getSession();
         $id = (string)$session->get(self::SHIPPING_KEY);

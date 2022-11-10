@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\File;
 use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
-use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Category\CategoryInterface;
 use LML\SDK\Entity\Category\BiomarkerCategory;
 
 /**
- * @psalm-import-type S from CategoryInterface
+ * @psalm-import-type S from Category
  *
- * @extends AbstractRepository<S, CategoryInterface, array{product_id?: string}>
+ * @extends AbstractRepository<S, Category, array{product_id?: string}>
  */
 class BiomarkerCategoryRepository extends AbstractRepository
 {
@@ -32,7 +32,7 @@ class BiomarkerCategoryRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<?FileInterface>
+     * @return PromiseInterface<?File>
      */
     private function getLogo(string $id): PromiseInterface
     {

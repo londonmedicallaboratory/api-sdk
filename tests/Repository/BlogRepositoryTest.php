@@ -26,8 +26,6 @@ class BlogRepositoryTest extends AbstractTest
         $repo = $this->getArticleRepository();
         $article = $repo->paginate(await: true)->first();
         self::assertInstanceOf(Article::class, $article);
-
-        dump($article->getLogo());
     }
 
     private function getCategoryRepository(): CategoryRepository

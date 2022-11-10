@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace LML\SDK\Repository\Blog;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\Blog\Article;
 use React\Promise\PromiseInterface;
-use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\FileRepository;
-use LML\SDK\Entity\Blog\ArticleInterface;
 use LML\SDK\Service\API\AbstractRepository;
 
 /**
- * @psalm-import-type S from ArticleInterface
+ * @psalm-import-type S from Article
  *
  * @extends AbstractRepository<S, Article, array{
  *     category?: string,
@@ -35,7 +34,7 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<?FileInterface>
+     * @return PromiseInterface<?File>
      */
     private function getLogo(string $id): PromiseInterface
     {

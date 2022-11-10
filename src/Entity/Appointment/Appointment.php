@@ -7,6 +7,7 @@ namespace LML\SDK\Entity\Appointment;
 use LogicException;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Patient\Patient;
 use LML\View\Lazy\LazyValueInterface;
@@ -16,10 +17,21 @@ use LML\SDK\Repository\AppointmentRepository;
 /**
  * @template TLoc of TestLocation
  *
- * @implements AppointmentInterface<TLoc>
+ * @psalm-type Item = array{product_id: string, quantity: int, product_sku?: ?string}
+ *
+ * @psalm-type S=array{
+ *     id?: ?string,
+ *     testlocation_id: string,
+ *     appointment_time: string,
+ *     product_id: ?string,
+ *     patient_id: ?string,
+ *     confirmed?: ?bool,
+ * }
+ *
+ * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: AppointmentRepository::class, baseUrl: 'appointment')]
-class Appointment implements AppointmentInterface
+class Appointment implements ModelInterface
 {
     /**
      * @see AppointmentRepository::one()

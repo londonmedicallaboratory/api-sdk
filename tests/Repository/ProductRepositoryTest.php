@@ -7,8 +7,8 @@ namespace LML\SDK\Tests\Repository;
 use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\PaginatedResults;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Repository\ProductRepository;
-use LML\SDK\Entity\Category\CategoryInterface;
 
 class ProductRepositoryTest extends AbstractTest
 {
@@ -31,7 +31,7 @@ class ProductRepositoryTest extends AbstractTest
         $categories = $product->getCategories();
         self::assertNotEmpty($categories);
         foreach ($categories as $category) {
-            self::assertInstanceOf(CategoryInterface::class, $category);
+            self::assertInstanceOf(Category::class, $category);
         }
     }
 
@@ -39,7 +39,7 @@ class ProductRepositoryTest extends AbstractTest
     {
         self::bootKernel();
         $product = $this->getProductRepository()->fetch('8b94cbda-5eee-48c6-a741-4995ef2d71c5', await: true);
-        dd($product);
+        self::assertInstanceOf(Product::class, $product);
     }
 
     private function getProductRepository(): ProductRepository

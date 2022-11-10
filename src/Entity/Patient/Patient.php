@@ -4,27 +4,44 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Patient;
 
+use Stringable;
 use LogicException;
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\PatientRepository;
 use function sprintf;
 
+/**
+ * @psalm-type S=array{
+ *      id: ?string,
+ *      first_name: string,
+ *      last_name: string,
+ *      gender: string,
+ *      date_of_birth: string,
+ *      phone_number?: ?string,
+ *      ethnicity?: ?string,
+ *      foreign_id?: ?string,
+ *      email?: ?string,
+ * }
+ *
+ * @experimental ModelInterface<S>
+ */
 #[Entity(repositoryClass: PatientRepository::class, baseUrl: 'patient')]
-class Patient implements PatientInterface
+class Patient implements ModelInterface, Stringable
 {
     public function __construct(
-        private string            $firstName,
-        private string            $lastName,
-        private GenderEnum        $gender,
+        private string $firstName,
+        private string $lastName,
+        private GenderEnum $gender,
         private DateTimeInterface $dateOfBirth,
-        private ?EthnicityEnum    $ethnicity,
-        private ?string           $email,
-        private ?string           $foreignId = null,
-        private ?string           $phoneNumber = null,
-        private ?string           $id = null,
+        private ?EthnicityEnum $ethnicity,
+        private ?string $email,
+        private ?string $foreignId = null,
+        private ?string $phoneNumber = null,
+        private ?string $id = null,
     )
     {
     }
@@ -107,15 +124,15 @@ class Patient implements PatientInterface
     public function toArray(): array
     {
         return [
-            'id'            => $this->id,
-            'first_name'    => $this->getFirstName(),
-            'last_name'     => $this->getLastName(),
-            'gender'        => $this->getGender()->value,
+            'id' => $this->id,
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'gender' => $this->getGender()->value,
             'date_of_birth' => $this->getDateOfBirth()->format('Y-m-d'),
-            'ethnicity'     => $this->getEthnicity()?->value,
-            'email'         => $this->getEmail(),
-            'foreign_id'    => $this->foreignId,
-            'phone_number'  => $this->getPhoneNumber(),
+            'ethnicity' => $this->getEthnicity()?->value,
+            'email' => $this->getEmail(),
+            'foreign_id' => $this->foreignId,
+            'phone_number' => $this->getPhoneNumber(),
         ];
     }
 }

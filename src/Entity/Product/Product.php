@@ -4,26 +4,44 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Product;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\Category\Category;
+use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\SluggableInterface;
+use LML\SDK\Entity\Biomarker\Biomarker;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
-use LML\SDK\Entity\Shipping\ShippingInterface;
-use LML\SDK\Entity\Category\CategoryInterface;
-use LML\SDK\Entity\Biomarker\BiomarkerInterface;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      sku: string,
+ *      slug?: ?string,
+ *      description?: string,
+ *      short_description?: ?string,
+ *      is_featured?: bool,
+ *      preview_image_url: ?string,
+ *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: ProductRepository::class, baseUrl: 'product')]
-class Product implements ProductInterface
+class Product implements ModelInterface, SluggableInterface, Stringable
 {
     /**
      * @see ProductRepository::one()
      *
-     * @param LazyValueInterface<list<ShippingInterface>> $shippingTypes
-     * @param LazyValueInterface<list<FileInterface>> $files
-     * @param LazyValueInterface<list<CategoryInterface>> $categories
-     * @param LazyValueInterface<list<BiomarkerInterface>> $biomarkers
+     * @param LazyValueInterface<list<Shipping>> $shippingTypes
+     * @param LazyValueInterface<list<File>> $files
+     * @param LazyValueInterface<list<Category>> $categories
+     * @param LazyValueInterface<list<Biomarker>> $biomarkers
      * @param LazyValueInterface<list<ProductFaq>> $faqs
      * @param LazyValueInterface<null|Video> $video
      */
@@ -52,6 +70,9 @@ class Product implements ProductInterface
         return $this->getName();
     }
 
+    /**
+     * @return list<Biomarker>
+     */
     public function getBiomarkers()
     {
         return $this->biomarkers->getValue();
@@ -102,11 +123,17 @@ class Product implements ProductInterface
         return $this->price;
     }
 
+    /**
+     * @return list<Shipping>
+     */
     public function getShippingTypes(): array
     {
         return $this->shippingTypes->getValue();
     }
 
+    /**
+     * @return list<File>
+     */
     public function getFiles(): array
     {
         return $this->files->getValue();
@@ -117,6 +144,9 @@ class Product implements ProductInterface
         return $this->faqs->getValue();
     }
 
+    /**
+     * @return list<Category>
+     */
     public function getCategories()
     {
         return $this->categories->getValue();

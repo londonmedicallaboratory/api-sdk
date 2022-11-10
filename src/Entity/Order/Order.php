@@ -8,33 +8,59 @@ use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Enum\OrderStatusEnum;
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Address\Address;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Appointment\Appointment;
-use LML\SDK\Entity\Address\AddressInterface;
-use LML\SDK\Entity\Customer\CustomerInterface;
-use LML\SDK\Entity\Shipping\ShippingInterface;
 use function array_map;
 
 /**
- * @template TAppointments of Appointment
+ * @template TAppointment of Appointment
+ *
+ * @psalm-type TItem = array{product_id: string, quantity: int, product_sku?: ?string}
+ *
+ * @psalm-import-type S from Address as TAddress
+ * @psalm-import-type S from Customer as TCustomer
+ *
+ * @psalm-type S=array{
+ *      id: string,
+ *      company: ?string,
+ *      shipping_id?: ?string,
+ *      shipping_date?: ?string,
+ *      customer_id?: ?string,
+ *      address: TAddress,
+ *      billing_address?: ?TAddress,
+ *      customer?: TCustomer,
+ *      items: list<TItem>,
+ *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ *      status?: ?string,
+ *      created_at?: ?string,
+ *      order_number?: ?int,
+ *      voucher_id?: ?string,
+ *      carrier?: ?string,
+ *      tracking_number?: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
  *
  * @see Appointment
  */
 #[Entity(repositoryClass: OrderRepository::class, baseUrl: 'order')]
-class Order implements OrderInterface
+class Order implements ModelInterface
 {
     /**
      * @see OrderRepository::one()
      *
-     * @param LazyValueInterface<CustomerInterface> $customer
-     * @param LazyValueInterface<AddressInterface> $address
-     * @param LazyValueInterface<?ShippingInterface> $shipping
-     * @param LazyValueInterface<list<TAppointments>> $appointments
-     * @param LazyValueInterface<?AddressInterface> $billingAddress
-     * @param LazyValueInterface<list<ItemInterface>> $items
+     * @param LazyValueInterface<Customer> $customer
+     * @param LazyValueInterface<Address> $address
+     * @param LazyValueInterface<?Shipping> $shipping
+     * @param LazyValueInterface<list<TAppointment>> $appointments
+     * @param LazyValueInterface<?Address> $billingAddress
+     * @param LazyValueInterface<list<BasketItem>> $items
      * @param LazyValueInterface<?string> $trackingNumber
      */
     public function __construct(
@@ -77,7 +103,7 @@ class Order implements OrderInterface
         return $this->orderNumber;
     }
 
-    public function getShipping(): ?ShippingInterface
+    public function getShipping(): ?Shipping
     {
         return $this->shipping->getValue();
     }
@@ -87,7 +113,7 @@ class Order implements OrderInterface
         $this->shipping = new ResolvedValue($shipping);
     }
 
-    public function getCustomer(): CustomerInterface
+    public function getCustomer(): Customer
     {
         return $this->customer->getValue();
     }
@@ -97,12 +123,12 @@ class Order implements OrderInterface
         return $this->companyName;
     }
 
-    public function getAddress(): AddressInterface
+    public function getAddress(): Address
     {
         return $this->address->getValue();
     }
 
-    public function getBillingAddress(): ?AddressInterface
+    public function getBillingAddress(): ?Address
     {
         return $this->billingAddress->getValue();
     }
@@ -112,6 +138,9 @@ class Order implements OrderInterface
         return $this->id;
     }
 
+    /**
+     * @return list<BasketItem>
+     */
     public function getItems(): array
     {
         return $this->items->getValue();
@@ -128,7 +157,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * @return list<TAppointments>
+     * @return list<TAppointment>
      */
     public function getAppointments(): array
     {
@@ -159,7 +188,7 @@ class Order implements OrderInterface
             'company' => $this->getCompanyName(),
             'address' => $this->getAddress()->toArray(),
             'price' => $this->getTotal()->toArray(),
-            'items' => array_map(static fn(ItemInterface $item) => $item->toArray(), $this->getItems()),
+            'items' => array_map(static fn(BasketItem $item) => $item->toArray(), $this->getItems()),
         ];
         if ($billingAddress = $this->getBillingAddress()) {
             $data['billing_address'] = $billingAddress->toArray();

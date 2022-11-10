@@ -6,11 +6,10 @@ namespace LML\SDK\Repository;
 
 use LML\SDK\Entity\File\Video;
 use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\File\VideoInterface;
 use LML\SDK\Service\API\AbstractRepository;
 
 /**
- * @psalm-import-type S from VideoInterface
+ * @psalm-import-type S from Video
  *
  * @extends AbstractRepository<S, Video, array>
  */

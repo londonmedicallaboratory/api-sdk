@@ -4,26 +4,41 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Category;
 
+use Stringable;
+use LML\SDK\Entity\File\File;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\File\FileInterface;
+use LML\SDK\Entity\SluggableInterface;
 use LML\SDK\Repository\ProductCategoryRepository;
 use LML\SDK\Repository\BiomarkerCategoryRepository;
 
-class Category implements CategoryInterface
+/**
+ * @psalm-type S=array{
+ *     id: string,
+ *     name: string,
+ *     nr_of_products?: int,
+ *     slug: string,
+ *     description: ?string,
+ *     logo_id?: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
+class Category implements ModelInterface, SluggableInterface, Stringable
 {
     /**
      * @see ProductCategoryRepository::one()
      * @see BiomarkerCategoryRepository::one()
      *
      * @param LazyValueInterface<?int> $nrOfProducts
-     * @param LazyValueInterface<?FileInterface> $logo
+     * @param LazyValueInterface<?File> $logo
      */
     public function __construct(
-        protected string             $id,
-        protected string             $name,
-        protected string             $slug,
+        protected string $id,
+        protected string $name,
+        protected string $slug,
         protected LazyValueInterface $nrOfProducts,
-        protected ?string            $description,
+        protected ?string $description,
         protected LazyValueInterface $logo,
     )
     {
@@ -64,7 +79,7 @@ class Category implements CategoryInterface
         return $this->nrOfProducts->getValue();
     }
 
-    public function getLogo(): ?FileInterface
+    public function getLogo(): ?File
     {
         return $this->logo->getValue();
     }
@@ -72,9 +87,9 @@ class Category implements CategoryInterface
     public function toArray(): array
     {
         $data = [
-            'id'          => $this->getId(),
-            'name'        => $this->getName(),
-            'slug'        => $this->getSlug(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
         ];
         $nrOfProducts = $this->getNrOfProducts();

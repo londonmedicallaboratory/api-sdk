@@ -5,16 +5,27 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Product;
 
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\ProductFaqRepository;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      question: string,
+ *      answer: string,
+ *      priority: int,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: ProductFaqRepository::class, baseUrl: 'product_faq')]
-class ProductFaq implements ProductFaqInterface
+class ProductFaq implements ModelInterface
 {
     public function __construct(
         protected string $id,
         protected string $question,
         protected string $answer,
-        protected int    $priority,
+        protected int $priority,
     )
     {
     }
@@ -42,9 +53,9 @@ class ProductFaq implements ProductFaqInterface
     public function toArray(): array
     {
         return [
-            'id'       => $this->getId(),
+            'id' => $this->getId(),
             'question' => $this->getQuestion(),
-            'answer'   => $this->getAnswer(),
+            'answer' => $this->getAnswer(),
             'priority' => $this->getPriority(),
         ];
     }

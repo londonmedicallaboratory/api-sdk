@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Entity\Page\Page;
-use LML\SDK\Entity\Page\PageInterface;
 use LML\SDK\Service\API\AbstractRepository;
 
 /**
- * @psalm-import-type S from PageInterface
+ * @psalm-import-type S from Page
  *
- * @extends AbstractRepository<S, PageInterface, array>
+ * @extends AbstractRepository<S, Page, array>
  */
 class PageRepository extends AbstractRepository
 {
@@ -20,9 +19,9 @@ class PageRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Page(
-            id     : $id,
-            name   : $entity['name'],
-            slug   : $entity['slug'],
+            id: $id,
+            name: $entity['name'],
+            slug: $entity['slug'],
             content: $entity['content'],
         );
     }

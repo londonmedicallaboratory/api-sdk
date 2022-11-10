@@ -6,8 +6,8 @@ namespace LML\SDK\DTO;
 
 use Closure;
 use LML\SDK\Entity\Address\Address;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
-use LML\SDK\Entity\Shipping\ShippingInterface;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,12 +60,13 @@ class Payment
         public ?string $notifyUrl = null,
         public ?string $paymentConfirmationUrl = null,
 
-        public ?ShippingInterface $shipping = null,
+        public ?Shipping $shipping = null,
 
         public ?Closure $paymentExceptionHandler = null,
 
         public bool $isTest = true,
-    ) {
+    )
+    {
         if ($isTest) {
             $this->populateTestData();
         }

@@ -14,10 +14,9 @@ use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\TestLocation\TestLocation;
-use LML\SDK\Entity\Appointment\AppointmentInterface;
 
 /**
- * @psalm-import-type S from AppointmentInterface
+ * @psalm-import-type S from Appointment
  *
  * @extends AbstractRepository<S, Appointment, array{
  *     start_date?: ?string|DateTimeInterface,

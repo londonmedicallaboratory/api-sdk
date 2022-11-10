@@ -5,26 +5,41 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\File;
 
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\FileRepository;
 
+/**
+ * @psalm-type S=array{
+ *     id: string,
+ *     filename: string,
+ *     url: string,
+ *     is_primary?: ?bool,
+ *     thumbnails?: array<string, string>,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: FileRepository::class, baseUrl: 'file')]
-class File implements FileInterface
+class File implements ModelInterface
 {
     /**
      * @param LazyValueInterface<array<string, string>> $thumbnails
      * @param LazyValueInterface<string> $url
      */
     public function __construct(
-        protected string             $id,
-        protected string             $filename,
+        protected string $id,
+        protected string $filename,
         protected LazyValueInterface $url,
-        protected ?bool              $isPrimary,
+        protected ?bool $isPrimary,
         protected LazyValueInterface $thumbnails,
     )
     {
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getThumbnails(): array
     {
         return $this->thumbnails->getValue();
@@ -55,9 +70,9 @@ class File implements FileInterface
         $isPrimary = $this->isPrimary();
 
         $data = [
-            'id'         => $this->getId(),
-            'filename'   => $this->getFilename(),
-            'url'        => $this->getUrl(),
+            'id' => $this->getId(),
+            'filename' => $this->getFilename(),
+            'url' => $this->getUrl(),
             'is_primary' => $isPrimary,
             'thumbnails' => $this->getThumbnails(),
         ];

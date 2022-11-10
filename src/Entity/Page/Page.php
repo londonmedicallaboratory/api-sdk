@@ -4,11 +4,23 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Page;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\PageRepository;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      slug: string,
+ *      content: string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: PageRepository::class, baseUrl: 'page')]
-class Page implements PageInterface
+class Page implements ModelInterface, Stringable
 {
     public function __construct(
         protected string $id,
@@ -17,6 +29,11 @@ class Page implements PageInterface
         protected string $content,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): string
@@ -42,9 +59,9 @@ class Page implements PageInterface
     public function toArray(): array
     {
         return [
-            'id'      => $this->getId(),
-            'name'    => $this->getName(),
-            'slug'    => $this->getSlug(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'slug' => $this->getSlug(),
             'content' => $this->getContent(),
         ];
     }

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace LML\SDK\Repository\Blog;
 
 use LML\SDK\Entity\Blog\Category;
-use LML\SDK\Entity\Blog\CategoryInterface;
 use LML\SDK\Service\API\AbstractRepository;
 
 /**
- * @psalm-import-type S from CategoryInterface
+ * @psalm-import-type S from Category
  *
  * @extends AbstractRepository<S, Category, array>
  */
@@ -20,7 +19,7 @@ class CategoryRepository extends AbstractRepository
         $id = $entity['id'];
 
         return new Category(
-            id  : $id,
+            id: $id,
             name: $entity['name'],
             slug: $entity['slug'],
         );

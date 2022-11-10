@@ -13,11 +13,10 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Customer\CustomerInterface;
 use function Clue\React\Block\await;
 
 /**
- * @psalm-import-type S from CustomerInterface
+ * @psalm-import-type S from Customer
  *
  * @extends AbstractRepository<S, Customer, array{product_id?: string}>
  */

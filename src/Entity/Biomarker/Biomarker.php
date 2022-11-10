@@ -4,23 +4,36 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Biomarker;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Repository\BiomarkerRepository;
-use LML\SDK\Entity\Category\CategoryInterface;
 
+/**
+ * @psalm-type S=array{
+ *     id: string,
+ *     name: string,
+ *     code: string,
+ *     slug: string,
+ *     description: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: BiomarkerRepository::class, baseUrl: 'biomarker')]
-class Biomarker implements BiomarkerInterface
+class Biomarker implements ModelInterface, Stringable
 {
     /**
-     * @param LazyValueInterface<CategoryInterface> $category
+     * @param LazyValueInterface<Category> $category
      */
     public function __construct(
-        protected string             $id,
-        protected string             $name,
-        protected string             $slug,
-        protected string             $code,
-        protected ?string            $description,
+        protected string $id,
+        protected string $name,
+        protected string $slug,
+        protected string $code,
+        protected ?string $description,
         protected LazyValueInterface $category,
     )
     {
@@ -41,12 +54,15 @@ class Biomarker implements BiomarkerInterface
         return $this->slug;
     }
 
-    public function getCategory(): CategoryInterface
+    public function getCategory(): Category
     {
         return $this->category->getValue();
     }
 
-    public function getTestTypes()
+    /**
+     * @return list<TestTypeInterface>
+     */
+    public function getTestTypes(): array
     {
         return [];
     }
@@ -69,10 +85,10 @@ class Biomarker implements BiomarkerInterface
     public function toArray()
     {
         return [
-            'id'          => $this->getId(),
-            'name'        => $this->getName(),
-            'code'        => $this->getCode(),
-            'slug'        => $this->getSlug(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'code' => $this->getCode(),
+            'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
         ];
     }

@@ -5,21 +5,32 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Blog;
 
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\File\File;
+use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Repository\Blog\ArticleRepository;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      title: string,
+ *      slug: string,
+ *      content: string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: ArticleRepository::class, baseUrl: 'blog/article')]
-class Article implements ArticleInterface
+class Article implements ModelInterface
 {
     /**
-     * @param LazyValueInterface<?FileInterface> $logo
+     * @param LazyValueInterface<?File> $logo
      */
     public function __construct(
-        protected string             $id,
-        protected string             $title,
-        protected string             $content,
-        protected string             $slug,
+        protected string $id,
+        protected string $title,
+        protected string $content,
+        protected string $slug,
         protected LazyValueInterface $logo,
     )
     {
@@ -45,7 +56,7 @@ class Article implements ArticleInterface
         return $this->content;
     }
 
-    public function getLogo(): ?FileInterface
+    public function getLogo(): ?File
     {
         return $this->logo->getValue();
     }
@@ -53,9 +64,9 @@ class Article implements ArticleInterface
     public function toArray()
     {
         return [
-            'id'      => $this->getId(),
-            'title'   => $this->getTitle(),
-            'slug'    => $this->getSlug(),
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'slug' => $this->getSlug(),
             'content' => $this->getContent(),
         ];
     }

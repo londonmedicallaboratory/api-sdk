@@ -8,8 +8,9 @@ use DateTime;
 use Pagerfanta\Pagerfanta;
 use LML\SDK\Tests\AbstractTest;
 use LML\SDK\Entity\PaginatedResults;
+use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Repository\TestLocationRepository;
-use LML\SDK\Entity\TestLocation\TestLocationInterface;
+use LML\SDK\Entity\TestLocation\Calender\Slot;
 
 class TestLocationRepositoryTest extends AbstractTest
 {
@@ -22,7 +23,7 @@ class TestLocationRepositoryTest extends AbstractTest
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());
         foreach ($pagination as $item) {
-            self::assertInstanceOf(TestLocationInterface::class, $item);
+            self::assertInstanceOf(TestLocation::class, $item);
             self::assertNotEmpty($item->getWorkingHours());
         }
     }
@@ -43,7 +44,7 @@ class TestLocationRepositoryTest extends AbstractTest
         self::bootKernel();
         $repo = $this->getRepository();
         $calendar = $repo->getMonthlyCalender($id, new DateTime());
-        dd($calendar);
+        self::assertNotEmpty($calendar);
     }
 
     public function testSlots(): void
@@ -52,11 +53,11 @@ class TestLocationRepositoryTest extends AbstractTest
         self::bootKernel();
         $repo = $this->getRepository();
         $slots = $repo->getSlots($id, new DateTime());
+        self::assertNotEmpty($slots);
         foreach ($slots as $slot) {
-            dd($slot->toArray());
+            self::assertInstanceOf(Slot::class, $slot);
         }
 
-        dd($slots);
     }
 
     private function getRepository(): TestLocationRepository

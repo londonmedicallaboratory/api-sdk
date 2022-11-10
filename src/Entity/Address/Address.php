@@ -4,13 +4,30 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Address;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\AddressRepository;
 use function implode;
 use function array_filter;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      line1: string,
+ *      line2?: ?string,
+ *      line3?: ?string,
+ *      postal_code: string,
+ *      country_name?: string,
+ *      country_code: string,
+ *      city: string,
+ *      company?: ?string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: AddressRepository::class, baseUrl: 'address')]
-class Address implements AddressInterface
+class Address implements ModelInterface, Stringable
 {
     public function __construct(
         private string $id,

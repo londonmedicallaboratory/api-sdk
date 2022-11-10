@@ -4,11 +4,22 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Blog;
 
+use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\Blog\CategoryRepository;
 
+/**
+ * @psalm-type S=array{
+ *      id: string,
+ *      name: string,
+ *      slug: string,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
 #[Entity(repositoryClass: CategoryRepository::class, baseUrl: 'blog/category')]
-class Category implements CategoryInterface
+class Category implements ModelInterface, Stringable
 {
     public function __construct(
         protected string $id,
@@ -16,6 +27,11 @@ class Category implements CategoryInterface
         protected string $slug,
     )
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): string
@@ -36,7 +52,7 @@ class Category implements CategoryInterface
     public function toArray()
     {
         return [
-            'id'   => $this->getId(),
+            'id' => $this->getId(),
             'name' => $this->getName(),
             'slug' => $this->getSlug(),
         ];

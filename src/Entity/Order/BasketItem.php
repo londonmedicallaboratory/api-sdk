@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Order;
 
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Money\PriceInterface;
-use LML\SDK\Entity\Product\ProductInterface;
 
-class BasketItem implements ItemInterface
+/**
+ * @psalm-type S=array{
+ *      product_id: string,
+ *      product_sku: string,
+ *      quantity: int,
+ * }
+ *
+ * @implements ModelInterface<S>
+ */
+class BasketItem implements ModelInterface
 {
     /**
-     * @param LazyValueInterface<ProductInterface> $product
+     * @param LazyValueInterface<Product> $product
      */
     public function __construct(
         private LazyValueInterface $product,
@@ -35,7 +45,7 @@ class BasketItem implements ItemInterface
         return $this->getProduct()->getPrice()->multiply($this->getQuantity());
     }
 
-    public function getProduct(): ProductInterface
+    public function getProduct(): Product
     {
         return $this->product->getValue();
     }

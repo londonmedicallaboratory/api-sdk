@@ -9,10 +9,9 @@ use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Patient\PatientInterface;
 
 /**
- * @psalm-import-type S from PatientInterface
+ * @psalm-import-type S from Patient
  *
  * @extends AbstractRepository<S, Patient, array>
  */
@@ -25,14 +24,14 @@ class PatientRepository extends AbstractRepository
         $ethnicity = $entity['ethnicity'] ?? '';
 
         return new Patient(
-            id         : $id,
-            firstName  : $entity['first_name'],
-            lastName   : $entity['last_name'],
-            gender     : GenderEnum::from($gender),
+            id: $id,
+            firstName: $entity['first_name'],
+            lastName: $entity['last_name'],
+            gender: GenderEnum::from($gender),
             dateOfBirth: new DateTime($entity['date_of_birth']),
-            ethnicity  : EthnicityEnum::tryFrom($ethnicity),
-            email      : $entity['email'] ?? null,
-            foreignId  : $entity['foreign_id'] ?? null,
+            ethnicity: EthnicityEnum::tryFrom($ethnicity),
+            email: $entity['email'] ?? null,
+            foreignId: $entity['foreign_id'] ?? null,
         );
     }
 }

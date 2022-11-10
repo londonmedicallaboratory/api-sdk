@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\File;
 use React\Promise\PromiseInterface;
-use LML\SDK\Entity\File\FileInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\ProductCollection\ProductCollection;
-use LML\SDK\Entity\ProductCollection\ProductCollectionInterface;
 
 /**
- * @psalm-import-type S from ProductCollectionInterface
+ * @psalm-import-type S from ProductCollection
  *
  * @extends AbstractRepository<S, ProductCollection, array>
  */
@@ -32,7 +31,7 @@ class ProductCollectionRepository extends AbstractRepository
     }
 
     /**
-     * @return PromiseInterface<?FileInterface>
+     * @return PromiseInterface<?File>
      */
     private function getLogo(string $id): PromiseInterface
     {

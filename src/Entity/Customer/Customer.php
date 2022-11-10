@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Customer;
 
+use Stringable;
 use LogicException;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\CustomerRepository;
@@ -14,9 +16,23 @@ use function sprintf;
 
 /**
  * @see CustomerRepository::one()
+ *
+ * @psalm-type S=array{
+ *      id: ?string,
+ *      first_name: string,
+ *      last_name: string,
+ *      email: string,
+ *      phone_number?: ?string,
+ *      foreign_id?: ?string,
+ *      password?: string,
+ *      billing_address_id?: ?string,
+ *      is_subscribed_to_newsletter?: bool,
+ * }
+ *
+ * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: CustomerRepository::class, baseUrl: 'customer')]
-class Customer implements CustomerInterface
+class Customer implements ModelInterface, Stringable
 {
     /**
      * @param LazyValueInterface<bool> $isSubscribedToNewsletter

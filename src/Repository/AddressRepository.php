@@ -8,10 +8,9 @@ use RuntimeException;
 use LML\SDK\DTO\Payment;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Address\AddressInterface;
 
 /**
- * @psalm-import-type S from AddressInterface
+ * @psalm-import-type S from Address
  *
  * @extends AbstractRepository<S, Address, array>
  */

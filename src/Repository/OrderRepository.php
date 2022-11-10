@@ -21,14 +21,13 @@ use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\CarrierEnum;
 use LML\SDK\Entity\Customer\Customer;
-use LML\SDK\Entity\Order\OrderInterface;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use function sprintf;
 use function React\Promise\resolve;
 
 /**
- * @psalm-import-type S from OrderInterface
+ * @psalm-import-type S from Order
  *
  * @extends AbstractRepository<S, Order, array>
  */

@@ -14,19 +14,16 @@ use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Entity\TestLocation\Calender\Slot;
 use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlock;
-use LML\SDK\Entity\TestLocation\TestLocationInterface;
 use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
-use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlockInterface;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
-use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHoursInterface;
 use function sprintf;
 use function array_map;
 use function Clue\React\Block\await;
 
 /**
- * @psalm-import-type S from TestLocationInterface
- * @psalm-import-type S from TimeBlockInterface as TH
- * @psalm-import-type S from WorkingHoursInterface as WH
+ * @psalm-import-type S from TestLocation
+ * @psalm-import-type S from TimeBlock as TH
+ * @psalm-import-type S from WorkingHours as WH
  *
  * @extends AbstractRepository<S, TestLocation, array>
  */

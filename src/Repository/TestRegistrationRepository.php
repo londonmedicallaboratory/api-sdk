@@ -12,13 +12,12 @@ use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
-use LML\SDK\Entity\TestRegistration\TestRegistrationInterface;
 use function sprintf;
 
 /**
- * @psalm-import-type S from TestRegistrationInterface
+ * @psalm-import-type S from TestRegistration
  *
- * @extends AbstractRepository<S, TestRegistrationInterface, array{
+ * @extends AbstractRepository<S, TestRegistration, array{
  *     customer?: string,
  *     order?: string,
  * }>
