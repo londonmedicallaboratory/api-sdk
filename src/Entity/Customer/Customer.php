@@ -12,6 +12,8 @@ use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\CustomerRepository;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use function sprintf;
 
 /**
@@ -32,7 +34,7 @@ use function sprintf;
  * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: CustomerRepository::class, baseUrl: 'customer')]
-class Customer implements ModelInterface, Stringable
+class Customer implements ModelInterface, Stringable, UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @param LazyValueInterface<bool> $isSubscribedToNewsletter
