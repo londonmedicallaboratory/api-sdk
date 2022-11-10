@@ -32,7 +32,8 @@ use function array_map;
  *      shipping_id?: ?string,
  *      shipping_date?: ?string,
  *      customer_id?: ?string,
- *      address: TAddress,
+ *      address?: null|TAddress,
+ *      address_id?: ?string,
  *      billing_address?: ?TAddress,
  *      customer?: TCustomer,
  *      items: list<TItem>,
@@ -56,7 +57,7 @@ class Order implements ModelInterface
      * @see OrderRepository::one()
      *
      * @param LazyValueInterface<Customer> $customer
-     * @param LazyValueInterface<Address> $address
+     * @param LazyValueInterface<?Address> $address
      * @param LazyValueInterface<?Shipping> $shipping
      * @param LazyValueInterface<list<TAppointment>> $appointments
      * @param LazyValueInterface<?Address> $billingAddress
@@ -123,7 +124,7 @@ class Order implements ModelInterface
         return $this->companyName;
     }
 
-    public function getAddress(): Address
+    public function getAddress(): ?Address
     {
         return $this->address->getValue();
     }
@@ -186,7 +187,7 @@ class Order implements ModelInterface
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
-            'address' => $this->getAddress()->toArray(),
+            'address' => $this->getAddress()?->toArray(),
             'price' => $this->getTotal()->toArray(),
             'items' => array_map(static fn(BasketItem $item) => $item->toArray(), $this->getItems()),
         ];

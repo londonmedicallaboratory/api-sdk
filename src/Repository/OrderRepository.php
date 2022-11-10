@@ -16,6 +16,7 @@ use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Enum\OrderStatusEnum;
 use React\Promise\PromiseInterface;
+use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
@@ -63,7 +64,10 @@ class OrderRepository extends AbstractRepository
 
     protected function one($entity, $options, $optimizer): Order
     {
-        $address = $this->get(AddressRepository::class)->buildOne($entity['address']);
+        $id = $entity['id'];
+
+        $addressId = $entity['address_id'] ?? null;
+        $address = $addressId ? new LazyPromise($this->getAddress($id)) : new ResolvedValue(null);
 
         $priceData = $entity['price'];
         $price = new Price(
@@ -71,8 +75,6 @@ class OrderRepository extends AbstractRepository
             currency: $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
-
-        $id = $entity['id'];
 
         $shippingDate = $entity['shipping_date'] ?? null;
         $createdAt = $entity['created_at'] ?? null;
@@ -84,7 +86,7 @@ class OrderRepository extends AbstractRepository
             id: $id,
             customer: new LazyPromise($this->getCustomer($entity)),
             shippingDate: $shippingDate ? new DateTime($shippingDate) : null,
-            address: new ResolvedValue($address),
+            address: $address,
             billingAddress: new ResolvedValue(null),
             total: $price,
             companyName: $entity['company'],
@@ -97,6 +99,16 @@ class OrderRepository extends AbstractRepository
             carrier: $carrier ? CarrierEnum::from($carrier) : null,
             trackingNumber: new ResolvedValue($entity['tracking_number'] ?? null),
         );
+    }
+
+    /**
+     * @return PromiseInterface<?Address>
+     */
+    private function getAddress(string $id): PromiseInterface
+    {
+        $url = sprintf('/order/%s/address', $id);
+
+        return $this->get(AddressRepository::class)->findOneBy(url: $url);
     }
 
     /**
