@@ -121,6 +121,11 @@ class Patient implements ModelInterface, Stringable
         return $this->phoneNumber;
     }
 
+    public function setPhoneNumber(?string $phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
     public function toArray(): array
     {
         return [
