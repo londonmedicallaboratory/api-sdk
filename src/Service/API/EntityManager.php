@@ -329,10 +329,11 @@ class EntityManager implements ResetInterface
     {
         $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
 
+        // find a better way but don't use $entity->toArray() as it would break async
+        $this->fetchedValues[$className][$id] = $data;
         $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
         $repo = $this->getRepository($repoName);
         $entity = $repo->buildOne($data);
-        $this->fetchedValues[$className][$id] = $entity->toArray();
         $this->managed[spl_object_hash($entity)] = $entity;
 
         return $entity;
