@@ -13,6 +13,7 @@ use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Repository\TestRegistrationRepository;
 use function array_map;
 
@@ -36,7 +37,6 @@ use function array_map;
  *      ethnicity?: ?string,
  *      gender?: ?string,
  *      mobile_phone_number?: ?string,
- *      passport_number?: ?string,
  *      nhs_number?: ?string,
  *      vaccination_status?: ?string,
  *      created_at?: ?string,
@@ -51,6 +51,7 @@ use function array_map;
  *      doctors_name?: ?string,
  *      download_url?: ?string,
  *      trf_code?: ?string,
+ *      appointment_id?: ?string,
  *      uk_address?: null|array{
  *          id: string,
  *          line1: string,
@@ -76,6 +77,7 @@ class TestRegistration implements ModelInterface
      * @param LazyValueInterface<?string> $downloadUrl
      * @param LazyValueInterface<?string> $trfCode
      * @param ?LazyValueInterface<?Address> $ukAddress
+     * @param ?LazyValueInterface<?Appointment> $appointment
      * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
@@ -88,6 +90,7 @@ class TestRegistration implements ModelInterface
         protected ?DateTimeInterface $completedAt = null,
         protected ?DateTimeInterface $patientRegisteredAt = null,
         protected ?LazyValueInterface $ukAddress = null,
+        protected ?LazyValueInterface $appointment = null,
         protected array $transitCountries = [],
         protected ?string $doctorsNote = null,
         protected ?string $doctorsName = null,
@@ -157,6 +160,16 @@ class TestRegistration implements ModelInterface
     public function getTrfCode(): ?string
     {
         return $this->trfCode->getValue();
+    }
+
+    public function getAppointment(): ?Appointment
+    {
+        return $this->appointment?->getValue();
+    }
+
+    public function setAppointment(?Appointment $appointment): void
+    {
+        $this->appointment = new ResolvedValue($appointment);
     }
 
     public function toArray(): array

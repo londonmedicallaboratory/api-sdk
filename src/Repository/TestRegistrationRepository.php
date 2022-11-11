@@ -11,6 +11,7 @@ use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
 use function sprintf;
 
@@ -40,10 +41,21 @@ class TestRegistrationRepository extends AbstractRepository
             createdAt: $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt: $completedAt ? new DateTime($completedAt) : null,
             patientRegisteredAt: $patientRegisteredAt ? new DateTime($patientRegisteredAt) : null,
+            appointment: new LazyPromise($this->getAppointment($id)),
             doctorsNote: $entity['doctors_note'] ?? null,
             doctorsName: $entity['doctors_name'] ?? null,
             id: $id,
         );
+    }
+
+    /**
+     * @return PromiseInterface<?Appointment>
+     */
+    private function getAppointment(string $id): PromiseInterface
+    {
+        $url = sprintf('/test_registration/%s/apppointment', $id);
+
+        return $this->get(AppointmentRepository::class)->findOneBy(url: $url);
     }
 
     /**
