@@ -53,7 +53,7 @@ class TestRegistrationRepository extends AbstractRepository
      */
     private function getAppointment(string $id): PromiseInterface
     {
-        $url = sprintf('/test_registration/%s/apppointment', $id);
+        $url = sprintf('/test_registration/%s/appointment', $id);
 
         return $this->get(AppointmentRepository::class)->findOneBy(url: $url);
     }

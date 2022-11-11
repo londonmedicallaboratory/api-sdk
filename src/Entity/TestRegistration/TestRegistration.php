@@ -197,6 +197,7 @@ class TestRegistration implements ModelInterface
             'doctors_note' => $this->getDoctorsNote(),
             'doctors_name' => $this->getDoctorsName(),
             'download_url' => $this->getDownloadUrl(),
+            'appointment_id' => $this->getAppointment()?->getId(),
         ];
     }
 }
