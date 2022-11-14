@@ -220,8 +220,10 @@ class EntityManager implements ResetInterface
                     $property->setAccessible(true);
                     $property->setValue($entity, $id);
                 },
-                onRejected: function (ResponseException $x) {
-                    throw new FlushException(previous: $x);
+                onRejected: function (ResponseException $e) {
+                    $body = (string)$e->getResponse()->getBody();
+                    $error = (string)(json_decode($body, true)['error'] ?? null);
+                    throw new FlushException(previous: $e, message: $error);
                 }
             );
             await($promise);
