@@ -32,6 +32,7 @@ class PatientRepository extends AbstractRepository
             ethnicity: EthnicityEnum::tryFrom($ethnicity),
             email: $entity['email'] ?? null,
             foreignId: $entity['foreign_id'] ?? null,
+            phoneNumber: $entity['phone_number'] ?? null,
         );
     }
 }
