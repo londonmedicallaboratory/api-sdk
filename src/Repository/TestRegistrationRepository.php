@@ -65,7 +65,7 @@ class TestRegistrationRepository extends AbstractRepository
     {
         $url = sprintf('/test_registration/%s/patient', $id);
 
-        return $this->get(PatientRepository::class)->findOneBy(url: $url);
+        return $this->get(PatientRepository::class)->find(url: $url);
     }
 
     /**

@@ -53,7 +53,7 @@ class EntityParamConverter implements ParamConverterInterface
         $repository = $this->modelManager->getRepository($attribute->getRepositoryClass());
 
         if ($id) {
-            $model = $repository->find($id, true) ?? throw new NotFoundHttpException(sprintf('ID "%s" not found.', $id));
+            $model = $repository->find(id: $id, await: true) ?? throw new NotFoundHttpException(sprintf('ID "%s" not found.', $id));
             $request->attributes->set($name, $model);
 
             return true;

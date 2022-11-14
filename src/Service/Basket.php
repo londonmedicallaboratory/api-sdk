@@ -257,7 +257,7 @@ class Basket
             return null;
         }
 
-        return $this->voucherRepository->find($id, true);
+        return $this->voucherRepository->find(id: $id, await: true);
     }
 
     private function doGetShipping(): ?Shipping
@@ -268,6 +268,6 @@ class Basket
             return null;
         }
 
-        return $this->shippingRepository->find($id, true);
+        return $this->shippingRepository->find($id, await: true);
     }
 }
