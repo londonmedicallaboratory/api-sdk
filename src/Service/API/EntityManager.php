@@ -222,7 +222,7 @@ class EntityManager implements ResetInterface
                 },
                 onRejected: function (ResponseException $e) {
                     $body = (string)$e->getResponse()->getBody();
-                    $error = (string)(json_decode($body, true)['error'] ?? null);
+                    $error = (string)(json_decode($body, true)['error'] ?? $e->getMessage());
                     throw new FlushException(previous: $e, message: $error);
                 }
             );
