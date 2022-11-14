@@ -10,30 +10,45 @@ use LogicException;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Tests\AbstractTest;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Repository\PatientRepository;
 
 class PatientRepositoryTest extends AbstractTest
 {
+    private const ID = 'f18705fc-dcf1-405a-917c-aea2d735a30c';
+
     public function testCreate(): void
     {
         self::bootKernel();
         $repo = $this->getPatientRepository();
 
         $patient = new Patient(
-            email      : 'test@ex.de',
-            firstName  : 'Testing',
-            lastName   : 'Smith',
+            email: 'test@ex.de',
+            firstName: 'Testing',
+            lastName: 'Smith',
             dateOfBirth: new DateTime('-20 years'),
-            ethnicity  : EthnicityEnum::ASIAN_BANGLADESHI,
-            gender     : GenderEnum::FEMALE,
+            ethnicity: EthnicityEnum::ASIAN_BANGLADESHI,
+            gender: GenderEnum::FEMALE,
+            address: new ResolvedValue(null),
         );
 
         $repo->persist($patient);
         $repo->flush();
 
         self::assertNotNull($patient->getId());
+    }
+
+    public function testOne(): void
+    {
+        self::bootKernel();
+        $repo = $this->getPatientRepository();
+
+        $patient = $repo->find(self::ID, await: true);
+        $address = $patient->getAddress();
+        self::assertInstanceOf(Address::class, $address);
     }
 
     public function testUpdate(): void

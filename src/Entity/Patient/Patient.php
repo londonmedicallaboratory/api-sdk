@@ -9,7 +9,10 @@ use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Address\Address;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\PatientRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
 use function sprintf;
@@ -25,6 +28,7 @@ use function sprintf;
  *      ethnicity?: ?string,
  *      foreign_id?: ?string,
  *      email?: ?string,
+ *      address_id?: ?string,
  * }
  *
  * @experimental ModelInterface<S>
@@ -32,12 +36,16 @@ use function sprintf;
 #[Entity(repositoryClass: PatientRepository::class, baseUrl: 'patient')]
 class Patient implements ModelInterface, Stringable
 {
+    /**
+     * @param LazyValueInterface<?Address> $address
+     */
     public function __construct(
         private string $firstName,
         private string $lastName,
         private GenderEnum $gender,
         private DateTimeInterface $dateOfBirth,
         private ?EthnicityEnum $ethnicity,
+        private LazyValueInterface $address,
         private ?string $email,
         private ?string $foreignId = null,
         private ?string $phoneNumber = null,
@@ -126,6 +134,16 @@ class Patient implements ModelInterface, Stringable
         $this->phoneNumber = $phoneNumber;
     }
 
+    public function getAddress(): ?Address
+    {
+        return $this->address->getValue();
+    }
+
+    public function setAddress(?Address $address): void
+    {
+        $this->address = new ResolvedValue($address);
+    }
+
     public function toArray(): array
     {
         return [
@@ -138,6 +156,7 @@ class Patient implements ModelInterface, Stringable
             'email' => $this->getEmail(),
             'foreign_id' => $this->foreignId,
             'phone_number' => $this->getPhoneNumber(),
+            'address_id' => $this->getAddress()?->getId(),
         ];
     }
 }

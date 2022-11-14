@@ -6,8 +6,12 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use LML\SDK\Enum\GenderEnum;
+use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\EthnicityEnum;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Address\Address;
+use React\Promise\PromiseInterface;
 use LML\SDK\Service\API\AbstractRepository;
 
 /**
@@ -22,6 +26,7 @@ class PatientRepository extends AbstractRepository
         $id = $entity['id'];
         $gender = $entity['gender'];
         $ethnicity = $entity['ethnicity'] ?? '';
+        $addressId = $entity['address_id'] ?? null;
 
         return new Patient(
             id: $id,
@@ -33,6 +38,17 @@ class PatientRepository extends AbstractRepository
             email: $entity['email'] ?? null,
             foreignId: $entity['foreign_id'] ?? null,
             phoneNumber: $entity['phone_number'] ?? null,
+            address: $addressId && $id ? new LazyPromise($this->getAddress($id)) : new ResolvedValue(null),
         );
+    }
+
+    /**
+     * @return PromiseInterface<?Address>
+     */
+    private function getAddress(string $id): PromiseInterface
+    {
+        $url = sprintf('/patient/%s/address', $id);
+
+        return $this->get(AddressRepository::class)->find(url: $url);
     }
 }
