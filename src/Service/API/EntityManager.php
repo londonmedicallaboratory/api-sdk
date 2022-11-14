@@ -209,7 +209,7 @@ class EntityManager implements ResetInterface
         foreach ($this->newEntities as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
 
-            $promises[] = $this->client->post($baseUrl, $entity->toArray())->then(
+            $promise = $this->client->post($baseUrl, $entity->toArray())->then(
                 onFulfilled: function (ResponseInterface $response) use ($entity) {
                     $body = (string)$response->getBody();
                     $data = (array)json_decode($body, false, 512, JSON_THROW_ON_ERROR);
@@ -223,6 +223,8 @@ class EntityManager implements ResetInterface
                     throw new FlushException(previous: $x);
                 }
             );
+            await($promise);
+//            $promises[] = $promise;
         }
 
         foreach ($this->managed as $entity) {
