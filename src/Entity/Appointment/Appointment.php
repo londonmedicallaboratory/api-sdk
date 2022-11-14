@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Appointment;
 
-use LogicException;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
@@ -13,6 +12,7 @@ use LML\SDK\Entity\Patient\Patient;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Repository\AppointmentRepository;
+use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
  * @template TLoc of TestLocation
@@ -80,7 +80,7 @@ class Appointment implements ModelInterface
 
     public function getId(): string
     {
-        return $this->id ?? throw new LogicException('You must flush this entity first.');
+        return $this->id ?? throw new EntityNotPersistedException();
     }
 
     public function toArray()

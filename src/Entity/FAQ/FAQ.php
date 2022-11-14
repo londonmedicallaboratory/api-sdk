@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\FAQ;
 
-use LogicException;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\FAQ\FAQRepository;
+use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
  * @psalm-type S = array{
@@ -39,7 +39,7 @@ class FAQ implements ModelInterface
 
     public function getId(): string
     {
-        return $this->id ?? throw new LogicException('Entity has not been persisted yet.');
+        return $this->id ?? throw new EntityNotPersistedException();
     }
 
     public function getCategory(): Category

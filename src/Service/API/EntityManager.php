@@ -208,7 +208,8 @@ class EntityManager implements ResetInterface
         $promises = [];
         foreach ($this->newEntities as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
-
+            // POST must be sync in order to populate their IDs. Use **must** manually care about order of persisting until better solution is made i.e. one that detects the order just like Doctrine.
+            // example: both Category and Product are created in same request, many2one relation. Use that as reference.
             $promise = $this->client->post($baseUrl, $entity->toArray())->then(
                 onFulfilled: function (ResponseInterface $response) use ($entity) {
                     $body = (string)$response->getBody();
@@ -224,7 +225,6 @@ class EntityManager implements ResetInterface
                 }
             );
             await($promise);
-//            $promises[] = $promise;
         }
 
         foreach ($this->managed as $entity) {
@@ -240,7 +240,6 @@ class EntityManager implements ResetInterface
         }
 
         awaitAll($promises);
-
 
         foreach ($this->newEntities as $oid => $entity) {
             $this->managed[$oid] = $entity;

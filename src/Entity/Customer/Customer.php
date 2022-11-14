@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Customer;
 
 use Stringable;
-use LogicException;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Repository\CustomerRepository;
+use LML\SDK\Exception\EntityNotPersistedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use function sprintf;
@@ -101,7 +101,7 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
 
     public function getId(): string
     {
-        return $this->id ?? throw new LogicException('Model has not been saved yet.');
+        return $this->id ?? throw new EntityNotPersistedException();
     }
 
     public function getPassword(): ?string

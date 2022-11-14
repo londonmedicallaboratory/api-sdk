@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Patient;
 
 use Stringable;
-use LogicException;
 use DateTimeInterface;
 use LML\SDK\Enum\GenderEnum;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Enum\EthnicityEnum;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\PatientRepository;
+use LML\SDK\Exception\EntityNotPersistedException;
 use function sprintf;
 
 /**
@@ -53,7 +53,7 @@ class Patient implements ModelInterface, Stringable
 
     public function getId(): string
     {
-        return $this->id ?? throw new LogicException('Model has not been saved yet.');
+        return $this->id ?? throw new EntityNotPersistedException();
     }
 
     public function getFirstName(): string
