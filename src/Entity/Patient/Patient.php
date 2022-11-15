@@ -18,6 +18,8 @@ use LML\SDK\Exception\EntityNotPersistedException;
 use function sprintf;
 
 /**
+ * @psalm-import-type S from Address as TAddress
+ *
  * @psalm-type S=array{
  *      id: ?string,
  *      first_name: string,
@@ -29,6 +31,7 @@ use function sprintf;
  *      foreign_id?: ?string,
  *      email?: ?string,
  *      address_id?: ?string,
+ *      address?: ?TAddress
  * }
  *
  * @implements ModelInterface<S>
@@ -144,8 +147,15 @@ class Patient implements ModelInterface, Stringable
         $this->address = new ResolvedValue($address);
     }
 
+    public function getForeignId(): ?string
+    {
+        return $this->foreignId;
+    }
+
     public function toArray(): array
     {
+        $address = $this->getAddress();
+
         return [
             'id' => $this->id,
             'first_name' => $this->getFirstName(),
@@ -156,7 +166,8 @@ class Patient implements ModelInterface, Stringable
             'email' => $this->getEmail(),
             'foreign_id' => $this->foreignId,
             'phone_number' => $this->getPhoneNumber(),
-            'address_id' => $this->getAddress()?->getId(),
+            'address_id' => $address?->getId(),
+            'address' => $address?->toArray(),
         ];
     }
 }
