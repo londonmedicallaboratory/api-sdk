@@ -89,29 +89,32 @@ class Client implements ClientInterface
         $cacheTimeout ??= $this->cacheExpiration;
 
         return $this->browser->get($url, $this->getAuthHeaders())
-            ->then(static function (ResponseInterface $response) use ($item, $cache, $cacheTimeout, $tag): array {
-                $body = (string)$response->getBody();
-                try {
-                    /** @var array<string, mixed> $data */
-                    $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-                } catch (JsonException) {
-                    $data = [];
+            ->then(
+                onFulfilled: static function (ResponseInterface $response) use ($item, $cache, $cacheTimeout, $tag): array {
+                    $body = (string)$response->getBody();
+                    try {
+                        /** @var array<string, mixed> $data */
+                        $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                    } catch (JsonException) {
+                        $data = [];
+                    }
+
+                    $item->expiresAfter($cacheTimeout);
+                    $item->set($data);
+                    if ($tag) {
+                        $item->tag($tag);
+                    }
+                    $cache->save($item);
+
+                    return $data;
+                },
+                onRejected: function (ResponseException $_e) use ($item, $cacheTimeout) {
+                    $item->expiresAfter($cacheTimeout);
+                    $item->set(null);
+
+                    return null;
                 }
-
-                $item->expiresAfter($cacheTimeout);
-                $item->set($data);
-                if ($tag) {
-                    $item->tag($tag);
-                }
-                $cache->save($item);
-
-                return $data;
-            }, function (ResponseException $_e) use ($item, $cacheTimeout) {
-                $item->expiresAfter($cacheTimeout);
-                $item->set(null);
-
-                return null;
-            });
+            );
     }
 
     public function invalidate(string ...$tags): void

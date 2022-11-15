@@ -31,7 +31,7 @@ use function sprintf;
  *      address_id?: ?string,
  * }
  *
- * @experimental ModelInterface<S>
+ * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: PatientRepository::class, baseUrl: 'patient')]
 class Patient implements ModelInterface, Stringable

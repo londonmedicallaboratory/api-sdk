@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 
 /**
  * @property array{requests: null|list<array{url: string, cached: bool, method: string, filters: array}>} $data
+ *
+ * @psalm-suppress MixedReturnTypeCoercion - It is OK to suppress mixed here, we don't really need static analysis here.
  */
 class ClientDataCollector extends AbstractDataCollector implements ClientInterface
 {
@@ -36,35 +38,33 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
     {
         $promise = $this->client->getAsync($url, $filters, $page, $limit, $cacheTimeout, tag: $tag);
-
         $isCached = $promise instanceof CachedItemPromise;
-        $this->data['requests'][] = [
-            'url'     => $url,
-            'cached'  => $isCached,
-            'method'  => 'GET',
-            'filters' => $filters,
-        ];
 
-        return $promise;
+        return $this->logPromise($promise, $url, 'GET', $isCached, filters: $filters);
     }
 
     public function post(string $url, array $data): PromiseInterface
     {
-        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'POST', 'filters' => []];
+        $promise = $this->client->post($url, $data);
 
-        return $this->client->post($url, $data);
+        return $this->logPromise($promise, $url, 'POST', data: $data);
     }
 
     public function patch(string $url, string $id, array $data): PromiseInterface
     {
-        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'PATCH', 'filters' => []];
+        $promise = $this->client->patch($url, $id, $data);
 
-        return $this->client->patch($url, $id, $data);
+        return $this->logPromise($promise, $url, 'PATCH', data: $data);
     }
 
     public function delete(string $url, string $id): PromiseInterface
     {
-        $this->data['requests'][] = ['url' => $url, 'cached' => false, 'method' => 'DELETE', 'filters' => []];
+        $this->data['requests'][] = [
+            'url' => $url,
+            'cached' => false,
+            'method' => 'DELETE',
+            'filters' => [],
+        ];
 
         return $this->client->delete($url, $id);
     }
@@ -81,5 +81,23 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
     public function getName(): string
     {
         return 'lml_sdk.client_collector';
+    }
+
+    private function logPromise(PromiseInterface $promise, string $url, string $method, bool $isCached = false, array $data = [], array $filters = []): PromiseInterface
+    {
+        $promise->then(function (mixed $response) use ($url, $method, $isCached, $filters, $data): mixed {
+            $this->data['requests'][] = [
+                'url' => $url,
+                'cached' => $isCached,
+                'method' => $method,
+                'filters' => $filters,
+                'data' => $data,
+                'response' => $response,
+            ];
+
+            return $response;
+        });
+
+        return $promise;
     }
 }
