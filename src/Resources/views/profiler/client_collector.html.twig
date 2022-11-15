@@ -62,15 +62,13 @@
 {% endblock %}
 
 {% block menu %}
-    <span class="label">
-    <span class="icon">{{ source('@WebProfiler/Icon/http-client.svg') }}</span>
-    <strong>Commando API calls</strong>
-{#    {% if collector.requestCount %} #}
-        {#        <span class="count"> #}
-        {#            {{ collector.requestCount }} #}
-        {#        </span> #}
-        {#    {% endif %} #}
-</span>
+    <span class="label{{ collector.requests|length == 0 ? ' disabled' }}">
+        <span class="icon">{{ source('@WebProfiler/Icon/http-client.svg') }}</span>
+        <strong>Commando</strong>
+        {% if collector.requests|length %}
+            <span class="count">{{ collector.requests|length }}</span>
+        {% endif %}
+    </span>
 {% endblock %}
 
 {% block panel %}
