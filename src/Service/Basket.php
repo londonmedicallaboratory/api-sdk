@@ -41,8 +41,7 @@ class Basket
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    )
-    {
+    ) {
     }
 
     public function empty(): void
@@ -104,7 +103,7 @@ class Basket
         }
         $newPrice = $this->applyVoucher($subtotal);
 
-        return $this->shipping ? $newPrice->plus($this->shipping->getPrice()) : $newPrice;
+        return $this->getShipping() ? $newPrice->plus($this->getShipping()->getPrice()) : $newPrice;
     }
 
     public function getTotalQuantity(): int
