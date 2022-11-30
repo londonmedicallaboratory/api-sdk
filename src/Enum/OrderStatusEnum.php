@@ -24,6 +24,7 @@ enum OrderStatusEnum: string implements NameableInterface
     case OUT_FOR_DELIVER = 'out_for_delivery';
     case DELIVERED = 'delivered';
     case DELIVERY_FAILED = 'delivery_failed';
+    case CANCELLED = 'cancelled';
 
     // @todo Find out what these are used for
     case MANIFEST_FAILED = 'manifest_failed';
@@ -42,6 +43,7 @@ enum OrderStatusEnum: string implements NameableInterface
             self::SHIPPED => 'Shipped',
             self::OUT_FOR_DELIVER => 'Out for deliver',
             self::DELIVERY_FAILED => 'Delivery failed',
+            self::CANCELLED => 'Cancelled',
             self::MANIFEST_FAILED => 'Manifest failed',
         };
     }
