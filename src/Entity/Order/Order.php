@@ -44,6 +44,8 @@ use function array_map;
  *      voucher_id?: ?string,
  *      carrier?: ?string,
  *      tracking_number?: ?string,
+ *      cancel?: ?bool,
+ *      refund?: ?bool,
  * }
  *
  * @implements ModelInterface<S>
