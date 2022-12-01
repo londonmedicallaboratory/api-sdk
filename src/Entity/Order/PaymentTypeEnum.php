@@ -20,18 +20,39 @@ enum PaymentTypeEnum: string implements NameableInterface
     case PAID = 'paid';
     case PAYMENT_FAILED = 'payment_failed';
 
+    /**
+     * @return list<self>
+     */
+    public static function getRefundTypes(): array
+    {
+        return [
+            self::REFUND_REQUESTED,
+            self::REFUND_COMPLETE,
+            self::REFUND_DENIED,
+        ];
+    }
+
+    /**
+     * @return list<self>
+     */
+    public static function getPaymentTypes(): array
+    {
+        return [
+            self::INVOICED,
+            self::AWAITING_PAYMENT,
+            self::PAID,
+            self::PAYMENT_FAILED,
+        ];
+    }
+
     public function isRefund(): bool
     {
-        $allowed = [self::REFUND_REQUESTED, self::REFUND_COMPLETE, self::REFUND_DENIED];
-
-        return in_array($this, $allowed, true);
+        return in_array($this, self::getRefundTypes(), true);
     }
 
     public function isPayment(): bool
     {
-        $allowed = [self::INVOICED, self::AWAITING_PAYMENT, self::PAID, self::PAYMENT_FAILED];
-
-        return in_array($this, $allowed, true);
+        return in_array($this, self::getPaymentTypes(), true);
     }
 
     public function getName(): string
