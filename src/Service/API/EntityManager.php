@@ -331,7 +331,14 @@ class EntityManager implements ResetInterface
     private function store(string $className, array $data): ModelInterface
     {
         $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
-
+        if (isset($this->fetchedValues[$className][$id])) {
+            foreach ($this->managed as $entity) {
+                if ($entity->getId() === $id) {
+                    return $entity;
+                }
+            }
+            throw new LogicException('Identity map failed.');
+        }
         // find a better way but don't use $entity->toArray() as it would break async
         $this->fetchedValues[$className][$id] = $data;
         $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
