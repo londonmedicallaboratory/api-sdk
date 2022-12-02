@@ -333,7 +333,7 @@ class EntityManager implements ResetInterface
         $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
         if (isset($this->fetchedValues[$className][$id])) {
             foreach ($this->managed as $entity) {
-                if ($entity->getId() === $id) {
+                if (get_class($entity) === $className && $entity->getId() === $id) {
                     return $entity;
                 }
             }
