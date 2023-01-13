@@ -1045,12 +1045,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/londonmedicallaboratory/view-bundle.git",
-                "reference": "c928e95ff07abd400520f1273b72d4bf126b43b5"
+                "reference": "37ad14cd3919bce904055e952cd872362fb17837"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/londonmedicallaboratory/view-bundle/zipball/c928e95ff07abd400520f1273b72d4bf126b43b5",
-                "reference": "c928e95ff07abd400520f1273b72d4bf126b43b5",
+                "url": "https://api.github.com/repos/londonmedicallaboratory/view-bundle/zipball/37ad14cd3919bce904055e952cd872362fb17837",
+                "reference": "37ad14cd3919bce904055e952cd872362fb17837",
                 "shasum": ""
             },
             "require": {
@@ -1096,7 +1096,7 @@
                 "source": "https://github.com/londonmedicallaboratory/view-bundle/tree/master",
                 "issues": "https://github.com/londonmedicallaboratory/view-bundle/issues"
             },
-            "time": "2022-05-05T08:37:43+00:00"
+            "time": "2023-01-13T15:24:07+00:00"
         },
         {
             "name": "moneyphp/money",
