@@ -8,6 +8,7 @@ use Traversable;
 use IteratorAggregate;
 use React\Promise\PromiseInterface;
 use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Promise\CachedItemPromise;
 use function Clue\React\Block\await;
 
 /**
@@ -18,8 +19,6 @@ use function Clue\React\Block\await;
  */
 class LazyPromise implements LazyValueInterface, IteratorAggregate
 {
-
-
     private bool $evaluated = false;
 
     /**
@@ -38,7 +37,7 @@ class LazyPromise implements LazyValueInterface, IteratorAggregate
 
     public function isEvaluated(): bool
     {
-        return $this->evaluated;
+        return $this->promise instanceof CachedItemPromise || $this->evaluated;
     }
 
     public function getValue()
