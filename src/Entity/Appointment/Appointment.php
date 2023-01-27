@@ -6,22 +6,22 @@ namespace LML\SDK\Entity\Appointment;
 
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\Brand\Brand;
 use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\TestLocation\TestLocation;
 use LML\SDK\Repository\AppointmentRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
- * @template TLoc of TestLocation
+ * @template TLoc of Brand
  *
  * @psalm-type Item = array{product_id: string, quantity: int, product_sku?: ?string}
  *
  * @psalm-type S=array{
  *     id?: ?string,
- *     testlocation_id: string,
+ *     brand_id: string,
  *     appointment_time: string,
  *     product_id: ?string,
  *     patient_id: ?string,
@@ -36,14 +36,14 @@ class Appointment implements ModelInterface
     /**
      * @see AppointmentRepository::one()
      *
-     * @param LazyValueInterface<TLoc> $testLocation
+     * @param LazyValueInterface<TLoc> $brand
      * @param LazyValueInterface<DateTimeInterface> $appointmentTime
      * @param LazyValueInterface<?Product> $product
      * @param LazyValueInterface<?Patient> $patient
      * @param LazyValueInterface<bool> $isConfirmed
      */
     public function __construct(
-        protected LazyValueInterface $testLocation,
+        protected LazyValueInterface $brand,
         protected LazyValueInterface $appointmentTime,
         protected LazyValueInterface $product,
         protected LazyValueInterface $patient,
@@ -53,9 +53,9 @@ class Appointment implements ModelInterface
     {
     }
 
-    public function getTestLocation(): TestLocation
+    public function getBrand(): Brand
     {
-        return $this->testLocation->getValue();
+        return $this->brand->getValue();
     }
 
     public function getAppointmentTime(): DateTimeInterface
@@ -87,7 +87,7 @@ class Appointment implements ModelInterface
     {
         return [
             'id' => $this->id,
-            'testlocation_id' => $this->getTestLocation()->getId(),
+            'brand_id' => $this->getBrand()->getId(),
             'appointment_time' => $this->getAppointmentTime()->format('Y-m-d H:i'),
             'product_id' => $this->getProduct()?->getId(),
             'patient_id' => $this->getPatient()?->getId(),

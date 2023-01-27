@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\Calender;
+namespace LML\SDK\Entity\Brand\Calender;
 
 use DateTimeInterface;
 

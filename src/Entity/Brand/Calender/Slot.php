@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\Calender;
+namespace LML\SDK\Entity\Brand\Calender;
 
 use DateTimeInterface;
 
@@ -10,9 +10,9 @@ class Slot implements SlotInterface
 {
     public function __construct(
         protected DateTimeInterface $time,
-        private bool                $isAvailable,
-        protected ?SlotInterface    $previous = null,
-        protected ?SlotInterface    $next = null,
+        private bool $isAvailable,
+        protected ?SlotInterface $previous = null,
+        protected ?SlotInterface $next = null,
     )
     {
     }
@@ -23,10 +23,10 @@ class Slot implements SlotInterface
     public function toArray(): array
     {
         return [
-            'preview'               => $this->format('H:i'),
-            'available'             => $this->isAvailable(),
+            'preview' => $this->format('H:i'),
+            'available' => $this->isAvailable(),
             'human_readable_format' => $this->format('M, jS Y H:i'),
-            'time'                  => $this->time->format('Y-m-d H:i'),
+            'time' => $this->time->format('Y-m-d H:i'),
         ];
     }
 

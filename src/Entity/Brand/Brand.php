@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation;
+namespace LML\SDK\Entity\Brand;
 
 use Stringable;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Repository\TestLocationRepository;
-use LML\SDK\Entity\TestLocation\Calender\Slot;
-use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
+use LML\SDK\Repository\BrandRepository;
+use LML\SDK\Entity\Brand\Calender\Slot;
+use LML\SDK\Entity\Brand\WorkingHours\WorkingHours;
+use LML\SDK\Entity\Brand\WeeklyWorkingHours\WeeklyWorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
-use LML\SDK\Entity\TestLocation\WeeklyWorkingHours\WeeklyWorkingHours;
 
 /**
  * @psalm-type S=array{
@@ -28,8 +28,8 @@ use LML\SDK\Entity\TestLocation\WeeklyWorkingHours\WeeklyWorkingHours;
  *
  * @implements ModelInterface<S>
  */
-#[Entity(repositoryClass: TestLocationRepository::class, baseUrl: 'test_location')]
-class TestLocation implements ModelInterface, Stringable
+#[Entity(repositoryClass: BrandRepository::class, baseUrl: 'test_location')]
+class Brand implements ModelInterface, Stringable
 {
     /**
      * @param LazyValueInterface<list<HealthcareProfessional>> $healthcareProfessionals

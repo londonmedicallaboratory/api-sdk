@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\Calender;
+namespace LML\SDK\Entity\Brand\Calender;
 
 use function sprintf;
 
@@ -33,7 +33,7 @@ class Month implements MonthInterface
         }
 
         return [
-            'id'           => $this->getId(),
+            'id' => $this->getId(),
             'availability' => $availability,
         ];
     }

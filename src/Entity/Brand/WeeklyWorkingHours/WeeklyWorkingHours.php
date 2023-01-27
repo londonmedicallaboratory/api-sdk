@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\WeeklyWorkingHours;
+namespace LML\SDK\Entity\Brand\WeeklyWorkingHours;
 
 use Traversable;
 use IteratorAggregate;
-use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
+use LML\SDK\Entity\Brand\WorkingHours\WorkingHours;
 
 /**
  * @implements IteratorAggregate<WeeklyHoursPeriod>
@@ -23,7 +23,7 @@ class WeeklyWorkingHours implements IteratorAggregate
     }
 
     /**
-     * @param list<WorkingHours> $workingDays
+     * @param WeeklyHoursPeriod $workingDays
      *
      * @return list<WeeklyHoursPeriod>
      */

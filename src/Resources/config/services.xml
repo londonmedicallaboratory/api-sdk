@@ -69,7 +69,7 @@
         <service id="LML\SDK\Repository\PatientRepository">
             <tag name="lml_sdk.repository"/>
         </service>
-        <service id="LML\SDK\Repository\TestLocationRepository">
+        <service id="LML\SDK\Repository\BrandRepository">
             <tag name="lml_sdk.repository"/>
         </service>
         <service id="LML\SDK\Repository\HealthcareProfessionalRepository">

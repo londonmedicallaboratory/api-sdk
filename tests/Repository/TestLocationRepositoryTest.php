@@ -7,10 +7,10 @@ namespace LML\SDK\Tests\Repository;
 use DateTime;
 use Pagerfanta\Pagerfanta;
 use LML\SDK\Tests\AbstractTest;
+use LML\SDK\Entity\Brand\Brand;
 use LML\SDK\Entity\PaginatedResults;
-use LML\SDK\Entity\TestLocation\TestLocation;
-use LML\SDK\Repository\TestLocationRepository;
-use LML\SDK\Entity\TestLocation\Calender\Slot;
+use LML\SDK\Repository\BrandRepository;
+use LML\SDK\Entity\Brand\Calender\Slot;
 
 class TestLocationRepositoryTest extends AbstractTest
 {
@@ -23,7 +23,7 @@ class TestLocationRepositoryTest extends AbstractTest
         self::assertInstanceOf(PaginatedResults::class, $pagination);
         self::assertNotEmpty($pagination->getItems());
         foreach ($pagination as $item) {
-            self::assertInstanceOf(TestLocation::class, $item);
+            self::assertInstanceOf(Brand::class, $item);
             self::assertNotEmpty($item->getWorkingHours());
         }
     }
@@ -60,8 +60,8 @@ class TestLocationRepositoryTest extends AbstractTest
 
     }
 
-    private function getRepository(): TestLocationRepository
+    private function getRepository(): BrandRepository
     {
-        return $this->getService(TestLocationRepository::class);
+        return $this->getService(BrandRepository::class);
     }
 }

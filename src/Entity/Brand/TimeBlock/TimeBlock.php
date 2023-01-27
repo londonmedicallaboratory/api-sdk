@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\TimeBlock;
+namespace LML\SDK\Entity\Brand\TimeBlock;
 
 use DateTimeInterface;
 use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Repository\TestLocationRepository;
+use LML\SDK\Repository\BrandRepository;
 
 /**
- * @see TestLocationRepository::getTimeBlocks
+ * @see BrandRepository::getTimeBlocks
  *
  * @psalm-type S=array{
  *      id: string,

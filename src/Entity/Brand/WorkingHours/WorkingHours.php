@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LML\SDK\Entity\TestLocation\WorkingHours;
+namespace LML\SDK\Entity\Brand\WorkingHours;
 
 use LML\SDK\Enum\DayOfWeekEnum;
 use LML\SDK\Entity\ModelInterface;

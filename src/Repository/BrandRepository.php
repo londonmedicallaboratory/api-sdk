@@ -8,26 +8,26 @@ use DateTime;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
+use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
 use React\Promise\PromiseInterface;
+use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\TestLocation\TestLocation;
-use LML\SDK\Entity\TestLocation\Calender\Slot;
-use LML\SDK\Entity\TestLocation\TimeBlock\TimeBlock;
-use LML\SDK\Entity\TestLocation\WorkingHours\WorkingHours;
+use LML\SDK\Entity\Brand\TimeBlock\TimeBlock;
+use LML\SDK\Entity\Brand\WorkingHours\WorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
 use function sprintf;
 use function array_map;
 use function Clue\React\Block\await;
 
 /**
- * @psalm-import-type S from TestLocation
+ * @psalm-import-type S from Brand
  * @psalm-import-type S from TimeBlock as TH
  * @psalm-import-type S from WorkingHours as WH
  *
- * @extends AbstractRepository<S, TestLocation, array>
+ * @extends AbstractRepository<S, Brand, array>
  */
-class TestLocationRepository extends AbstractRepository
+class BrandRepository extends AbstractRepository
 {
     /**
      * Returns monthly availability array in format of
@@ -51,9 +51,9 @@ class TestLocationRepository extends AbstractRepository
     /**
      * @psalm-return ($await is true ? list<TimeBlock> : PromiseInterface<list<TimeBlock>>)
      */
-    public function getTimeBlocks(string $id, bool $await = false)
+    public function getTimeBlocks(bool $await = false)
     {
-        $url = sprintf('/test_location/%s/timeblocks', $id);
+        $url = '/test_location/timeblocks';
 
         /** @var PromiseInterface<list<TH>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
@@ -71,9 +71,9 @@ class TestLocationRepository extends AbstractRepository
     /**
      * @return list<Slot>
      */
-    public function getSlots(string $id, DateTime $when)
+    public function getSlots(DateTime $when)
     {
-        $url = sprintf('/test_location/%s/slots/%04d/%02d/%02d', $id, $when->format('Y'), $when->format('m'), $when->format('d'));
+        $url = sprintf('/test_location/slots/%04d/%02d/%02d', $when->format('Y'), $when->format('m'), $when->format('d'));
 
         /** @var PromiseInterface<list<array<mixed>>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
@@ -111,13 +111,13 @@ class TestLocationRepository extends AbstractRepository
         return $await ? await($resolvedPromise) : $resolvedPromise;
     }
 
-    protected function one($entity, $options, $optimizer): TestLocation
+    protected function one($entity, $options, $optimizer): Brand
     {
         $id = $entity['id'];
         $nextAvailableSlot = $entity['next_available_slot'] ?? null;
         $slot = $nextAvailableSlot ? new Slot(new DateTime($nextAvailableSlot), isAvailable: true) : null;
 
-        return new TestLocation(
+        return new Brand(
             id: $id,
             fullAddress: $entity['full_address'],
             city: $entity['city'],
