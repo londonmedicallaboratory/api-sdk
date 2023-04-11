@@ -157,7 +157,14 @@ class Basket
      */
     public function getAvailableShippingMethods(): array
     {
-        return array_intersect(...array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems()));
+        $itemsShippingMethods = array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
+        foreach ($itemsShippingMethods as $itemShippingMethods) {
+            if (!empty($itemShippingMethods)) {
+                return array_intersect(...$itemsShippingMethods);
+            }
+        }
+
+        return [];
     }
 
     public function getDiscount(): ?PriceInterface
