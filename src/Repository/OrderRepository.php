@@ -34,16 +34,9 @@ use function React\Promise\resolve;
  */
 class OrderRepository extends AbstractRepository
 {
-    public function create(Payment $payment, Basket $basket): Order
+    public function create(Payment $payment, Customer $customer, Basket $basket): Order
     {
-        $customerRepository = $this->get(CustomerRepository::class);
-
-        $customer = $customerRepository->createFromPayment($payment);
-        $customerRepository->persist($customer);
-        $customerRepository->flush();
-
         $deliveryAddress = $payment->deliveryAddress ?? $payment->billingAddress;
-
         $order = new Order(
             id: '',
             customer: new ResolvedValue($customer),
@@ -68,7 +61,6 @@ class OrderRepository extends AbstractRepository
 
         $addressId = $entity['address_id'] ?? null;
         $address = $addressId ? new LazyPromise($this->getAddress($id)) : new ResolvedValue(null);
-
         $priceData = $entity['price'];
         $price = new Price(
             amount: $priceData['amount_minor'],
