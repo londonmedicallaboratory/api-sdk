@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use RuntimeException;
 use LML\SDK\DTO\Payment;
-use LML\SDK\Lazy\LazyPromise;
-use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Customer\Customer;
-use LML\View\Lazy\LazyValueInterface;
-use React\Http\Message\ResponseException;
+use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\View\Lazy\LazyValueInterface;
+use LML\View\Lazy\ResolvedValue;
+use React\Http\Message\ResponseException;
+use RuntimeException;
 use function Clue\React\Block\await;
 
 /**
@@ -40,9 +40,9 @@ class CustomerRepository extends AbstractRepository
         }
     }
 
-    public function createFromPayment(Payment $payment): Customer
+    public function create(Payment $payment): Customer
     {
-        return new Customer(
+        $customer = new Customer(
             id: '',
             firstName: $payment->customersFirstName ?? throw new RuntimeException(),
             lastName: $payment->customersLastName ?? throw new RuntimeException(),
@@ -50,6 +50,11 @@ class CustomerRepository extends AbstractRepository
             phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
             isSubscribedToNewsletter: new ResolvedValue(false),
         );
+
+        $this->persist($customer);
+        $this->flush();
+
+        return $customer;
     }
 
     protected function one($entity, $options, $optimizer): Customer
