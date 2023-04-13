@@ -29,6 +29,7 @@ use function sprintf;
  *      password?: string,
  *      billing_address_id?: ?string,
  *      is_subscribed_to_newsletter?: bool,
+ *      password_set?: ?bool,
  * }
  *
  * @implements ModelInterface<S>
@@ -45,6 +46,7 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         private string $lastName,
         private string $email,
         protected LazyValueInterface $isSubscribedToNewsletter,
+        protected readonly bool $passwordSet = false,
         private ?string $phoneNumber = null,
         private ?string $foreignId = null,
         private ?string $id = null,

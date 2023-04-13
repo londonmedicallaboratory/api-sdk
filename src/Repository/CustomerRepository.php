@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
+use RuntimeException;
 use LML\SDK\DTO\Payment;
+use LML\SDK\Lazy\LazyPromise;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Customer\Customer;
-use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Service\API\AbstractRepository;
 use LML\View\Lazy\LazyValueInterface;
-use LML\View\Lazy\ResolvedValue;
 use React\Http\Message\ResponseException;
-use RuntimeException;
+use LML\SDK\Service\API\AbstractRepository;
 use function Clue\React\Block\await;
 
 /**
@@ -67,6 +67,7 @@ class CustomerRepository extends AbstractRepository
             lastName: $entity['last_name'],
             billingAddress: $this->getBillingAddress($entity),
             email: $entity['email'],
+            passwordSet: $entity['password_set'] ?? false,
             phoneNumber: $entity['phone_number'] ?? null,
             foreignId: $entity['foreign_id'] ?? null,
             isSubscribedToNewsletter: new ResolvedValue($entity['is_subscribed_to_newsletter'] ?? false),
