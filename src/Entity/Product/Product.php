@@ -38,6 +38,8 @@ class Product implements ModelInterface, SluggableInterface, Stringable
     /**
      * @see ProductRepository::one()
      *
+     * @param LazyValueInterface<string> $description
+     * @param LazyValueInterface<string> $shortDescription
      * @param LazyValueInterface<PriceInterface> $price
      * @param LazyValueInterface<list<Shipping>> $shippingTypes
      * @param LazyValueInterface<list<File>> $files
@@ -51,8 +53,8 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         protected string $name,
         protected string $sku,
         protected string $slug,
-        protected string $description,
-        protected string $shortDescription,
+        protected LazyValueInterface $description,
+        protected LazyValueInterface $shortDescription,
         protected bool $isFeatured,
         protected ?string $previewImageUrl,
         protected LazyValueInterface $price,
@@ -111,12 +113,12 @@ class Product implements ModelInterface, SluggableInterface, Stringable
 
     public function getShortDescription(): string
     {
-        return $this->shortDescription;
+        return $this->shortDescription->getValue();
     }
 
     public function getLongDescription(): string
     {
-        return $this->description;
+        return $this->description->getValue();
     }
 
     public function getPrice(): PriceInterface
