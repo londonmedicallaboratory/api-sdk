@@ -8,6 +8,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\Money\Price;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Shipping\Shipping;
@@ -54,7 +55,7 @@ class ProductRepository extends AbstractRepository
             shortDescription: $entity['short_description'] ?? throw new DataNotFoundException(),
             previewImageUrl: $entity['preview_image_url'],
             isFeatured: $entity['is_featured'] ?? false,
-            price: $price,
+            price: new ResolvedValue($price),
             biomarkers: new LazyPromise($this->getBiomarkers($id)),
             shippingTypes: new LazyPromise($this->getShippingTypes($id)),
             files: new LazyPromise($this->getFiles($id)),

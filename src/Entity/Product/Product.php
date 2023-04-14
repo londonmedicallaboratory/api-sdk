@@ -38,6 +38,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
     /**
      * @see ProductRepository::one()
      *
+     * @param LazyValueInterface<PriceInterface> $price
      * @param LazyValueInterface<list<Shipping>> $shippingTypes
      * @param LazyValueInterface<list<File>> $files
      * @param LazyValueInterface<list<Category>> $categories
@@ -54,7 +55,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         protected string $shortDescription,
         protected bool $isFeatured,
         protected ?string $previewImageUrl,
-        protected PriceInterface $price,
+        protected LazyValueInterface $price,
         protected LazyValueInterface $biomarkers,
         protected LazyValueInterface $shippingTypes,
         protected LazyValueInterface $files,
@@ -120,7 +121,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
 
     public function getPrice(): PriceInterface
     {
-        return $this->price;
+        return $this->price->getValue();
     }
 
     /**
