@@ -10,21 +10,30 @@ use RuntimeException;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
 use LML\SDK\Promise\CachedItemPromise;
+use Symfony\Component\Cache\CacheItem;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Message\ResponseException;
+use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use function rtrim;
 use function ltrim;
 use function sprintf;
+use function array_map;
 use function str_replace;
 use function json_decode;
 use function array_merge;
 use function json_encode;
+use function preg_replace;
 use function base64_encode;
 use function http_build_query;
 
-class Client implements ClientInterface
+class Client implements ClientInterface, ResetInterface
 {
+    /**
+     * @var array<string, PromiseInterface>
+     */
+    private array $promiseMap = [];
+
     private Browser $browser;
 
     public function __construct(
@@ -35,6 +44,11 @@ class Client implements ClientInterface
     )
     {
         $this->browser = new Browser();
+    }
+
+    public function reset(): void
+    {
+        $this->promiseMap = [];
     }
 
     public function patch(string $url, string $id, array $data): PromiseInterface
@@ -76,7 +90,7 @@ class Client implements ClientInterface
         $tag = $tag ? preg_replace('/\W/', '', $tag) : null;
 
         $url = $this->createRealUrl($url, $filters, $page, $limit);
-        $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
+        $cache = $this->getCache();
         $cacheKey = $this->createCacheKey($url);
 
         $item = $cache->getItem($cacheKey);
@@ -86,11 +100,21 @@ class Client implements ClientInterface
             });
         }
 
-        $cacheTimeout ??= $this->cacheExpiration;
+        return $this->promiseMap[$url] ??= $this->doGetPromise($url, $item, $cacheTimeout ?? $this->cacheExpiration, $tag);
+    }
 
+    public function invalidate(string ...$tags): void
+    {
+        $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
+        $tags = array_map(static fn(string $tag) => preg_replace('/\W/', '', $tag), $tags);
+        $cache->invalidateTags($tags);
+    }
+
+    public function doGetPromise(string $url, CacheItem $item, int $cacheTimeout, ?string $tag): PromiseInterface
+    {
         return $this->browser->get($url, $this->getAuthHeaders())
             ->then(
-                onFulfilled: static function (ResponseInterface $response) use ($item, $cache, $cacheTimeout, $tag): array {
+                onFulfilled: function (ResponseInterface $response) use ($item, $cacheTimeout, $tag): array {
                     $body = (string)$response->getBody();
                     try {
                         /** @var array<string, mixed> $data */
@@ -104,7 +128,7 @@ class Client implements ClientInterface
                     if ($tag) {
                         $item->tag($tag);
                     }
-                    $cache->save($item);
+                    $this->getCache()->save($item);
 
                     return $data;
                 },
@@ -117,11 +141,9 @@ class Client implements ClientInterface
             );
     }
 
-    public function invalidate(string ...$tags): void
+    private function getCache(): TagAwareAdapterInterface
     {
-        $cache = $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
-        $tags = array_map(static fn(string $tag) => preg_replace('/\W/', '', $tag), $tags);
-        $cache->invalidateTags($tags);
+        return $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
     }
 
     private function createRealUrl(string $url, array $filters = [], int $page = 1, ?int $limit = null): string
