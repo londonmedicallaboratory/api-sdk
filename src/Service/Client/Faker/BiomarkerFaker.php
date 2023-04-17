@@ -19,6 +19,7 @@ class BiomarkerFaker implements FakerInterface
         'slug' => '1',
         'code' => 'Total Cholesterol ',
         'description' => 'Total Cholesterol ',
+        'category_id' => '1',
     ];
 
     public const BIOMARKER_2 = [
@@ -27,6 +28,7 @@ class BiomarkerFaker implements FakerInterface
         'slug' => '2',
         'code' => 'High Density Lipoprotein',
         'description' => 'High Density Lipoprotein',
+        'category_id' => '2',
     ];
 
     public const BIOMARKER_3 = [
@@ -35,6 +37,7 @@ class BiomarkerFaker implements FakerInterface
         'slug' => '3',
         'code' => 'Low Density Lipoprotein',
         'description' => 'Low Density Lipoprotein',
+        'category_id' => '3',
     ];
 
     public function getPaginatedData()

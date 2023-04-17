@@ -18,6 +18,7 @@ use LML\SDK\Repository\BiomarkerRepository;
  *     code: string,
  *     slug: string,
  *     description: ?string,
+ *     category_id: string,
  * }
  *
  * @implements ModelInterface<S>
@@ -90,6 +91,7 @@ class Biomarker implements ModelInterface, Stringable
             'code' => $this->getCode(),
             'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
+            'category_id' => $this->getCategory()->getId(),
         ];
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\File\File;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Category\Category;
 use LML\SDK\Entity\Biomarker\Biomarker;
@@ -40,5 +41,15 @@ class BiomarkerRepository extends AbstractRepository
         $url = sprintf('/biomarker/%s/category', $id);
 
         return $this->get(BiomarkerCategoryRepository::class)->fetchOneBy(url: $url);
+    }
+
+    /**
+     * @return PromiseInterface<?File>
+     */
+    private function getLogo(string $id): PromiseInterface
+    {
+        $url = sprintf('/product_collection/%s/logo', $id);
+
+        return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
 }
