@@ -17,6 +17,7 @@ use LML\SDK\Entity\ModelInterface;
  *      comment?: ?string,
  *      successful: bool,
  *      error_reason?: string,
+ *      out_of_range?: null|'high'|'low',
  * }
  *
  * @implements ModelInterface<S>
