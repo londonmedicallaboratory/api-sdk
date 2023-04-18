@@ -7,6 +7,7 @@ namespace LML\SDK\Entity\Appointment;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\Brand\Brand;
+use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
@@ -63,6 +64,11 @@ class Appointment implements ModelInterface
         return $this->appointmentTime->getValue();
     }
 
+    public function setAppointmentTime(DateTimeInterface $appointmentTime): void
+    {
+        $this->appointmentTime = new ResolvedValue($appointmentTime);
+    }
+
     public function getProduct(): ?Product
     {
         return $this->product->getValue();
@@ -88,7 +94,7 @@ class Appointment implements ModelInterface
         return [
             'id' => $this->id,
             'brand_id' => $this->getBrand()->getId(),
-            'appointment_time' => $this->getAppointmentTime()->format('Y-m-d H:i'),
+            'appointment_time' => $this->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
             'product_id' => $this->getProduct()?->getId(),
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
