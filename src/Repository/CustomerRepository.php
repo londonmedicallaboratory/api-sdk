@@ -40,6 +40,11 @@ class CustomerRepository extends AbstractRepository
         }
     }
 
+    public function setPassword(string $password, Customer $customer): void
+    {
+        $this->getClient()->patch('/customer', $customer->getId(), ['password' => $password]);
+    }
+
     public function create(Payment $payment): Customer
     {
         $customer = new Customer(
