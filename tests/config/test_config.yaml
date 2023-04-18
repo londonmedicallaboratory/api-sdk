@@ -1,5 +1,6 @@
 framework:
     test: true
+    profiler: { enabled: true, collect: true }
     cache:
         pools:
             test_cache_pool: # default pool name; use redis if possible

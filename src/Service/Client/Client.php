@@ -99,6 +99,7 @@ class Client implements ClientInterface, ResetInterface
                 $resolve($item->get());
             });
         }
+//        dump($url);
 
         return $this->promiseMap[$url] ??= $this->doGetPromise($url, $item, $cacheTimeout ?? $this->cacheExpiration, $tag);
     }
