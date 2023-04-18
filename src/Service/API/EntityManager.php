@@ -18,6 +18,8 @@ use LML\SDK\Util\ReflectionAttributeReader;
 use LML\SDK\Exception\DataNotFoundException;
 use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use function array_key_exists;
+use function React\Promise\resolve;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 
@@ -40,6 +42,19 @@ class EntityManager implements ResetInterface
      * @var array<string, ModelInterface>
      */
     private array $managed = [];
+
+    /**
+     * Identity map like one in Doctrine. For example:
+     *
+     * <code>
+     *  array['Product' => [
+     *      1 => $product1,  // $id => $instance
+     *  ]]
+     * </code>
+     *
+     * @var array<class-string<ModelInterface>, array<string, PromiseInterface<ModelInterface>>>
+     */
+    private array $identityMap = [];
 
     /**
      * @var array<class-string, array<string, array>>
@@ -67,10 +82,12 @@ class EntityManager implements ResetInterface
         $this->entitiesToBeDeleted = [];
         $this->managed = [];
         $this->fetchedValues = [];
+        $this->identityMap = [];
     }
 
     /**
      * @template TView of ModelInterface
+     *
      * @param class-string<TView> $className
      *
      * @return ($await is true ? TView : PromiseInterface<?TView>)
@@ -102,8 +119,14 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress all
      */
-    public function find(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
+    public function find(string $className, string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
+        if (array_key_exists($id, $this->identityMap[$className] ?? [])) {
+            $promise = $this->identityMap[$className][$id];
+
+            return $await ? await($promise) : $promise;
+        }
+
         $url ??= sprintf('%s/%s', $this->getBaseUrl($className), $id);
         $client = $this->client;
 
@@ -112,6 +135,8 @@ class EntityManager implements ResetInterface
                 onFulfilled: fn($data) => $data ? $this->store($className, $data) : null,
                 onRejected: fn() => null,
             );
+
+        $this->identityMap[$className][$id] = $promise;
 
         return $await ? await($promise) : $promise;
     }
@@ -140,7 +165,10 @@ class EntityManager implements ResetInterface
      *
      * @return ($await is true ? PaginatedResults<TView> : PromiseInterface<PaginatedResults<TView>>)
      *
-     * @psalm-suppress all
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnType
      */
     public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, bool $await = false): PromiseInterface|PaginatedResults
     {
@@ -326,7 +354,7 @@ class EntityManager implements ResetInterface
     }
 
     /**
-     * @param class-string $className
+     * @param class-string<ModelInterface> $className
      */
     private function store(string $className, array $data): ModelInterface
     {
@@ -345,6 +373,8 @@ class EntityManager implements ResetInterface
         $repo = $this->getRepository($repoName);
         $entity = $repo->buildOne($data);
         $this->managed[spl_object_hash($entity)] = $entity;
+
+        $this->identityMap[$className][$id] = resolve($entity);
 
         return $entity;
     }
