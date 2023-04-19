@@ -66,14 +66,14 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
     public function getLastName(): string
     {
         return $this->lastName;
+    }
+
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
     }
 
     public function setLastName(string $lastName): void
@@ -81,19 +81,9 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         $this->lastName = $lastName;
     }
 
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
     }
 
     public function setPhoneNumber(?string $phoneNumber): void
@@ -104,11 +94,6 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
     public function getId(): string
     {
         return $this->id ?? throw new EntityNotPersistedException();
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
     }
 
     public function setPassword(string $hashedPassword): void
@@ -130,6 +115,11 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         return $this->getEmail();
     }
 
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress?->getValue();
@@ -140,11 +130,6 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         $this->billingAddress = new ResolvedValue($billingAddress);
     }
 
-    public function isSubscribedToNewsletter(): bool
-    {
-        return $this->isSubscribedToNewsletter->getValue();
-    }
-
     public function setIsSubscribedToNewsletter(bool $isSubscribedToNewsletter): void
     {
         $this->isSubscribedToNewsletter = new ResolvedValue($isSubscribedToNewsletter);
@@ -153,6 +138,26 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
     public function getForeignId(): ?string
     {
         return $this->foreignId;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function isSubscribedToNewsletter(): bool
+    {
+        return $this->isSubscribedToNewsletter->getValue();
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function isPasswordSet(): bool
+    {
+        return $this->passwordSet;
     }
 
     public function toArray()
