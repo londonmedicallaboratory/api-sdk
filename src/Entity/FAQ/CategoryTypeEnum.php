@@ -10,6 +10,7 @@ enum CategoryTypeEnum: string implements NameableInterface
     case CUSTOMER = 'customer';
     case HEALTH_CHECK = 'health_check';
     case CLINICAL_HUB = 'clinical_hub';
+    case CLIENT_HUB = 'client_hub';
 
     public function getName(): string
     {
@@ -17,6 +18,7 @@ enum CategoryTypeEnum: string implements NameableInterface
             self::CUSTOMER => 'Customer FAQs',
             self::HEALTH_CHECK => 'Health Check FAQs',
             self::CLINICAL_HUB => 'Clinical hubs FAQs',
+            self::CLIENT_HUB => 'Client hubs FAQs',
         };
     }
 }
