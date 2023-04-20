@@ -7,7 +7,10 @@ namespace LML\SDK\Service\API;
 use LogicException;
 use ReflectionClass;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Event\PostFlushEvent;
+use LML\SDK\Event\PreUpdateEvent;
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Event\PrePersistEvent;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Exception\FlushException;
@@ -18,6 +21,16 @@ use LML\SDK\Util\ReflectionAttributeReader;
 use LML\SDK\Exception\DataNotFoundException;
 use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use function trim;
+use function rtrim;
+use function sprintf;
+use function in_array;
+use function array_map;
+use function get_class;
+use function json_decode;
+use function array_merge;
+use function spl_object_hash;
 use function array_key_exists;
 use function React\Promise\resolve;
 use function Clue\React\Block\await;
@@ -48,7 +61,7 @@ class EntityManager implements ResetInterface
      *
      * <code>
      *  array['Product' => [
-     *      1 => $product1,  // $id => $instance
+     *      1 => PromiseInterface<$product1>,  // $id => promise of $instance
      *  ]]
      * </code>
      *
@@ -62,11 +75,17 @@ class EntityManager implements ResetInterface
     private array $fetchedValues = [];
 
     /**
+     * @var array<class-string<ModelInterface>, Entity>
+     */
+    private array $entityAttributeCache = [];
+
+    /**
      * @param ServiceLocator<class-string, AbstractRepository> $repositories
      */
     public function __construct(
         private ServiceLocator $repositories,
         private ClientInterface $client,
+        private EventDispatcherInterface $eventDispatcher,
     )
     {
     }
@@ -233,8 +252,8 @@ class EntityManager implements ResetInterface
      */
     public function flush(): void
     {
-        $promises = [];
-        foreach ($this->newEntities as $entity) {
+        foreach ($this->getSortedOrderOfNewEntities() as $entity) {
+            $this->eventDispatcher->dispatch(new PrePersistEvent($entity));
             $baseUrl = $this->getBaseUrl(get_class($entity));
             // POST must be sync in order to populate their IDs. User **must** manually care about order of persisting until better solution is made i.e. one that detects the order just like Doctrine.
             // example: both Category and Product are created in same request, many2one relation. Use that as reference.
@@ -247,6 +266,8 @@ class EntityManager implements ResetInterface
                     $property = $rc->getProperty('id');
                     $property->setAccessible(true);
                     $property->setValue($entity, $id);
+
+                    $this->eventDispatcher->dispatch(new PostFlushEvent($entity));
                 },
                 onRejected: function (ResponseException $e) {
                     $body = (string)$e->getResponse()->getBody();
@@ -257,13 +278,14 @@ class EntityManager implements ResetInterface
             await($promise);
         }
 
+        $promises = [];
         foreach ($this->managed as $entity) {
             if ($this->isEntityChanged($entity)) {
+                $this->eventDispatcher->dispatch(new PreUpdateEvent($entity));
                 $baseUrl = $this->getBaseUrl(get_class($entity));
                 $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
             }
         }
-
         foreach ($this->entitiesToBeDeleted as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
             $promises[] = $this->client->delete($baseUrl, $entity->getId());
@@ -312,16 +334,55 @@ class EntityManager implements ResetInterface
         return $this->repositories->get($className);
     }
 
+    public function getRepositoryForModel(ModelInterface $model): AbstractRepository
+    {
+        $entityAttribute = $this->getEntityAttribute(get_class($model));
+        $repositoryName = $entityAttribute->getRepositoryClass();
+
+        return $this->getRepository($repositoryName);
+    }
+
     /**
-     * @param class-string $className
+     * @param class-string<ModelInterface> $className
      */
     public function getBaseUrl(string $className): string
     {
-        $attribute = ReflectionAttributeReader::getAttribute($className, Entity::class);
-
-        $url = $attribute?->getBaseUrl() ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
+        $attribute = $this->getEntityAttribute($className);
+        $url = $attribute->getBaseUrl();
 
         return trim($url, '/');
+    }
+
+    /**
+     * @return list<ModelInterface>
+     */
+    private function getSortedOrderOfNewEntities(): array
+    {
+        $sortedEntities = [];
+        foreach ($this->newEntities as $newEntity) {
+            $repo = $this->getRepositoryForModel($newEntity);
+            foreach ($repo->getPersistenceGraph($newEntity) as $item) {
+                if ($item && $this->isNew($item) && !in_array($item, $sortedEntities, true)) {
+                    $sortedEntities[] = $item;
+                }
+            }
+            if (!in_array($newEntity, $sortedEntities, true)) {
+                $sortedEntities[] = $newEntity;
+            }
+        }
+        // add any remaining, non-graphed entities, to this list
+        foreach ($this->newEntities as $newEntity) {
+            if (!in_array($newEntity, $sortedEntities, true)) {
+                $sortedEntities[] = $newEntity;
+            }
+        }
+
+        return $sortedEntities;
+    }
+
+    private function isNew(ModelInterface $model): bool
+    {
+        return in_array($model, $this->newEntities, true);
     }
 
     /**
@@ -380,31 +441,17 @@ class EntityManager implements ResetInterface
     }
 
     /**
-     * @todo Use this method to assert identity-map for multiple calls
-     *
-     * @template TClass of ModelInterface
-     *
-     * @param class-string<TClass> $className
-     *
-     * @return TClass
-     *
-     * @psalm-suppress all
+     * @param class-string<ModelInterface> $className
      */
-    private function doStore(string $className, array $data): ModelInterface
+    private function getEntityAttribute(string $className): Entity
     {
-        $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
-
-        $this->fetchedValues[$className][$id] = $data;
-        $repoName = $this->getEntityAttribute($className)->getRepositoryClass();
-        $repo = $this->getRepository($repoName);
-
-        return $repo->buildOne($data);
+        return $this->entityAttributeCache[$className] ??= $this->doGetEntityAttribute($className);
     }
 
     /**
-     * @param class-string $className
+     * @param class-string<ModelInterface> $className
      */
-    private function getEntityAttribute(string $className): Entity
+    private function doGetEntityAttribute(string $className): Entity
     {
         return ReflectionAttributeReader::getAttribute($className, Entity::class) ?? throw new LogicException(sprintf('Model %s is not properly configured, missing %s attribute.', $className, Entity::class));
     }

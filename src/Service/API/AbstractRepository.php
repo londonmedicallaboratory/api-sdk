@@ -41,6 +41,16 @@ abstract class AbstractRepository extends AbstractViewFactory
     private ?EntityManager $entityManager = null;
 
     /**
+     * @param TView $view
+     *
+     * @return iterable<null|ModelInterface>
+     */
+    public function getPersistenceGraph(ModelInterface $view): iterable
+    {
+        return [];
+    }
+
+    /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
     public function find(?string $id = null, bool $await = false, ?string $url = null): null|ModelInterface|PromiseInterface

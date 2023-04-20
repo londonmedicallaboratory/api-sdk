@@ -116,6 +116,7 @@
         <service id="LML\SDK\Service\API\EntityManager">
             <argument type="tagged_locator" tag="lml_sdk.repository" default-index-method="getDefaultName"/>
             <argument type="service" id="lml_sdk.client"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="LML\SDK\ArgumentValueResolver\EntityParamConverter">

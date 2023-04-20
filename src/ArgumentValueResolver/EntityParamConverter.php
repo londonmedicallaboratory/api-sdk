@@ -6,12 +6,14 @@ namespace LML\SDK\ArgumentValueResolver;
 
 use RuntimeException;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Service\API\EntityManager;
 use LML\SDK\Util\ReflectionAttributeReader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
+use function is_a;
 use function sprintf;
 
 /**
@@ -35,9 +37,12 @@ class EntityParamConverter implements ParamConverterInterface
         if (!$class) {
             return false;
         }
-        $model = ReflectionAttributeReader::getAttribute($class, Entity::class);
+        if (!is_a($class, ModelInterface::class, true)) {
+            return false;
+        }
+        $entityAttribute = ReflectionAttributeReader::getAttribute($class, Entity::class);
 
-        return (bool)$model;
+        return (bool)$entityAttribute;
     }
 
     public function apply(Request $request, ParamConverter $configuration): bool
@@ -49,6 +54,9 @@ class EntityParamConverter implements ParamConverterInterface
             return false;
         }
         $class = $configuration->getClass() ?? throw new RuntimeException('This must never happen.');
+        if (!is_a($class, ModelInterface::class, true)) {
+            return false;
+        }
         $attribute = ReflectionAttributeReader::getAttribute($class, Entity::class) ?? throw new RuntimeException('This must never happen.');
         $repository = $this->modelManager->getRepository($attribute->getRepositoryClass());
 

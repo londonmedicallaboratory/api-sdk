@@ -7,6 +7,7 @@ namespace LML\SDK\Repository;
 use DateTime;
 use LML\SDK\Lazy\LazyPromise;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Patient\Patient;
@@ -25,6 +26,13 @@ use function sprintf;
  */
 class TestRegistrationRepository extends AbstractRepository
 {
+    public function getPersistenceGraph(ModelInterface $view): iterable
+    {
+        yield from $view->getProducts();
+        yield $view->getPatient();
+        yield $view->getAppointment();
+    }
+
     protected function one($entity, $options, $optimizer): TestRegistration
     {
         $createdAt = $entity['created_at'] ?? null;
