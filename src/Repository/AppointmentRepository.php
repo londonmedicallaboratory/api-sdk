@@ -9,6 +9,7 @@ use DateTimeInterface;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Patient\Patient;
@@ -25,6 +26,12 @@ use LML\SDK\Entity\Appointment\Appointment;
  */
 class AppointmentRepository extends AbstractRepository
 {
+    public function getPersistenceGraph(ModelInterface $view): iterable
+    {
+        yield $view->getProduct();
+        yield $view->getPatient();
+    }
+
     protected function one($entity, $options, $optimizer): Appointment
     {
         $id = $entity['id'] ?? null;

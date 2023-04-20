@@ -56,6 +56,19 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
     {
     }
 
+    /**
+     * @see https://symfony.com/doc/current/security.html#understanding-how-users-are-refreshed-from-the-session
+     */
+    public function __serialize()
+    {
+        return [
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'email' => $this->getEmail(),
+            'password' => $this->getPassword(),
+        ];
+    }
+
     public function __toString(): string
     {
         return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
