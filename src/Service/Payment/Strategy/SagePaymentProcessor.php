@@ -16,6 +16,7 @@ use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use function sscanf;
 use function sprintf;
+use function str_replace;
 use function method_exists;
 use function number_format;
 
@@ -27,7 +28,8 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
 {
     public function __construct(
         private InformationBooth $informationBooth,
-    ) {
+    )
+    {
     }
 
     public static function getName(): string
@@ -59,15 +61,17 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
     {
         $gateway = $this->createGateway();
 
-        $splitCardExpire = sscanf($payment->cardExpirationDate ?? throw new RuntimeException(), '%d/%d');
+        $cardExpirationDate = $this->trim($payment->cardExpirationDate ?? throw new RuntimeException());
+        $splitCardExpire = sscanf($cardExpirationDate, '%d/%d');
         $month = $splitCardExpire[0] ?? throw new RuntimeException();
         $year = $splitCardExpire[1] ?? throw new RuntimeException();
         $billingAddress = $payment->billingAddress ?? throw new RuntimeException();
+        $cardNumber = $this->trim($payment->cardNumber ?? throw new RuntimeException());
 
         $card = new CreditCard([
             'firstName' => $payment->cardFirstName ?? throw new RuntimeException(),
             'lastName' => $payment->cardLastName ?? throw new RuntimeException(),
-            'number' => $payment->cardNumber ?? throw new RuntimeException(),
+            'number' => $cardNumber,
             'cvv' => $payment->cardCVV ?? throw new RuntimeException(),
             'expiryMonth' => $month,
             'expiryYear' => $year,
@@ -133,5 +137,12 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
         }
 
         return null;
+    }
+
+    private function trim(string $input): string
+    {
+        $input = trim($input);
+
+        return str_replace(' ', '', $input);
     }
 }
