@@ -15,6 +15,7 @@ use LML\SDK\Entity\Order\Order;
 use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Enum\OrderStatusEnum;
+use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Order\BasketItem;
@@ -22,6 +23,7 @@ use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\CarrierEnum;
 use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Exception\FlushException;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use function sprintf;
@@ -34,6 +36,14 @@ use function React\Promise\resolve;
  */
 class OrderRepository extends AbstractRepository
 {
+    public function getPersistenceGraph(ModelInterface $view): iterable
+    {
+        yield $view->getCustomer();
+    }
+
+    /**
+     * @throws FlushException
+     */
     public function create(Payment $payment, Customer $customer, Basket $basket): Order
     {
         $deliveryAddress = $payment->deliveryAddress ?? $payment->billingAddress;
@@ -47,6 +57,7 @@ class OrderRepository extends AbstractRepository
             billingAddress: new ResolvedValue($payment->deliveryAddress ? null : $payment->billingAddress),
             shipping: new ResolvedValue($payment->shipping),
             appointments: new LazyValue(fn() => []),
+            status: OrderStatusEnum::AWAITING_PAYMENT,
         );
 
         $this->persist($order);
@@ -70,7 +81,7 @@ class OrderRepository extends AbstractRepository
 
         $shippingDate = $entity['shipping_date'] ?? null;
         $createdAt = $entity['created_at'] ?? null;
-        $status = $entity['status'] ?? null;
+        $status = $entity['status'] ?? '';
 
         $carrier = $entity['carrier'] ?? null;
 
@@ -85,7 +96,7 @@ class OrderRepository extends AbstractRepository
             items: new ResolvedValue($this->createItems($entity['items'])),
             shipping: $this->getShipping($entity),
             appointments: new LazyPromise($this->getAppointments($id)),
-            status: $status ? OrderStatusEnum::tryFrom($status) : null,
+            status: OrderStatusEnum::tryFrom($status) ?? OrderStatusEnum::AWAITING_PAYMENT,
             createdAt: $createdAt ? new DateTime($createdAt) : null,
             orderNumber: $entity['order_number'] ?? null,
             carrier: $carrier ? CarrierEnum::from($carrier) : null,

@@ -75,9 +75,9 @@ class Order implements ModelInterface
         protected LazyValueInterface $shipping,
         protected LazyValueInterface $appointments,
         protected LazyValueInterface $billingAddress,
+        protected OrderStatusEnum $status,
         protected ?DateTimeInterface $shippingDate = null,
         protected ?string $companyName = null,
-        protected ?OrderStatusEnum $status = null,
         protected ?DateTimeInterface $createdAt = null,
         protected ?int $orderNumber = null,
         protected ?CarrierEnum $carrier = null,
@@ -86,14 +86,19 @@ class Order implements ModelInterface
     {
     }
 
-    public function getStatus(): ?OrderStatusEnum
+    public function getStatus(): OrderStatusEnum
     {
         return $this->status;
     }
 
-    public function getStatusName(): ?string
+    public function setStatus(OrderStatusEnum $status): void
     {
-        return $this->getStatus()?->getName();
+        $this->status = $status;
+    }
+
+    public function getStatusName(): string
+    {
+        return $this->getStatus()->getName();
     }
 
     public function getCreatedAt(): ?DateTimeInterface

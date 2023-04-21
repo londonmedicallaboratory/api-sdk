@@ -18,6 +18,7 @@ use LML\SDK\Enum\Model\NameableInterface;
  */
 enum OrderStatusEnum: string implements NameableInterface
 {
+    case AWAITING_PAYMENT = 'awaiting_payment';
     case AWAITING_SHIPPING = 'awaiting_shipping';
     case MANIFESTED = 'manifested';
     case SHIPPED = 'shipped';
@@ -35,6 +36,7 @@ enum OrderStatusEnum: string implements NameableInterface
     public function getName(): string
     {
         return match ($this) {
+            self::AWAITING_PAYMENT => 'Awaiting payment',
             self::MANIFESTED => 'Manifested',
             self::AWAITING_SHIPPING => 'Awaiting shipping',
             self::DELIVERED => 'Delivered',
