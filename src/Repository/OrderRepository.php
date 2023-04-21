@@ -28,6 +28,7 @@ use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use function sprintf;
 use function React\Promise\resolve;
+use function Clue\React\Block\await;
 
 /**
  * @psalm-import-type S from Order
@@ -39,6 +40,12 @@ class OrderRepository extends AbstractRepository
     public function getPersistenceGraph(ModelInterface $view): iterable
     {
         yield $view->getCustomer();
+    }
+
+    public function setStatusAsPaid(Order $order): void
+    {
+        await($this->getClient()->patch('/order', $order->getId(), ['status' => OrderStatusEnum::AWAITING_SHIPPING->value]));
+        $order->setStatus(OrderStatusEnum::AWAITING_SHIPPING);
     }
 
     /**
