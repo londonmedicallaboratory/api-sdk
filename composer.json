@@ -23,7 +23,7 @@
         "clue/block-react": "^1.5",
         "brick/money": "^0.5.3",
         "symfony/twig-bundle": "^6.1.1",
-        "omnipay/sagepay": "dev-feature/pi-protocol-4",
+        "omnipay/sagepay": "~3.0",
         "symfony/intl": "^6.1",
         "sensio/framework-extra-bundle": "^6.2.7",
         "twig/extra-bundle": "^3.4",
@@ -33,7 +33,8 @@
         "strictify/goodies-bundle": "dev-master",
         "symfony/form": "^6.1.4",
         "webmozart/assert": "^1.11",
-        "symfony/security-bundle": "^6.1"
+        "symfony/security-bundle": "^6.1",
+        "nyholm/psr7": "^1.7"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -53,10 +54,6 @@
         {
             "type": "github",
             "url": "https://github.com/londonmedicallaboratory/view-bundle.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/benjam-es/omnipay-sagepay"
         },
         {
             "type": "github",
@@ -85,7 +82,8 @@
     },
     "config": {
         "allow-plugins": {
-            "endroid/installer": true
+            "endroid/installer": true,
+            "php-http/discovery": true
         }
     }
 }

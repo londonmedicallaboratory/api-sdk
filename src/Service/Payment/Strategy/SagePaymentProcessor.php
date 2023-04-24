@@ -91,7 +91,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
 
         $price = $payment->price ?? throw new RuntimeException();
         $amount = number_format($price->getAmount() / 100, 2);
-        $requestMessage = $gateway->purchase([
+        $requestMessage = $gateway->authorize([
             'amount' => $amount,
             'currency' => 'GBP',
             'card' => $card,
@@ -116,6 +116,7 @@ class SagePaymentProcessor implements PaymentProcessorStrategyInterface
             'vendor' => $vendor,
             'testMode' => true,
             'encryptionKey' => $encryptionKey,
+            'apply3DSecure' => 3,
         ]);
     }
 
