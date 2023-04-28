@@ -36,7 +36,7 @@ class ProductRepository extends AbstractRepository
 {
     protected function one($entity, $options, $optimizer): Product
     {
-        $priceData = $entity['price'];
+        $priceData = $entity['price'] ?? throw new DataNotFoundException();
 
         $price = new Price(
             amount: $priceData['amount_minor'],

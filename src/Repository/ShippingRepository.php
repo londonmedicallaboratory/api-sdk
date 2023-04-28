@@ -7,6 +7,7 @@ namespace LML\SDK\Repository;
 use LML\SDK\Entity\Money\Price;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Exception\DataNotFoundException;
 
 /**
  * @psalm-import-type S from Shipping
@@ -18,7 +19,7 @@ class ShippingRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): Shipping
     {
         $id = $entity['id'];
-        $priceData = $entity['price'];
+        $priceData = $entity['price'] ?? throw new DataNotFoundException();
 
         $price = new Price(
             amount: $priceData['amount_minor'],

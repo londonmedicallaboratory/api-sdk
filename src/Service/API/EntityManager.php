@@ -32,6 +32,7 @@ use function json_decode;
 use function array_merge;
 use function spl_object_hash;
 use function array_key_exists;
+use function array_diff_assoc;
 use function React\Promise\resolve;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
@@ -279,11 +280,18 @@ class EntityManager implements ResetInterface
         }
 
         $promises = [];
+//        foreach ($this->managed as $entity) {
+//            if ($this->isEntityChanged($entity)) {
+//                $this->eventDispatcher->dispatch(new PreUpdateEvent($entity));
+//                $baseUrl = $this->getBaseUrl(get_class($entity));
+//                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
+//            }
+//        }
         foreach ($this->managed as $entity) {
-            if ($this->isEntityChanged($entity)) {
+            if ($diff = $this->getChangeSet($entity)) {
                 $this->eventDispatcher->dispatch(new PreUpdateEvent($entity));
                 $baseUrl = $this->getBaseUrl(get_class($entity));
-                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
+                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $diff);
             }
         }
         foreach ($this->entitiesToBeDeleted as $entity) {
@@ -312,20 +320,6 @@ class EntityManager implements ResetInterface
         $this->entitiesToBeDeleted = [];
     }
 
-    public function isEntityChanged(ModelInterface $entity): bool
-    {
-        $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
-        $currentValues = $entity->toArray();
-        /** @psalm-suppress MixedAssignment */
-        foreach ($fetchedValues as $key => $fetchedValue) {
-            if (array_key_exists($key, $currentValues) && $fetchedValue !== $currentValues[$key]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * @param class-string $className
      */
@@ -333,6 +327,20 @@ class EntityManager implements ResetInterface
     {
         return $this->repositories->get($className);
     }
+
+//    public function isEntityChanged(ModelInterface $entity): bool
+//    {
+//        $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
+//        $currentValues = $entity->toArray();
+//        /** @psalm-suppress MixedAssignment */
+//        foreach ($fetchedValues as $key => $fetchedValue) {
+//            if (array_key_exists($key, $currentValues) && $fetchedValue !== $currentValues[$key]) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
     public function getRepositoryForModel(ModelInterface $model): AbstractRepository
     {
@@ -351,6 +359,18 @@ class EntityManager implements ResetInterface
         $url = $attribute->getBaseUrl();
 
         return trim($url, '/');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getChangeSet(ModelInterface $entity): array
+    {
+        $className = get_class($entity);
+        $fetchedValues = $this->fetchedValues[$className][$entity->getId()] ?? [];
+        $currentValues = $entity->toArray();
+
+        return array_diff_assoc($currentValues, $fetchedValues);
     }
 
     /**

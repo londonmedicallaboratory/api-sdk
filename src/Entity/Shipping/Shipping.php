@@ -16,7 +16,7 @@ use LML\SDK\Repository\ShippingRepository;
  *      name: string,
  *      type: string,
  *      description: ?string,
- *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  * }
  *
  * @implements ModelInterface<S>
@@ -74,7 +74,6 @@ class Shipping implements ModelInterface, Stringable
             'type' => $this->getType(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
-            'price' => $this->getPrice()->toArray(),
         ];
     }
 }

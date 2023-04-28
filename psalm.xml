@@ -45,6 +45,13 @@
                 <directory name="tests"/>
             </errorLevel>
         </MissingDependency>
+
+        <DeprecatedInterface>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </DeprecatedInterface>
+
     </issueHandlers>
 
     <plugins>

@@ -11,10 +11,6 @@ use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @noinspection TypoSafeNamingInspection
- */
-
 class Payment
 {
     /**

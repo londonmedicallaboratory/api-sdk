@@ -26,6 +26,7 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Exception\FlushException;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Exception\DataNotFoundException;
 use function sprintf;
 use function React\Promise\resolve;
 use function Clue\React\Block\await;
@@ -40,6 +41,8 @@ class OrderRepository extends AbstractRepository
     public function getPersistenceGraph(ModelInterface $view): iterable
     {
         yield $view->getCustomer();
+        yield $view->getAddress();
+        yield $view->getBillingAddress();
     }
 
     public function setStatusAsPaid(Order $order): void
@@ -79,7 +82,7 @@ class OrderRepository extends AbstractRepository
 
         $addressId = $entity['address_id'] ?? null;
         $address = $addressId ? new LazyPromise($this->getAddress($id)) : new ResolvedValue(null);
-        $priceData = $entity['price'];
+        $priceData = $entity['price'] ?? throw new DataNotFoundException();
         $price = new Price(
             amount: $priceData['amount_minor'],
             currency: $priceData['currency'],

@@ -184,7 +184,10 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
             'foreign_id' => $this->foreignId,
             'is_subscribed_to_newsletter' => $this->isSubscribedToNewsletter(),
         ];
-        if (!$this->id && $password = $this->getPassword()) {
+//        if (!$this->id && $password = $this->getPassword()) {
+//            $data['password'] = $password;
+//        }
+        if ($password = $this->getPassword()) {
             $data['password'] = $password;
         }
 

@@ -27,7 +27,7 @@ use LML\SDK\Repository\ProductRepository;
  *      short_description?: ?string,
  *      is_featured?: bool,
  *      preview_image_url: ?string,
- *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  * }
  *
  * @implements ModelInterface<S>
@@ -167,7 +167,6 @@ class Product implements ModelInterface, SluggableInterface, Stringable
             'name' => $this->getName(),
             'sku' => $this->getSku(),
             'preview_image_url' => $this->getPreviewImageUrl(),
-            'price' => $this->getPrice()->toArray(),
         ];
     }
 }

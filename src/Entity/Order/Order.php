@@ -37,7 +37,7 @@ use function array_map;
  *      billing_address?: ?TAddress,
  *      customer?: TCustomer,
  *      items: list<TItem>,
- *      price: array{amount_minor: int, currency: string, formatted_value: string},
+ *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  *      status?: ?string,
  *      created_at?: ?string,
  *      order_number?: ?int,
@@ -185,7 +185,6 @@ class Order implements ModelInterface
     public function toArray(): array
     {
         $customerId = $this->getCustomer()->getId();
-        $customer = $this->getCustomer()->toArray();
 
         $data = [
             'id' => $this->getId(),
@@ -194,18 +193,17 @@ class Order implements ModelInterface
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
-            'address' => $this->getAddress()?->toArray(),
-            'price' => $this->getTotal()->toArray(),
             'items' => array_map(static fn(BasketItem $item) => $item->toArray(), $this->getItems()),
         ];
         if ($billingAddress = $this->getBillingAddress()) {
             $data['billing_address'] = $billingAddress->toArray();
         }
+        if ($address = $this->getAddress()) {
+            $data['address_id'] = $address->getId();
+        }
 
         if ($customerId) {
             $data['customer_id'] = $customerId;
-        } else {
-            $data['customer'] = $customer;
         }
 
         return $data;
