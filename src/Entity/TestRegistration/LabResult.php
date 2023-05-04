@@ -13,6 +13,7 @@ use LML\SDK\Entity\Biomarker\Biomarker;
  *
  * @psalm-type S=array{
  *      id: string,
+ *      biomarker_id?: string,
  *      name: string,
  *      code: string,
  *      value: null|bool|string,
