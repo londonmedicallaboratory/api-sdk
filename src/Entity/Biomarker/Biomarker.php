@@ -27,6 +27,8 @@ use LML\SDK\Repository\BiomarkerRepository;
 class Biomarker implements ModelInterface, Stringable
 {
     /**
+     * @see BiomarkerRepository::one()
+     *
      * @param LazyValueInterface<Category> $category
      */
     public function __construct(

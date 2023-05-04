@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\TestRegistration;
 
 use LML\SDK\Entity\ModelInterface;
+use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Biomarker\Biomarker;
 
 /**
+ * @template TBiomarker of Biomarker
+ *
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
@@ -24,10 +28,16 @@ use LML\SDK\Entity\ModelInterface;
  */
 class LabResult implements ModelInterface
 {
+    /**
+     * @param LazyValueInterface<TBiomarker> $biomarker
+     * @param LazyValueInterface<string> $name
+     * @param LazyValueInterface<string> $code
+     */
     public function __construct(
         protected string $id,
-        protected string $name,
-        protected string $code,
+        protected LazyValueInterface $biomarker,
+        protected LazyValueInterface $name,
+        protected LazyValueInterface $code,
         protected null|bool|string $value,
         private bool $isSuccessful,
         protected ?string $minRange,
@@ -35,6 +45,14 @@ class LabResult implements ModelInterface
         protected ?string $comment,
     )
     {
+    }
+
+    /**
+     * @return TBiomarker
+     */
+    public function getBiomarker(): Biomarker
+    {
+        return $this->biomarker->getValue();
     }
 
     public function isSuccessful(): bool
@@ -54,7 +72,7 @@ class LabResult implements ModelInterface
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->name->getValue();
     }
 
     public function getValue(): null|bool|string
@@ -64,7 +82,7 @@ class LabResult implements ModelInterface
 
     public function getCode(): string
     {
-        return $this->code;
+        return $this->code->getValue();
     }
 
     public function getComment(): ?string

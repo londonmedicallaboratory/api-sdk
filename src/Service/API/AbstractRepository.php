@@ -65,7 +65,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? TView : PromiseInterface<TView>)
      */
-    public function fetch(?string $id, bool $await = false): ModelInterface|PromiseInterface
+    public function fetch(string $id, bool $await = false): ModelInterface|PromiseInterface
     {
         if (!$id) {
             throw new DataNotFoundException();
@@ -245,10 +245,6 @@ abstract class AbstractRepository extends AbstractViewFactory
 
         Assert::isInstanceOf($returnType, ReflectionNamedType::class);
         Assert::classExists($name = $returnType->getName());
-
-        if (!is_a($name, ModelInterface::class, true)) {
-            throw new LogicException(sprintf('Class \'%s\' must implement \'%s\'.', $name, ModelInterface::class));
-        }
 
         return $name;
     }
