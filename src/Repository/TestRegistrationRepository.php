@@ -42,7 +42,7 @@ class TestRegistrationRepository extends AbstractRepository
 
         return new TestRegistration(
             products: new LazyPromise($this->getProducts($id)),
-            patient: new LazyPromise($this->getPatient($id)),
+            patient: new LazyPromise($this->getPatient($entity['patient_id'] ?? null)),
             downloadUrl: new ResolvedValue($entity['download_url'] ?? null),
             trfCode: new ResolvedValue($entity['trf_code'] ?? null),
             resultsReady: new ResolvedValue($entity['results_ready']),
@@ -69,11 +69,9 @@ class TestRegistrationRepository extends AbstractRepository
     /**
      * @return PromiseInterface<?Patient>
      */
-    private function getPatient(string $id): PromiseInterface
+    private function getPatient(?string $patientId): PromiseInterface
     {
-        $url = sprintf('/test_registration/%s/patient', $id);
-
-        return $this->get(PatientRepository::class)->find(url: $url);
+        return $this->get(PatientRepository::class)->find(id: $patientId);
     }
 
     /**

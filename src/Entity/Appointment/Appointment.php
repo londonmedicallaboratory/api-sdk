@@ -16,7 +16,9 @@ use LML\SDK\Repository\AppointmentRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
- * @template TLoc of Brand
+ * @template TBrand of Brand
+ * @template TProduct of Product
+ * @template TPatient of Patient
  *
  * @psalm-type Item = array{product_id: string, quantity: int, product_sku?: ?string}
  *
@@ -37,10 +39,10 @@ class Appointment implements ModelInterface
     /**
      * @see AppointmentRepository::one()
      *
-     * @param LazyValueInterface<TLoc> $brand
+     * @param LazyValueInterface<TBrand> $brand
      * @param LazyValueInterface<DateTimeInterface> $appointmentTime
-     * @param LazyValueInterface<?Product> $product
-     * @param LazyValueInterface<?Patient> $patient
+     * @param LazyValueInterface<?TProduct> $product
+     * @param LazyValueInterface<?TPatient> $patient
      * @param LazyValueInterface<bool> $isConfirmed
      */
     public function __construct(
@@ -69,11 +71,17 @@ class Appointment implements ModelInterface
         $this->appointmentTime = new ResolvedValue($appointmentTime);
     }
 
+    /**
+     * @return ?TProduct
+     */
     public function getProduct(): ?Product
     {
         return $this->product->getValue();
     }
 
+    /**
+     * @return ?TPatient
+     */
     public function getPatient(): ?Patient
     {
         return $this->patient->getValue();
