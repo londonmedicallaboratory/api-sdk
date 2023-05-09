@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Exception;
 
-use RuntimeException;
-
-class GhostEntityException extends RuntimeException
+class GhostEntityException extends SDKException
 {
     public function __construct()
     {

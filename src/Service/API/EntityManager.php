@@ -16,6 +16,7 @@ use LML\SDK\Entity\PaginatedResults;
 use LML\SDK\Exception\FlushException;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Message\ResponseException;
+use LML\SDK\Event\PreFlushNewEntitiesEvent;
 use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Util\ReflectionAttributeReader;
 use LML\SDK\Exception\DataNotFoundException;
@@ -253,8 +254,11 @@ class EntityManager implements ResetInterface
      */
     public function flush(): void
     {
-        foreach ($this->getSortedOrderOfNewEntities() as $entity) {
-            $this->eventDispatcher->dispatch(new PrePersistEvent($entity));
+        $sortedOrderOfNewEntities = $this->getSortedOrderOfNewEntities();
+        $this->eventDispatcher->dispatch(new PreFlushNewEntitiesEvent($sortedOrderOfNewEntities, $this));
+
+        foreach ($sortedOrderOfNewEntities as $entity) {
+            $this->eventDispatcher->dispatch(new PrePersistEvent($entity, $this));
             $baseUrl = $this->getBaseUrl(get_class($entity));
             // POST must be sync in order to populate their IDs. User **must** manually care about order of persisting until better solution is made i.e. one that detects the order just like Doctrine.
             // example: both Category and Product are created in same request, many2one relation. Use that as reference.
@@ -268,7 +272,7 @@ class EntityManager implements ResetInterface
                     $property->setAccessible(true);
                     $property->setValue($entity, $id);
 
-                    $this->eventDispatcher->dispatch(new PostFlushEvent($entity));
+                    $this->eventDispatcher->dispatch(new PostFlushEvent($entity, $this));
                 },
                 onRejected: function (ResponseException $e) {
                     $body = (string)$e->getResponse()->getBody();
@@ -289,7 +293,7 @@ class EntityManager implements ResetInterface
 //        }
         foreach ($this->managed as $entity) {
             if ($diff = $this->getChangeSet($entity)) {
-                $this->eventDispatcher->dispatch(new PreUpdateEvent($entity));
+                $this->eventDispatcher->dispatch(new PreUpdateEvent($entity, $this));
                 $baseUrl = $this->getBaseUrl(get_class($entity));
                 $promises[] = $this->client->patch($baseUrl, $entity->getId(), $diff);
             }
@@ -362,6 +366,14 @@ class EntityManager implements ResetInterface
     }
 
     /**
+     * Use `object` instead of `ModelInterface`, there is a bug in psalm4
+     */
+    public function isNew(object $model): bool
+    {
+        return in_array($model, $this->newEntities, true);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function getChangeSet(ModelInterface $entity): array
@@ -398,11 +410,6 @@ class EntityManager implements ResetInterface
         }
 
         return $sortedEntities;
-    }
-
-    private function isNew(ModelInterface $model): bool
-    {
-        return in_array($model, $this->newEntities, true);
     }
 
     /**

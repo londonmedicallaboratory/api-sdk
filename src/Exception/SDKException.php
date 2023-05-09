@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LML\SDK\Exception;
 
-class InvalidEnumException extends SDKException
+use Exception;
+
+class SDKException extends Exception
 {
 
 }

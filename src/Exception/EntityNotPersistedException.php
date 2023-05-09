@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace LML\SDK\Exception;
 
 use Throwable;
-use RuntimeException;
 
-class EntityNotPersistedException extends RuntimeException
+class EntityNotPersistedException extends SDKException
 {
     public function __construct(?Throwable $previous = null)
     {

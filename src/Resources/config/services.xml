@@ -138,5 +138,7 @@
         <service id="LML\SDK\Form\Type\DateTypeExtendedYearsRange"/>
         <service id="LML\SDK\Form\Type\EthnicityChoiceType"/>
 
+        <!-- Events -->
+        <service id="LML\SDK\EventListener\OrderListener"/>
     </services>
 </container>

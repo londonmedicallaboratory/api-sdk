@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace LML\SDK\Exception;
 
 use Throwable;
-use RuntimeException;
 
-class PaymentFailureException extends RuntimeException
+class PaymentFailureException extends SDKException
 {
     public function __construct(?string $message, Throwable $previous = null)
     {

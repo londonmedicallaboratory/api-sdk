@@ -46,6 +46,10 @@ use function array_map;
  *      tracking_number?: ?string,
  *      cancel?: ?bool,
  *      refund?: ?bool,
+ *      initial_appointment?: array{
+ *          brand_id: string,
+ *          appointment_time: string,
+ *      },
  * }
  *
  * @implements ModelInterface<S>
@@ -82,6 +86,9 @@ class Order implements ModelInterface
         protected ?int $orderNumber = null,
         protected ?CarrierEnum $carrier = null,
         protected ?LazyValueInterface $trackingNumber = null,
+
+        // only allowed for POST /api/order; it must **never** be patched, look at issue (NA)
+        protected readonly ?Appointment $initialAppointment = null,
     )
     {
     }
@@ -182,6 +189,11 @@ class Order implements ModelInterface
         return $this->carrier;
     }
 
+    public function getInitialAppointment(): ?Appointment
+    {
+        return $this->initialAppointment;
+    }
+
     public function toArray(): array
     {
         $customerId = $this->getCustomer()->getId();
@@ -201,9 +213,14 @@ class Order implements ModelInterface
         if ($address = $this->getAddress()) {
             $data['address_id'] = $address->getId();
         }
-
         if ($customerId) {
             $data['customer_id'] = $customerId;
+        }
+        if ($initialAppointmentTime = $this->initialAppointment) {
+            $data['initial_appointment'] = [
+                'brand_id' => $initialAppointmentTime->getBrand()->getId(),
+                'appointment_time' => $initialAppointmentTime->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
+            ];
         }
 
         return $data;
