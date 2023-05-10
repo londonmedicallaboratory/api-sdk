@@ -10,7 +10,7 @@ use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Product\Product;
-use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Order\OrderItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
@@ -28,7 +28,7 @@ class Basket
     private const SHIPPING_KEY = 'shipping';
 
     /**
-     * @var null|list<BasketItem>
+     * @var null|list<OrderItem>
      */
     private ?array $items = null;
 
@@ -41,7 +41,8 @@ class Basket
         private ProductRepository $productRepository,
         private VoucherRepository $voucherRepository,
         private ShippingRepository $shippingRepository,
-    ) {
+    )
+    {
     }
 
     public function empty(): void
@@ -76,19 +77,19 @@ class Basket
     }
 
     /**
-     * @return list<BasketItem>
+     * @return list<OrderItem>
      */
     public function getItems(): array
     {
         $items = $this->items ??= $this->doGetItems();
-        $filtered = array_filter($items, fn(BasketItem $item) => $item->getQuantity() > 0);
+        $filtered = array_filter($items, fn(OrderItem $item) => $item->getQuantity() > 0);
 
         return array_values($filtered);
     }
 
     public function getSubtotal(): ?PriceInterface
     {
-        $total = array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getTotal()->getAmount() + $carry, 0);
+        $total = array_reduce($this->getItems(), fn(int $carry, OrderItem $item) => $item->getTotal()->getAmount() + $carry, 0);
         if (!$total) {
             return null;
         }
@@ -108,7 +109,7 @@ class Basket
 
     public function getTotalQuantity(): int
     {
-        return array_reduce($this->getItems(), fn(int $carry, BasketItem $item) => $item->getQuantity() + $carry, 0);
+        return array_reduce($this->getItems(), fn(int $carry, OrderItem $item) => $item->getQuantity() + $carry, 0);
     }
 
     public function removeProduct(Product $product): void
@@ -157,7 +158,7 @@ class Basket
      */
     public function getAvailableShippingMethods(): array
     {
-        $itemsShippingMethods = array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
+        $itemsShippingMethods = array_map(fn(OrderItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
         foreach ($itemsShippingMethods as $itemShippingMethods) {
             if (!empty($itemShippingMethods)) {
                 return array_intersect(...$itemsShippingMethods);
@@ -198,7 +199,7 @@ class Basket
         }
     }
 
-    private function findItem(Product $product): ?BasketItem
+    private function findItem(Product $product): ?OrderItem
     {
         foreach ($this->getItems() as $item) {
             if ($product->getId() === $item->getProduct()->getId()) {
@@ -209,13 +210,13 @@ class Basket
         return null;
     }
 
-    private function findItemOrCreateNew(Product $product): BasketItem
+    private function findItemOrCreateNew(Product $product): OrderItem
     {
         if ($item = $this->findItem($product)) {
             return $item;
         }
 
-        $item = new BasketItem(new ResolvedValue($product), 0);
+        $item = new OrderItem(new ResolvedValue($product), 0);
         $this->items[] = $item;
 
         return $item;
@@ -232,7 +233,7 @@ class Basket
     }
 
     /**
-     * @return list<BasketItem>
+     * @return list<OrderItem>
      */
     private function doGetItems(): array
     {
@@ -244,13 +245,13 @@ class Basket
         $promises = [];
         foreach ($values as $id => $quantity) {
             $promises[] = $repository->find((string)$id)
-                ->then(fn(?Product $product) => $product ? new BasketItem(new ResolvedValue($product), $quantity) : null, fn() => null);
+                ->then(fn(?Product $product) => $product ? new OrderItem(new ResolvedValue($product), $quantity) : null, fn() => null);
         }
 
-        /** @var list<?BasketItem> $responses */
+        /** @var list<?OrderItem> $responses */
         $responses = awaitAll($promises);
 
-        $filtered = array_filter($responses, fn(?BasketItem $item) => (bool)$item);
+        $filtered = array_filter($responses, fn(?OrderItem $item) => (bool)$item);
 
         return array_values($filtered);
     }

@@ -10,6 +10,8 @@ use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Money\PriceInterface;
 
 /**
+ * @template TProduct of Product
+ *
  * @psalm-type S=array{
  *      product_id: string,
  *      product_sku: string,
@@ -18,10 +20,10 @@ use LML\SDK\Entity\Money\PriceInterface;
  *
  * @implements ModelInterface<S>
  */
-class BasketItem implements ModelInterface
+class OrderItem implements ModelInterface
 {
     /**
-     * @param LazyValueInterface<Product> $product
+     * @param LazyValueInterface<TProduct> $product
      */
     public function __construct(
         private LazyValueInterface $product,
@@ -45,6 +47,9 @@ class BasketItem implements ModelInterface
         return $this->getProduct()->getPrice()->multiply($this->getQuantity());
     }
 
+    /**
+     * @return TProduct
+     */
     public function getProduct(): Product
     {
         return $this->product->getValue();

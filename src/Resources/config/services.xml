@@ -79,7 +79,12 @@
             <tag name="lml_sdk.repository"/>
         </service>
 
-        <!-- >FAQ-->
+        <!-- >Basket-->
+        <service id="LML\SDK\Repository\Basket\BasketRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
+        <!-- <Basket-->
+
         <service id="LML\SDK\Repository\FAQ\FAQRepository">
             <tag name="lml_sdk.repository"/>
         </service>

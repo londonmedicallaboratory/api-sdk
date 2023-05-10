@@ -33,7 +33,6 @@ use function json_decode;
 use function array_merge;
 use function spl_object_hash;
 use function array_key_exists;
-use function array_diff_assoc;
 use function React\Promise\resolve;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
@@ -374,7 +373,7 @@ class EntityManager implements ResetInterface
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     private function getChangeSet(ModelInterface $entity): array
     {
@@ -382,7 +381,7 @@ class EntityManager implements ResetInterface
         $fetchedValues = $this->fetchedValues[$className][$entity->getId()] ?? [];
         $currentValues = $entity->toArray();
 
-        return array_diff_assoc($currentValues, $fetchedValues);
+        return array_udiff_assoc($currentValues, $fetchedValues, fn(mixed $a, mixed $b) => $a <=> $b);
     }
 
     /**

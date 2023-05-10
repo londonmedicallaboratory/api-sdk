@@ -18,7 +18,7 @@ use LML\SDK\Enum\OrderStatusEnum;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Address\Address;
-use LML\SDK\Entity\Order\BasketItem;
+use LML\SDK\Entity\Order\OrderItem;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\CarrierEnum;
@@ -175,14 +175,14 @@ class OrderRepository extends AbstractRepository
     /**
      * @param list<array{product_id: string, quantity: int}> $items
      *
-     * @return list<BasketItem>
+     * @return list<OrderItem>
      */
     private function createItems(array $items): array
     {
         return array_map(function (array $item) {
             $productPromise = $this->get(ProductRepository::class)->fetch(id: $item['product_id']);
 
-            return new BasketItem(new LazyPromise($productPromise), $item['quantity']);
+            return new OrderItem(new LazyPromise($productPromise), $item['quantity']);
         }, $items);
     }
 }

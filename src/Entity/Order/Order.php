@@ -67,7 +67,7 @@ class Order implements ModelInterface
      * @param LazyValueInterface<?Shipping> $shipping
      * @param LazyValueInterface<list<TAppointment>> $appointments
      * @param LazyValueInterface<?Address> $billingAddress
-     * @param LazyValueInterface<list<BasketItem>> $items
+     * @param LazyValueInterface<list<OrderItem>> $items
      * @param LazyValueInterface<?string> $trackingNumber
      */
     public function __construct(
@@ -154,7 +154,7 @@ class Order implements ModelInterface
     }
 
     /**
-     * @return list<BasketItem>
+     * @return list<OrderItem>
      */
     public function getItems(): array
     {
@@ -205,7 +205,7 @@ class Order implements ModelInterface
             'shipping_id' => $this->getShipping()?->getId(),
             'shipping_date' => $this->getShippingDate()?->format('Y-m-d'),
             'company' => $this->getCompanyName(),
-            'items' => array_map(static fn(BasketItem $item) => $item->toArray(), $this->getItems()),
+            'items' => array_map(static fn(OrderItem $item) => $item->toArray(), $this->getItems()),
         ];
         if ($billingAddress = $this->getBillingAddress()) {
             $data['billing_address'] = $billingAddress->toArray();

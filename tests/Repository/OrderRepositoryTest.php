@@ -12,8 +12,8 @@ use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Enum\OrderStatusEnum;
 use LML\SDK\Entity\Product\Product;
+use LML\SDK\Entity\Order\OrderItem;
 use LML\SDK\Entity\PaginatedResults;
-use LML\SDK\Entity\Order\BasketItem;
 use LML\SDK\Exception\FlushException;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\BrandRepository;
@@ -43,7 +43,7 @@ class OrderRepositoryTest extends AbstractTest
         $brand = $this->getService(BrandRepository::class)->findOneBy(await: true) ?? throw new InvalidArgumentException('No brand found.');
         $customer = $this->getService(CustomerRepository::class)->findOneBy(await: true) ?? throw new InvalidArgumentException('No customer found.');
         $products = $this->getService(ProductRepository::class)->findAll(await: true);
-        $items = array_map(fn(Product $product) => new BasketItem(new ResolvedValue($product), 10), $products);
+        $items = array_map(fn(Product $product) => new OrderItem(new ResolvedValue($product), 10), $products);
         $shipping = $this->getService(ShippingRepository::class)->findOneBy(await: true) ?? throw new InvalidArgumentException('No shipping found.');
 
         $appointment = new Appointment(
