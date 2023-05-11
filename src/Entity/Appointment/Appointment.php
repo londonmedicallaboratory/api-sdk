@@ -48,9 +48,9 @@ class Appointment implements ModelInterface
     public function __construct(
         protected LazyValueInterface $brand,
         protected LazyValueInterface $appointmentTime,
-        protected LazyValueInterface $product,
-        protected LazyValueInterface $patient,
-        protected LazyValueInterface $isConfirmed,
+        protected LazyValueInterface $product = new ResolvedValue(null),
+        protected LazyValueInterface $patient = new ResolvedValue(null),
+        protected LazyValueInterface $isConfirmed = new ResolvedValue(false),
         protected ?string $id = null,
     )
     {

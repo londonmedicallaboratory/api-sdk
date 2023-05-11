@@ -53,7 +53,7 @@ use function array_map;
  *      trf_code?: ?string,
  *      appointment_id?: ?string,
  *      uk_address?: null|array{
- *          id: string,
+ *          id?: ?string,
  *          line1: string,
  *          line2?: ?string,
  *          line3?: ?string,

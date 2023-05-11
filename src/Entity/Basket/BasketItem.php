@@ -14,8 +14,6 @@ use LML\SDK\Entity\Money\PriceInterface;
 class BasketItem
 {
     /**
-     * @internal
-     *
      * @param LazyValueInterface<TProduct> $product
      */
     public function __construct(

@@ -35,7 +35,7 @@ class AddressRepository extends AbstractRepository
 
     protected function one($entity, $options, $optimizer): Address
     {
-        $id = $entity['id'];
+        $id = $entity['id'] ?? null;
 
         return new Address(
             id: $id,

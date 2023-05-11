@@ -8,12 +8,13 @@ use Stringable;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\AddressRepository;
+use LML\SDK\Exception\EntityNotPersistedException;
 use function implode;
 use function array_filter;
 
 /**
  * @psalm-type S=array{
- *      id: string,
+ *      id?: ?string,
  *      line1: string,
  *      line2?: ?string,
  *      line3?: ?string,
@@ -30,12 +31,12 @@ use function array_filter;
 class Address implements ModelInterface, Stringable
 {
     public function __construct(
-        private string $id,
         private string $line1,
         private string $postalCode,
         private string $countryCode,
         private string $countryName,
         private string $city,
+        private ?string $id = null,
         private ?string $line2 = null,
         private ?string $line3 = null,
         private ?string $company = null,
@@ -135,7 +136,7 @@ class Address implements ModelInterface, Stringable
 
     public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new EntityNotPersistedException();
     }
 
     public function getCity(): string
@@ -161,7 +162,7 @@ class Address implements ModelInterface, Stringable
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
+            'id' => $this->id,
             'line1' => $this->getLine1(),
             'line2' => $this->getLine2(),
             'line3' => $this->getLine3(),

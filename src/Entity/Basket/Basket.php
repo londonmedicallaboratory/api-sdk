@@ -12,19 +12,28 @@ use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Voucher\Voucher;
-use LML\View\Lazy\LazyValueInterface;
+use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
+use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Repository\Basket\BasketRepository;
 use function array_map;
 use function array_reduce;
 
 /**
+ * @psalm-import-type S from Address as TAddress
+ *
  * @psalm-type S = array{
  *     id: ?string,
  *     voucher_id: ?string,
+ *     shipping_id: ?string,
  *     items: list<array{product_id: string, quantity: int}>,
+ *     shipping_address?: ?TAddress,
+ *     initial_appointment?: array{
+ *         brand_id: string,
+ *         appointment_time: string,
+ *     },
  * }
  *
  * @implements ModelInterface<S>
@@ -34,26 +43,58 @@ class Basket implements ModelInterface
 {
     /**
      * @param list<BasketItem> $items
-     * @param LazyValueInterface<?Voucher> $voucher
-     * @param LazyValueInterface<?Shipping> $shipping
      */
     public function __construct(
-        private ?string $id = null,
+        private ?Address $shippingAddress = null,
         private array $items = [],
-        private LazyValueInterface $voucher = new ResolvedValue(null),
-        private LazyValueInterface $shipping = new ResolvedValue(null),
+        private ?Voucher $voucher = null,
+        private ?Shipping $shipping = null,
+        private ?Appointment $initialAppointment = null,
+        private ?string $id = null,
     )
     {
     }
 
+    public function toArray()
+    {
+        $data = [
+            'id' => $this->id,
+            'voucher_id' => $this->getVoucher()?->getId(),
+            'shipping_id' => $this->getShipping()?->getId(),
+            'items' => array_map(fn(BasketItem $item) => [
+                'product_id' => $item->getProduct()->getId(),
+                'quantity' => $item->getQuantity(),
+            ], $this->getItems()),
+        ];
+
+        if ($shippingAddress = $this->shippingAddress) {
+            $data['shipping_address'] = [
+                'line1' => $shippingAddress->getLine1(),
+                'line2' => $shippingAddress->getLine2(),
+                'line3' => $shippingAddress->getLine3(),
+                'postal_code' => $shippingAddress->getPostalCode(),
+                'country_code' => $shippingAddress->getCountryCode(),
+                'city' => $shippingAddress->getCity(),
+            ];
+        }
+        if ($initialAppointmentTime = $this->initialAppointment) {
+            $data['initial_appointment'] = [
+                'brand_id' => $initialAppointmentTime->getBrand()->getId(),
+                'appointment_time' => $initialAppointmentTime->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
+            ];
+        }
+
+        return $data;
+    }
+
     public function getVoucher(): ?Voucher
     {
-        return $this->voucher->getValue();
+        return $this->voucher;
     }
 
     public function setVoucher(?Voucher $voucher): void
     {
-        $this->voucher = new ResolvedValue($voucher);
+        $this->voucher = $voucher;
     }
 
     public function getSubtotal(): ?PriceInterface
@@ -78,12 +119,12 @@ class Basket implements ModelInterface
 
     public function getShipping(): ?Shipping
     {
-        return $this->shipping->getValue();
+        return $this->shipping;
     }
 
     public function setShipping(?Shipping $shipping): void
     {
-        $this->shipping = new ResolvedValue($shipping);
+        $this->shipping = $shipping;
     }
 
     public function getDiscount(): ?PriceInterface
@@ -125,18 +166,6 @@ class Basket implements ModelInterface
     public function getItems(): array
     {
         return $this->items;
-    }
-
-    public function toArray()
-    {
-        return [
-            'id' => $this->id,
-            'voucher_id' => $this->getVoucher()?->getId(),
-            'items' => array_map(fn(BasketItem $item) => [
-                'product_id' => $item->getProduct()->getId(),
-                'quantity' => $item->getQuantity(),
-            ], $this->getItems()),
-        ];
     }
 
     private function applyVoucher(PriceInterface $price): PriceInterface
