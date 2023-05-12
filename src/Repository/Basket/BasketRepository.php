@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository\Basket;
 
 use DateTime;
+use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
@@ -16,6 +17,7 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Repository\BrandRepository;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\AddressRepository;
+use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,16 +46,40 @@ class BasketRepository extends AbstractRepository
         return $this->findForCustomer($customer) ?? $this->findFromSession() ?? $this->createNew();
     }
 
+    public function find(?string $id = null, bool $await = false, ?string $url = null): never
+    {
+        throw new LogicException('Use \'findActiveOrCreate\' method instead.');
+    }
+
     protected function one($entity, $options, $optimizer): Basket
     {
         $id = $entity['id'];
 
-        return new Basket(
+        $basket = new Basket(
             id: $id,
             shippingAddress: $this->getAddress($entity['shipping_address'] ?? null),
+            billingAddress: $this->getAddress($entity['billing_address'] ?? null),
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
         );
+
+        if ($customerScalars = $entity['customer'] ?? null) {
+            $customer = $this->get(CustomerRepository::class)->buildOne($customerScalars);
+            $basket->setAnonCustomer($customer);
+        }
+
+        return $basket;
+    }
+
+    private function createNew(): Basket
+    {
+        $basket = new Basket();
+        $this->persist($basket);
+        $this->flush();
+        $session = $this->requestStack->getMainRequest()?->getSession() ?? throw new RuntimeException('You must use this method from request only.');
+        $session->set(self::SESSION_KEY, $basket->getId());
+
+        return $basket;
     }
 
     /**
@@ -75,17 +101,6 @@ class BasketRepository extends AbstractRepository
         return $this->get(AddressRepository::class)->buildOne($param);
     }
 
-    private function createNew(): Basket
-    {
-        $basket = new Basket();
-        $this->persist($basket);
-        $this->flush();
-        $session = $this->requestStack->getMainRequest()?->getSession() ?? throw new RuntimeException('You must use this method from request only.');
-        $session->set(self::SESSION_KEY, $basket->getId());
-
-        return $basket;
-    }
-
     private function findForCustomer(?Customer $customer): ?Basket
     {
         if (!$customer) {
@@ -93,7 +108,7 @@ class BasketRepository extends AbstractRepository
         }
         $url = sprintf('/basket/customer/%s', $customer->getId());
 
-        if ($basket = await($this->find(url: $url))) {
+        if ($basket = await(parent::find(url: $url))) {
             $this->getSession()->set(self::SESSION_KEY, $basket->getId());
         }
 
@@ -111,7 +126,7 @@ class BasketRepository extends AbstractRepository
         Assert::nullOrString($id = $session->get(self::SESSION_KEY));
 
         // @todo Discuss if basket is shared between logged and not-logged customer
-        return $this->find(id: $id, await: true);
+        return parent::find(id: $id, await: true);
     }
 
     /**

@@ -13,6 +13,7 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Exception\DataNotFoundException;
 use function Clue\React\Block\await;
 
 /**
@@ -64,7 +65,7 @@ class CustomerRepository extends AbstractRepository
 
     protected function one($entity, $options, $optimizer): Customer
     {
-        $id = $entity['id'];
+        $id = $entity['id'] ?? throw new DataNotFoundException();
 
         return new Customer(
             id: $id,
@@ -86,7 +87,7 @@ class CustomerRepository extends AbstractRepository
      */
     private function getBillingAddress(array $entity): LazyValueInterface
     {
-        if (!$id = $entity['id']) {
+        if (!$id = $entity['id'] ?? null) {
             return new ResolvedValue(null);
         }
         if (!isset($entity['billing_address_id'])) {

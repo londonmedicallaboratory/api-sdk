@@ -14,6 +14,7 @@ use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
@@ -23,17 +24,18 @@ use function array_reduce;
 
 /**
  * @psalm-import-type S from Address as TAddress
+ * @psalm-import-type S from Appointment as TAppointment
+ * @psalm-import-type S from Customer as TCustomer
  *
  * @psalm-type S = array{
  *     id: ?string,
  *     voucher_id: ?string,
  *     shipping_id: ?string,
+ *     customer?: ?TCustomer,
  *     items: list<array{product_id: string, quantity: int}>,
  *     shipping_address?: ?TAddress,
- *     initial_appointment?: array{
- *         brand_id: string,
- *         appointment_time: string,
- *     },
+ *     billing_address?: ?TAddress,
+ *     initial_appointment?: ?TAppointment,
  * }
  *
  * @implements ModelInterface<S>
@@ -45,7 +47,9 @@ class Basket implements ModelInterface
      * @param list<BasketItem> $items
      */
     public function __construct(
+        private ?Customer $anonCustomer = null,
         private ?Address $shippingAddress = null,
+        private ?Address $billingAddress = null,
         private array $items = [],
         private ?Voucher $voucher = null,
         private ?Shipping $shipping = null,
@@ -68,19 +72,20 @@ class Basket implements ModelInterface
         ];
 
         if ($shippingAddress = $this->shippingAddress) {
-            $data['shipping_address'] = [
-                'line1' => $shippingAddress->getLine1(),
-                'line2' => $shippingAddress->getLine2(),
-                'line3' => $shippingAddress->getLine3(),
-                'postal_code' => $shippingAddress->getPostalCode(),
-                'country_code' => $shippingAddress->getCountryCode(),
-                'city' => $shippingAddress->getCity(),
-            ];
+            $data['shipping_address'] = $shippingAddress->toArray();
+        }
+        if ($billingAddress = $this->billingAddress) {
+            $data['billing_address'] = $billingAddress->toArray();
         }
         if ($initialAppointmentTime = $this->initialAppointment) {
-            $data['initial_appointment'] = [
-                'brand_id' => $initialAppointmentTime->getBrand()->getId(),
-                'appointment_time' => $initialAppointmentTime->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
+            $data['initial_appointment'] = $initialAppointmentTime->toArray();
+        }
+        if ($customer = $this->getAnonCustomer()) {
+            $data['customer'] = [
+                'first_name' => $customer->getFirstName(),
+                'last_name' => $customer->getLastName(),
+                'email' => $customer->getEmail(),
+                'phone_number' => $customer->getPhoneNumber(),
             ];
         }
 
@@ -166,6 +171,16 @@ class Basket implements ModelInterface
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getAnonCustomer(): ?Customer
+    {
+        return $this->anonCustomer;
+    }
+
+    public function setAnonCustomer(?Customer $anonCustomer): void
+    {
+        $this->anonCustomer = $anonCustomer;
     }
 
     private function applyVoucher(PriceInterface $price): PriceInterface
