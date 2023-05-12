@@ -183,6 +183,27 @@ class Basket implements ModelInterface
         $this->anonCustomer = $anonCustomer;
     }
 
+    /**
+     * @return array<int, Shipping>
+     */
+    public function getAvailableShippingMethods(): array
+    {
+        $itemsShippingMethods = array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
+        foreach ($itemsShippingMethods as $itemShippingMethods) {
+            if (!empty($itemShippingMethods)) {
+                return array_intersect(...$itemsShippingMethods);
+            }
+        }
+
+        return [];
+    }
+
+    public function setQuantityForProduct(Product $product, int $quantity): void
+    {
+        $item = $this->findItemOrCreateNew($product);
+        $item->setQuantity($quantity);
+    }
+
     private function applyVoucher(PriceInterface $price): PriceInterface
     {
         $discount = $this->getDiscount();
