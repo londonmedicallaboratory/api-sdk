@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\ArgumentValueResolver;
 
+use Webmozart\Assert\Assert;
 use LML\SDK\Attribute\ActiveBasket;
 use LML\SDK\Entity\Customer\Customer;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,8 +32,7 @@ class ActiveBasketResolver implements ValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $security = $this->security;
-        $customer = $security->getUser() instanceof Customer ? $security->getUser() : null;
+        Assert::nullOrIsInstanceOf($customer = $this->security->getUser(), Customer::class);
 
         yield $this->basketRepository->findActiveOrCreate($customer);
     }
