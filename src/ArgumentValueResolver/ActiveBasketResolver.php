@@ -6,13 +6,13 @@ namespace LML\SDK\ArgumentValueResolver;
 
 use LML\SDK\Attribute\ActiveBasket;
 use LML\SDK\Entity\Customer\Customer;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Security;
 use LML\SDK\Repository\Basket\BasketRepository;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 
-class ActiveBasketResolver implements ArgumentValueResolverInterface
+class ActiveBasketResolver implements ValueResolverInterface
 {
     public function __construct(
         private BasketRepository $basketRepository,
