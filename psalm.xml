@@ -47,6 +47,12 @@
             </errorLevel>
         </MissingDependency>
 
+        <DeprecatedClass>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </DeprecatedClass>
+
         <DeprecatedInterface>
             <errorLevel type="suppress">
                 <directory name="src"/>
@@ -54,7 +60,7 @@
         </DeprecatedInterface>
 
     </issueHandlers>
-
+    
     <plugins>
         <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>
         <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
