@@ -14,13 +14,13 @@ use LML\SDK\Enum\OrderStatusEnum;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Order\OrderItem;
 use LML\SDK\Entity\PaginatedResults;
-use LML\SDK\Exception\FlushException;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\BrandRepository;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Exception\PersistenceNotAllowedException;
 use function array_map;
 
 class OrderRepositoryTest extends AbstractTest
@@ -37,7 +37,7 @@ class OrderRepositoryTest extends AbstractTest
     public function testPreventPersistedAppointments(): void
     {
         self::bootKernel();
-        $this->expectException(FlushException::class);
+        $this->expectException(PersistenceNotAllowedException::class);
         $repo = $this->getOrderRepository();
 
         $brand = $this->getService(BrandRepository::class)->findOneBy(await: true) ?? throw new InvalidArgumentException('No brand found.');

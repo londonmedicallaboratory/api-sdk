@@ -76,8 +76,7 @@ class BasketRepository extends AbstractRepository
         $basket = new Basket();
         $this->persist($basket);
         $this->flush();
-        $session = $this->requestStack->getMainRequest()?->getSession() ?? throw new RuntimeException('You must use this method from request only.');
-        $session->set(self::SESSION_KEY, $basket->getId());
+        $this->getSession()->set(self::SESSION_KEY, $basket->getId());
 
         return $basket;
     }

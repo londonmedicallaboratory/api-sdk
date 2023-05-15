@@ -183,6 +183,16 @@ class Basket implements ModelInterface
         $this->anonCustomer = $anonCustomer;
     }
 
+    public function getInitialAppointment(): ?Appointment
+    {
+        return $this->initialAppointment;
+    }
+
+    public function setInitialAppointment(?Appointment $initialAppointment): void
+    {
+        $this->initialAppointment = $initialAppointment;
+    }
+
     private function applyVoucher(PriceInterface $price): PriceInterface
     {
         $discount = $this->getDiscount();
