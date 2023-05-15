@@ -10,10 +10,10 @@ use LML\SDK\Entity\Customer\Customer;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use LML\SDK\Repository\Basket\BasketRepository;
-use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 
-class ActiveBasketResolver implements ValueResolverInterface
+class ActiveBasketResolver implements ArgumentValueResolverInterface
 {
     public function __construct(
         private BasketRepository $basketRepository,
