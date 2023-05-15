@@ -6,6 +6,7 @@ namespace LML\SDK\ArgumentValueResolver;
 
 use RuntimeException;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Service\API\EntityManager;
 use LML\SDK\Util\ReflectionAttributeReader;
@@ -38,6 +39,12 @@ class EntityParamConverter implements ParamConverterInterface
             return false;
         }
         if (!is_a($class, ModelInterface::class, true)) {
+            return false;
+        }
+        /**
+         * Basket must never be loaded via `find` method, let @see ActiveBasketResolver take care of it
+         */
+        if (is_a($class, Basket::class, true)) {
             return false;
         }
         $entityAttribute = ReflectionAttributeReader::getAttribute($class, Entity::class);
