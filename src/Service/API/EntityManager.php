@@ -61,9 +61,11 @@ class EntityManager implements ResetInterface
      * Identity map like one in Doctrine. For example:
      *
      * <code>
-     *  array['Product' => [
-     *      1 => PromiseInterface<$product1>,  // $id => promise of $instance
-     *  ]]
+     * [
+     *      'SDK\Entity\Product\Product' => [
+     *          1 => PromiseInterface<$product1>,  // $id => promise of $instance
+     *      ],
+     * ]
      * </code>
      *
      * @var array<class-string<ModelInterface>, array<string, PromiseInterface<ModelInterface>>>
@@ -148,9 +150,8 @@ class EntityManager implements ResetInterface
         }
 
         $url ??= sprintf('%s/%s', $this->getBaseUrl($className), $id);
-        $client = $this->client;
 
-        $promise = $client->getAsync($url, cacheTimeout: $cacheTimeout, tag: $className)
+        $promise = $this->client->getAsync($url, cacheTimeout: $cacheTimeout, tag: $className)
             ->then(
                 onFulfilled: fn($data) => $data ? $this->store($className, $data) : null,
                 onRejected: fn() => null,
@@ -192,13 +193,12 @@ class EntityManager implements ResetInterface
      */
     public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, bool $await = false): PromiseInterface|PaginatedResults
     {
-        $client = $this->client;
         if (!$url) {
             $url = $this->getBaseUrl($className);
             $url = rtrim($url, '/') . '/'; // Symfony trailing slash issue; this will avoid 301 redirections
         }
         /** @var PromiseInterface<null|array{current_page: int, nr_of_results: int, nr_of_pages: int, results_per_page: int, next_page: ?int, items: list<mixed>}> $promise */
-        $promise = $client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className, cacheTimeout: $cacheTimeout);
+        $promise = $this->client->getAsync($url, filters: $filters, page: $page, limit: $limit, tag: $className, cacheTimeout: $cacheTimeout);
 
         $paginationPromise = $promise
             ->then(function (?array $data) use ($className) {
@@ -259,8 +259,6 @@ class EntityManager implements ResetInterface
         foreach ($sortedOrderOfNewEntities as $entity) {
             $this->eventDispatcher->dispatch(new PrePersistEvent($entity, $this));
             $baseUrl = $this->getBaseUrl(get_class($entity));
-            // POST must be sync in order to populate their IDs. User **must** manually care about order of persisting until better solution is made i.e. one that detects the order just like Doctrine.
-            // example: both Category and Product are created in same request, many2one relation. Use that as reference.
             $promise = $this->client->post($baseUrl, $entity->toArray())->then(
                 onFulfilled: function (ResponseInterface $response) use ($entity) {
                     $body = (string)$response->getBody();
@@ -283,13 +281,6 @@ class EntityManager implements ResetInterface
         }
 
         $promises = [];
-//        foreach ($this->managed as $entity) {
-//            if ($this->isEntityChanged($entity)) {
-//                $this->eventDispatcher->dispatch(new PreUpdateEvent($entity));
-//                $baseUrl = $this->getBaseUrl(get_class($entity));
-//                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $entity->toArray());
-//            }
-//        }
         foreach ($this->managed as $entity) {
             if ($diff = $this->getChangeSet($entity)) {
                 $this->eventDispatcher->dispatch(new PreUpdateEvent($entity, $this));
@@ -331,20 +322,6 @@ class EntityManager implements ResetInterface
         return $this->repositories->get($className);
     }
 
-//    public function isEntityChanged(ModelInterface $entity): bool
-//    {
-//        $fetchedValues = $this->fetchedValues[get_class($entity)][$entity->getId()] ?? [];
-//        $currentValues = $entity->toArray();
-//        /** @psalm-suppress MixedAssignment */
-//        foreach ($fetchedValues as $key => $fetchedValue) {
-//            if (array_key_exists($key, $currentValues) && $fetchedValue !== $currentValues[$key]) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
     public function getRepositoryForModel(ModelInterface $model): AbstractRepository
     {
         $entityAttribute = $this->getEntityAttribute(get_class($model));
@@ -385,6 +362,11 @@ class EntityManager implements ResetInterface
     }
 
     /**
+     * POST entities must be sync in order to populate their IDs. This approach asserts that entities are saved in correct order.
+     * For the reference of the problem: Category has many Products. Product must have `category_id` value so that is why Category must be POSTed first.
+     *
+     * @see AbstractRepository::getPersistenceGraph()
+     *
      * @return list<ModelInterface>
      */
     private function getSortedOrderOfNewEntities(): array

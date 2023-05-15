@@ -41,6 +41,15 @@ abstract class AbstractRepository extends AbstractViewFactory
     private ?EntityManager $entityManager = null;
 
     /**
+     * **DO NOT** use something like:
+     *
+     * <code>
+     *      yield from $this->get(SomeRepository::class)->getPersistenceGraph();
+     * </code>
+     *
+     * This will make infinite recursion in m2m relations. Doctrine solved it with owning side rules, but we don't need that kind of complexity.
+     * Eventually a fixed file with graph will be created and this method removed.
+     *
      * @param TView $view
      *
      * @return iterable<null|ModelInterface>

@@ -148,6 +148,6 @@
         <service id="LML\SDK\Form\Type\EthnicityChoiceType"/>
 
         <!-- Events -->
-        <service id="LML\SDK\EventListener\OrderListener"/>
+        <service id="LML\SDK\EventListener\PersistenceListener"/>
     </services>
 </container>

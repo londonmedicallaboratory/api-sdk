@@ -182,7 +182,7 @@ class Basket implements ModelInterface
     {
         $this->anonCustomer = $anonCustomer;
     }
-
+    
     /**
      * @return array<int, Shipping>
      */
@@ -202,6 +202,16 @@ class Basket implements ModelInterface
     {
         $item = $this->findItemOrCreateNew($product);
         $item->setQuantity($quantity);
+    }
+
+    public function getInitialAppointment(): ?Appointment
+    {
+        return $this->initialAppointment;
+    }
+
+    public function setInitialAppointment(?Appointment $initialAppointment): void
+    {
+        $this->initialAppointment = $initialAppointment;
     }
 
     private function applyVoucher(PriceInterface $price): PriceInterface
