@@ -64,7 +64,7 @@ class OrderRepositoryTest extends AbstractTest
             shipping: new ResolvedValue($shipping),
             appointments: new ResolvedValue([]),
             billingAddress: new ResolvedValue(null),
-            status: OrderStatusEnum::AWAITING_PAYMENT,
+            paymentStatus: OrderStatusEnum::AWAITING_PAYMENT,
             initialAppointment: $appointment,
         );
 

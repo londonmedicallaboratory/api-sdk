@@ -13,6 +13,7 @@ enum OrderShippingStatusEnum: string implements NameableInterface
 {
     case AWAITING_SHIPPING = 'awaiting_shipping';
     case MANIFESTED = 'manifested';
+    case MANIFEST_FAILED = 'manifest_failed';
     case SHIPPED = 'shipped';
     case OUT_FOR_DELIVERY = 'out_for_delivery';
     case DELIVERED = 'delivered';
@@ -24,6 +25,7 @@ enum OrderShippingStatusEnum: string implements NameableInterface
         return match ($this) {
             self::AWAITING_SHIPPING => 'Awaiting shipping',
             self::MANIFESTED => 'Manifested',
+            self::MANIFEST_FAILED => 'Manifest failed',
             self::SHIPPED => 'Shipped',
             self::OUT_FOR_DELIVERY => 'Out for delivery',
             self::DELIVERED => 'Delivered',

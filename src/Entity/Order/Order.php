@@ -7,7 +7,6 @@ namespace LML\SDK\Entity\Order;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Enum\OrderStatusEnum;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\View\Lazy\LazyValueInterface;
@@ -38,7 +37,8 @@ use function array_map;
  *      customer?: TCustomer,
  *      items: list<TItem>,
  *      price?: array{amount_minor: int, currency: string, formatted_value: string},
- *      status?: ?string,
+ *      shipping_status?: ?string,
+ *      payment_status?: ?string,
  *      created_at?: ?string,
  *      order_number?: ?int,
  *      voucher_id?: ?string,
@@ -46,6 +46,7 @@ use function array_map;
  *      tracking_number?: ?string,
  *      cancel?: ?bool,
  *      refund?: ?bool,
+ *      payment_status?: ?string,
  *      initial_appointment?: array{
  *          brand_id: string,
  *          appointment_time: string,
@@ -79,7 +80,8 @@ class Order implements ModelInterface
         protected LazyValueInterface $shipping,
         protected LazyValueInterface $appointments,
         protected LazyValueInterface $billingAddress,
-        protected OrderStatusEnum $status,
+        protected OrderPaymentStatusEnum $paymentStatus,
+        protected OrderShippingStatusEnum $shippingStatus,
         protected ?DateTimeInterface $shippingDate = null,
         protected ?string $companyName = null,
         protected ?DateTimeInterface $createdAt = null,
@@ -93,19 +95,19 @@ class Order implements ModelInterface
     {
     }
 
-    public function getStatus(): OrderStatusEnum
+    public function getPaymentStatus(): OrderPaymentStatusEnum
     {
-        return $this->status;
+        return $this->paymentStatus;
     }
 
-    public function setStatus(OrderStatusEnum $status): void
+    public function setPaymentStatus(OrderPaymentStatusEnum $paymentStatus): void
     {
-        $this->status = $status;
+        $this->paymentStatus = $paymentStatus;
     }
 
     public function getStatusName(): string
     {
-        return $this->getStatus()->getName();
+        return $this->getPaymentStatus()->getName();
     }
 
     public function getCreatedAt(): ?DateTimeInterface
@@ -194,6 +196,19 @@ class Order implements ModelInterface
         return $this->initialAppointment;
     }
 
+    public function getShippingStatus(): OrderShippingStatusEnum
+    {
+        return $this->shippingStatus;
+    }
+
+    public function setShippingStatus(OrderShippingStatusEnum $shippingStatus): void
+    {
+        $this->shippingStatus = $shippingStatus;
+    }
+    
+    /**
+     * Status values are not sent to commando
+     */
     public function toArray(): array
     {
         $customerId = $this->getCustomer()->getId();
