@@ -8,6 +8,7 @@ use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Money\PriceInterface;
+use function sprintf;
 
 /**
  * @template TProduct of Product
@@ -34,7 +35,13 @@ class OrderItem implements ModelInterface
 
     public function __toString(): string
     {
-        return $this->getProduct()->getName();
+        $quantity = $this->quantity;
+        $productName = $this->getProduct()->getName();
+        if ($quantity === 1) {
+            return $productName;
+        }
+
+        return sprintf('%s x %d', $productName, $quantity);
     }
 
     public function getId(): string

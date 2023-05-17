@@ -7,6 +7,7 @@ namespace LML\SDK\Enum;
 use LML\SDK\Enum\Model\NameableInterface;
 
 /**
+ * @deprecated
  * @link https://github.com/londonmedicallaboratory/commando/issues/112
  *
  * awaiting_shipping
