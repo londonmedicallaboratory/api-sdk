@@ -37,13 +37,13 @@ use LML\SDK\Exception\EntityNotPersistedException;
 class Appointment implements ModelInterface
 {
     /**
-     * @see AppointmentRepository::one()
-     *
      * @param LazyValueInterface<TBrand> $brand
      * @param LazyValueInterface<DateTimeInterface> $appointmentTime
      * @param LazyValueInterface<?TProduct> $product
      * @param LazyValueInterface<?TPatient> $patient
      * @param LazyValueInterface<bool> $isConfirmed
+     * @see AppointmentRepository::one()
+     *
      */
     public function __construct(
         protected LazyValueInterface $brand,
@@ -59,6 +59,11 @@ class Appointment implements ModelInterface
     public function getBrand(): Brand
     {
         return $this->brand->getValue();
+    }
+
+    public function setBrand(Brand $brand): void
+    {
+        $this->brand = new ResolvedValue($brand);
     }
 
     public function getAppointmentTime(): DateTimeInterface
