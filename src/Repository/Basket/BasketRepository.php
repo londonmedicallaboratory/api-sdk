@@ -58,8 +58,9 @@ class BasketRepository extends AbstractRepository
     public function createOrder(Basket $basket): Order
     {
         $response = await($this->getClient()->patch('basket/transform_to_order', $basket->getId(), []));
-        $arrayData = (array)json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        Assert::string($orderId = $arrayData['id'] ?? null);
+        $data = (array)json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        Assert::string($orderId = $data['id'] ?? null);
+        $this->getSession()->remove(self::SESSION_KEY);
 
         return $this->get(OrderRepository::class)->find($orderId, true) ?? throw new LogicException('Order not found');
     }

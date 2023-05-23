@@ -11,7 +11,6 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Exception\DataNotFoundException;
 use function Clue\React\Block\await;
 
 /**
@@ -46,7 +45,7 @@ class CustomerRepository extends AbstractRepository
 
     protected function one($entity, $options, $optimizer): Customer
     {
-        $id = $entity['id'] ?? throw new DataNotFoundException();
+        $id = $entity['id'] ?? null;
 
         return new Customer(
             id: $id,
