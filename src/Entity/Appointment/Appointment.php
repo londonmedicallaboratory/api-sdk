@@ -61,6 +61,9 @@ class Appointment implements ModelInterface
         return $this->brand->getValue();
     }
 
+    /**
+     * @param TBrand $brand
+     */
     public function setBrand(Brand $brand): void
     {
         $this->brand = new ResolvedValue($brand);
