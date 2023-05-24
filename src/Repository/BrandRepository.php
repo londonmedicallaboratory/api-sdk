@@ -39,10 +39,10 @@ class BrandRepository extends AbstractRepository
      */
     public function getMonthlyCalender(string $id, DateTime $when): array
     {
-        $url = sprintf('/test_location/%s/calender/%04d/%02d', $id, $when->format('Y'), $when->format('m'));
+        $url = sprintf('/test_location/calender/%04d/%02d', $when->format('Y'), $when->format('m'));
 
         /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
-        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10, filters: ['brand_id' => $id]);
         $resolved = await($promise);
 
         return $resolved['availability'];
@@ -71,12 +71,12 @@ class BrandRepository extends AbstractRepository
     /**
      * @return list<Slot>
      */
-    public function getSlots(DateTime $when)
+    public function getSlots(string $id, DateTime $when)
     {
         $url = sprintf('/test_location/slots/%04d/%02d/%02d', $when->format('Y'), $when->format('m'), $when->format('d'));
 
         /** @var PromiseInterface<list<array<mixed>>> $promise */
-        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10, filters: ['brand_id' => $id]);
 
         $slots = await($promise);
 
