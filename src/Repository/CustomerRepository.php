@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use RuntimeException;
-use LML\SDK\DTO\Payment;
 use LML\SDK\Lazy\LazyPromise;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Address\Address;
@@ -13,7 +11,6 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Exception\DataNotFoundException;
 use function Clue\React\Block\await;
 
 /**
@@ -46,26 +43,9 @@ class CustomerRepository extends AbstractRepository
         $this->getClient()->patch('/customer', $customer->getId(), ['password' => $password]);
     }
 
-    public function create(Payment $payment): Customer
-    {
-        $customer = new Customer(
-            id: '',
-            firstName: $payment->customersFirstName ?? throw new RuntimeException(),
-            lastName: $payment->customersLastName ?? throw new RuntimeException(),
-            email: $payment->customersEmail ?? throw new RuntimeException(),
-            phoneNumber: $payment->customersPhoneNumber ?? throw new RuntimeException(),
-            isSubscribedToNewsletter: new ResolvedValue(false),
-        );
-
-        $this->persist($customer);
-        $this->flush();
-
-        return $customer;
-    }
-
     protected function one($entity, $options, $optimizer): Customer
     {
-        $id = $entity['id'] ?? throw new DataNotFoundException();
+        $id = $entity['id'] ?? null;
 
         return new Customer(
             id: $id,

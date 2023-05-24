@@ -6,10 +6,6 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use LogicException;
-use RuntimeException;
-use LML\SDK\DTO\Payment;
-use LML\SDK\Service\Basket;
-use LML\View\Lazy\LazyValue;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
 use LML\SDK\Entity\Money\Price;
@@ -22,7 +18,6 @@ use LML\SDK\Entity\Shipping\Shipping;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Order\CarrierEnum;
 use LML\SDK\Entity\Customer\Customer;
-use LML\SDK\Exception\FlushException;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
@@ -53,32 +48,6 @@ class OrderRepository extends AbstractRepository
     {
         await($this->getClient()->patch('/order', $order->getId(), ['status' => OrderPaymentStatusEnum::PAID->value]));
         $order->setPaymentStatus(OrderPaymentStatusEnum::PAID);
-    }
-
-    /**
-     * @throws FlushException
-     */
-    public function create(Payment $payment, Customer $customer, Basket $basket): Order
-    {
-        $deliveryAddress = $payment->deliveryAddress ?? $payment->billingAddress;
-        $order = new Order(
-            id: '',
-            customer: new ResolvedValue($customer),
-            address: new ResolvedValue($deliveryAddress ?? throw new RuntimeException()),
-            total: $basket->getTotal() ?? throw new RuntimeException(),
-            items: new LazyValue(fn() => $basket->getItems()),
-            companyName: $payment->customersCompany,
-            billingAddress: new ResolvedValue($payment->deliveryAddress ? null : $payment->billingAddress),
-            shipping: new ResolvedValue($payment->shipping),
-            appointments: new LazyValue(fn() => []),
-            paymentStatus: OrderPaymentStatusEnum::PAID,
-            shippingStatus: OrderShippingStatusEnum::AWAITING_SHIPPING
-        );
-
-        $this->persist($order);
-        $this->flush();
-
-        return $order;
     }
 
     protected function one($entity, $options, $optimizer): Order

@@ -122,6 +122,16 @@ class Basket implements ModelInterface
         return $this->getShipping() ? $newPrice->plus($this->getShipping()->getPrice()) : $newPrice;
     }
 
+    public function getShippingAddress(): ?Address
+    {
+        return $this->shippingAddress;
+    }
+
+    public function setShippingAddress(?Address $shippingAddress): void
+    {
+        $this->shippingAddress = $shippingAddress;
+    }
+
     public function getShipping(): ?Shipping
     {
         return $this->shipping;
@@ -182,7 +192,7 @@ class Basket implements ModelInterface
     {
         $this->anonCustomer = $anonCustomer;
     }
-    
+
     /**
      * @return array<int, Shipping>
      */
