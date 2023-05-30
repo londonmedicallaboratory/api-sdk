@@ -9,15 +9,19 @@ use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\Order\Order;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Repository\BrandRepository;
+use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\AddressRepository;
 use LML\SDK\Repository\CustomerRepository;
+use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -51,6 +55,16 @@ class BasketRepository extends AbstractRepository
         throw new LogicException('Use \'findActiveOrCreate\' method instead.');
     }
 
+    public function createOrder(Basket $basket): Order
+    {
+        $response = await($this->getClient()->patch('basket/transform_to_order', $basket->getId(), []));
+        $data = (array)json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        Assert::string($orderId = $data['id'] ?? null);
+        $this->getSession()->remove(self::SESSION_KEY);
+
+        return $this->get(OrderRepository::class)->find($orderId, true) ?? throw new LogicException('Order not found');
+    }
+
     protected function one($entity, $options, $optimizer): Basket
     {
         $id = $entity['id'];
@@ -58,6 +72,7 @@ class BasketRepository extends AbstractRepository
         $basket = new Basket(
             id: $id,
             shippingAddress: $this->getAddress($entity['shipping_address'] ?? null),
+            shipping: $this->getShipping($entity['shipping_id'] ?? null),
             billingAddress: $this->getAddress($entity['billing_address'] ?? null),
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
@@ -98,6 +113,11 @@ class BasketRepository extends AbstractRepository
         }
 
         return $this->get(AddressRepository::class)->buildOne($param);
+    }
+
+    private function getShipping(?string $id): ?Shipping
+    {
+        return $this->get(ShippingRepository::class)->find($id, true);
     }
 
     private function findForCustomer(?Customer $customer): ?Basket

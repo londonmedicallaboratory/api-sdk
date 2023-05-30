@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use RuntimeException;
-use LML\SDK\DTO\Payment;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Service\API\AbstractRepository;
 
@@ -16,23 +14,6 @@ use LML\SDK\Service\API\AbstractRepository;
  */
 class AddressRepository extends AbstractRepository
 {
-    public function createFromPayment(Payment $payment): Address
-    {
-        $deliveryLine1 = $payment->deliveryAddressLine1 ?? $payment->customersAddressLine1;
-        $postalCode = $payment->deliveryPostalCode ?? $payment->customersPostalCode;
-
-        return new Address(
-            id: '',
-            line1: $deliveryLine1 ?? throw new RuntimeException(),
-            postalCode: $postalCode ?? throw new RuntimeException(),
-            city: '',
-            countryCode: 'GB',
-            countryName: 'GB',
-            line2: $payment->deliveryAddressLine2 ?? $payment->customersAddressLine2,
-            line3: $payment->deliveryAddressLine3 ?? $payment->customersAddressLine3,
-        );
-    }
-
     protected function one($entity, $options, $optimizer): Address
     {
         $id = $entity['id'] ?? null;

@@ -6,7 +6,6 @@ namespace LML\SDK\DTO;
 
 use Closure;
 use LML\SDK\Entity\Address\Address;
-use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Exception\PaymentFailureException;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,33 +16,8 @@ class Payment
      * @param null|Closure(PaymentFailureException): ?Response $paymentExceptionHandler
      */
     public function __construct(
-        public ?string $id = null,
         public ?PriceInterface $price = null,
-        public ?string $customersEmail = null,
-
-        public ?string $customersFirstName = null,
-        public ?string $customersLastName = null,
-        public ?string $customersPhoneNumber = null,
-        public ?string $customersCompany = null,
-        public ?string $customersAddressLine1 = null,
-        public ?string $customersAddressLine2 = null,
-        public ?string $customersAddressLine3 = null,
-        public ?string $customersPostalCode = null,
-        public ?string $customersCity = null,
-        public ?string $customersCountry = null,
-
-        public ?string $deliveryFirstName = null,
-        public ?string $deliveryLastName = null,
-        public ?string $deliveryPhoneNumber = null,
-        public ?string $deliveryCompany = null,
-        public ?string $deliveryAddressLine1 = null,
-        public ?string $deliveryAddressLine2 = null,
-        public ?string $deliveryAddressLine3 = null,
-        public ?string $deliveryPostalCode = null,
-        public ?string $deliveryCity = null,
-        public ?string $deliveryCountry = null,
-        public ?Address $deliveryAddress = null,
-        public bool $differentBillingAddress = false,
+        public ?string $id = null,
 
         public ?string $cardFirstName = null,
         public ?string $cardLastName = null,
@@ -56,8 +30,6 @@ class Payment
         public ?string $failureUrl = null,
         public ?string $notifyUrl = null,
         public ?string $paymentConfirmationUrl = null,
-
-        public ?Shipping $shipping = null,
 
         public ?Closure $paymentExceptionHandler = null,
 
