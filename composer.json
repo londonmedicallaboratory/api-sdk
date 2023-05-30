@@ -23,7 +23,7 @@
         "clue/block-react": "^1.5",
         "brick/money": "^0.5.3",
         "symfony/twig-bundle": "^6.1.1",
-        "omnipay/sagepay": "~3.0",
+        "omnipay/sagepay": "^3.2",
         "symfony/intl": "^6.1",
         "sensio/framework-extra-bundle": "^6.2.7",
         "twig/extra-bundle": "^3.4",
@@ -58,6 +58,10 @@
         {
             "type": "github",
             "url": "https://github.com/strictify/goodies-bundle.git"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/benjam-es/omnipay-sagepay"
         }
     ],
     "autoload": {

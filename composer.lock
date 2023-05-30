@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "892dedab9fb3c0ed43fe0c9bd69f4ca5",
+    "content-hash": "c6a673a11001d7b15606ea11dfa5370d",
     "packages": [
         {
             "name": "brick/math",
@@ -1365,12 +1365,12 @@
             "version": "3.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/omnipay-sagepay.git",
+                "url": "https://github.com/benjam-es/omnipay-sagepay.git",
                 "reference": "570df6b7f47dc39635132723eb8cb8c474138a67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-sagepay/zipball/570df6b7f47dc39635132723eb8cb8c474138a67",
+                "url": "https://api.github.com/repos/benjam-es/omnipay-sagepay/zipball/570df6b7f47dc39635132723eb8cb8c474138a67",
                 "reference": "570df6b7f47dc39635132723eb8cb8c474138a67",
                 "shasum": ""
             },
@@ -1392,7 +1392,17 @@
                     "Omnipay\\SagePay\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 src/"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 src/"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -1419,8 +1429,7 @@
                 "sagepay"
             ],
             "support": {
-                "issues": "https://github.com/thephpleague/omnipay-sagepay/issues",
-                "source": "https://github.com/thephpleague/omnipay-sagepay/tree/master"
+                "source": "https://github.com/benjam-es/omnipay-sagepay/tree/3.2.0"
             },
             "time": "2018-10-20T13:45:59+00:00"
         },
