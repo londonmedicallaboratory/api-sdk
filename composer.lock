@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6a673a11001d7b15606ea11dfa5370d",
+    "content-hash": "9d9023c1b182ab71e4fa56a47a67307a",
     "packages": [
         {
             "name": "brick/math",
@@ -1362,29 +1362,31 @@
         },
         {
             "name": "omnipay/sagepay",
-            "version": "3.2.0",
+            "version": "dev-feature/pi-protocol-4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benjam-es/omnipay-sagepay.git",
-                "reference": "570df6b7f47dc39635132723eb8cb8c474138a67"
+                "reference": "076f4d134f7864a739b704197efe6a7f1a0bfae8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/benjam-es/omnipay-sagepay/zipball/570df6b7f47dc39635132723eb8cb8c474138a67",
-                "reference": "570df6b7f47dc39635132723eb8cb8c474138a67",
+                "url": "https://api.github.com/repos/benjam-es/omnipay-sagepay/zipball/076f4d134f7864a739b704197efe6a7f1a0bfae8",
+                "reference": "076f4d134f7864a739b704197efe6a7f1a0bfae8",
                 "shasum": ""
             },
             "require": {
-                "omnipay/common": "~3.0"
+                "omnipay/common": "~3.0",
+                "php": "^7.3|^8"
             },
             "require-dev": {
-                "omnipay/tests": "~3.0",
+                "omnipay/tests": "^4.1",
+                "phpspec/prophecy-phpunit": "^2.0",
                 "squizlabs/php_codesniffer": "^3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "3.3.x-dev"
                 }
             },
             "autoload": {
@@ -1412,6 +1414,10 @@
                     "email": "adrian@adrianmacneil.com"
                 },
                 {
+                    "name": "Jason Judge",
+                    "email": "jason.judge@academe.co.uk"
+                },
+                {
                     "name": "Omnipay Contributors",
                     "homepage": "https://github.com/thephpleague/omnipay-sagepay/contributors"
                 }
@@ -1429,9 +1435,9 @@
                 "sagepay"
             ],
             "support": {
-                "source": "https://github.com/benjam-es/omnipay-sagepay/tree/3.2.0"
+                "source": "https://github.com/benjam-es/omnipay-sagepay/tree/feature/pi-protocol-4"
             },
-            "time": "2018-10-20T13:45:59+00:00"
+            "time": "2022-01-18T22:59:18+00:00"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -9554,6 +9560,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "londonmedicallaboratory/view-bundle": 20,
+        "omnipay/sagepay": 20,
         "strictify/form-mapper-bundle": 20,
         "strictify/goodies-bundle": 20,
         "roave/security-advisories": 20
