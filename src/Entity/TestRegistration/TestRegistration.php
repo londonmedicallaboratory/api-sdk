@@ -64,6 +64,7 @@ use function array_map;
  *      },
  * }
  *
+ * @template TAppointment of Appointment
  * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: TestRegistrationRepository::class, baseUrl: 'test_registration')]
@@ -77,7 +78,7 @@ class TestRegistration implements ModelInterface
      * @param LazyValueInterface<?string> $downloadUrl
      * @param LazyValueInterface<?string> $trfCode
      * @param ?LazyValueInterface<?Address> $ukAddress
-     * @param ?LazyValueInterface<?Appointment> $appointment
+     * @param ?LazyValueInterface<?TAppointment> $appointment
      * @param ?LazyValueInterface<bool> $resultsReady
      */
     public function __construct(
@@ -162,11 +163,17 @@ class TestRegistration implements ModelInterface
         return $this->trfCode->getValue();
     }
 
+    /**
+     * @return ?TAppointment
+     */
     public function getAppointment(): ?Appointment
     {
         return $this->appointment?->getValue();
     }
 
+    /**
+     * @param ?TAppointment $appointment
+     */
     public function setAppointment(?Appointment $appointment): void
     {
         $this->appointment = new ResolvedValue($appointment);
