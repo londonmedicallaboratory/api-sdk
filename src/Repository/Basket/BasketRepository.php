@@ -61,7 +61,7 @@ class BasketRepository extends AbstractRepository
         $data = (array)json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         Assert::string($orderId = $data['id'] ?? null);
         $this->getSession()->remove(self::SESSION_KEY);
-        $this->getSession()->save();
+        $this->createNew();
 
         return $this->get(OrderRepository::class)->find($orderId, true) ?? throw new LogicException('Order not found');
     }
