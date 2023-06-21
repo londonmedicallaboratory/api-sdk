@@ -71,6 +71,7 @@ class BasketRepository extends AbstractRepository
 
         $basket = new Basket(
             id: $id,
+            transactionId: $entity['transaction_id'] ?? null,
             shippingAddress: $this->getAddress($entity['shipping_address'] ?? null),
             shipping: $this->getShipping($entity['shipping_id'] ?? null),
             billingAddress: $this->getAddress($entity['billing_address'] ?? null),

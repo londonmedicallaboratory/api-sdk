@@ -36,6 +36,7 @@ use function array_reduce;
  *     shipping_address?: ?TAddress,
  *     billing_address?: ?TAddress,
  *     initial_appointment?: ?TAppointment,
+ *     transaction_id?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -55,6 +56,7 @@ class Basket implements ModelInterface
         private ?Shipping $shipping = null,
         private ?Appointment $initialAppointment = null,
         private ?string $id = null,
+        private ?string $transactionId = null,
     )
     {
     }
@@ -63,6 +65,7 @@ class Basket implements ModelInterface
     {
         $data = [
             'id' => $this->id,
+            'transaction_id' => $this->transactionId,
             'voucher_id' => $this->getVoucher()?->getId(),
             'shipping_id' => $this->getShipping()?->getId(),
             'items' => array_map(fn(BasketItem $item) => [
@@ -222,6 +225,16 @@ class Basket implements ModelInterface
     public function setInitialAppointment(?Appointment $initialAppointment): void
     {
         $this->initialAppointment = $initialAppointment;
+    }
+
+    public function getTransactionId(): ?string
+    {
+        return $this->transactionId;
+    }
+
+    public function setTransactionId(?string $transactionId): void
+    {
+        $this->transactionId = $transactionId;
     }
 
     private function applyVoucher(PriceInterface $price): PriceInterface
