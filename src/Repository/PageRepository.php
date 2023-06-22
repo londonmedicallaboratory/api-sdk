@@ -25,9 +25,4 @@ class PageRepository extends AbstractRepository
             content: $entity['content'],
         );
     }
-
-    protected function getCacheTimeout(): ?int
-    {
-        return 500;
-    }
 }
