@@ -142,6 +142,22 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         return $this->files->getValue();
     }
 
+    public function getPrimaryImage(): ?File
+    {
+        $files = $this->getFiles();
+        if (empty($files)) {
+            return null;
+        }
+
+        foreach ($this->getFiles() as $file) {
+            if ($file->isPrimary()) {
+                return $file;
+            }
+        }
+
+        return $this->getFiles()[0];
+    }
+
     public function getFaqs(): array
     {
         return $this->faqs->getValue();

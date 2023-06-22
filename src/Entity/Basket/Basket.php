@@ -214,6 +214,11 @@ class Basket implements ModelInterface
     public function setQuantityForProduct(Product $product, int $quantity): void
     {
         $item = $this->findItemOrCreateNew($product);
+        if ($quantity === 0) {
+            $this->removeProduct($product);
+
+            return;
+        }
         $item->setQuantity($quantity);
     }
 
@@ -268,5 +273,14 @@ class Basket implements ModelInterface
         }
 
         return null;
+    }
+
+    private function removeProduct(Product $product): void
+    {
+        foreach ($this->getItems() as $key => $item) {
+            if ($product->getId() === $item->getProduct()->getId()) {
+                unset($this->items[$key]);
+            }
+        }
     }
 }
