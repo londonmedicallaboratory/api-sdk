@@ -162,6 +162,11 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         return $this->files->getValue();
     }
 
+    /**
+     * @deprecated Probably, because `preview_image_url` is now usable
+     *
+     * TBD
+     */
     public function getPrimaryImage(): ?File
     {
         $files = $this->getFiles();
