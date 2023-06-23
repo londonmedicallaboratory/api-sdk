@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Repository;
 
-use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\Money\Price;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Lazy\ExtraLazyPromise;
 use LML\SDK\Entity\Product\Product;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Shipping\Shipping;
@@ -56,12 +56,12 @@ class ProductRepository extends AbstractRepository
             previewImageUrl: $entity['preview_image_url'],
             isFeatured: $entity['is_featured'] ?? false,
             price: new ResolvedValue($price),
-            biomarkers: new LazyPromise($this->getBiomarkers($id)),
-            shippingTypes: new LazyPromise($this->getShippingTypes($id)),
-            files: new LazyPromise($this->getFiles($id)),
-            categories: new LazyPromise($this->getCategories($id)),
-            faqs: new LazyPromise($this->getFaqs($id)),
-            video: new LazyPromise($this->getVideo($id)),
+            biomarkers: new ExtraLazyPromise(fn() => $this->getBiomarkers($id)),
+            shippingTypes: new ExtraLazyPromise(fn() => $this->getShippingTypes($id)),
+            files: new ExtraLazyPromise(fn() => $this->getFiles($id)),
+            categories: new ExtraLazyPromise(fn() => $this->getCategories($id)),
+            faqs: new ExtraLazyPromise(fn() => $this->getFaqs($id)),
+            video: new ExtraLazyPromise(fn() => $this->getVideo($id)),
         );
     }
 

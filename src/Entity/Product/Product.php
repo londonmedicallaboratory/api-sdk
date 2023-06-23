@@ -9,6 +9,7 @@ use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\ModelInterface;
+use React\Promise\PromiseInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Category\Category;
 use LML\SDK\Entity\Shipping\Shipping;
@@ -16,6 +17,8 @@ use LML\SDK\Entity\SluggableInterface;
 use LML\SDK\Entity\Biomarker\Biomarker;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
+use function React\Promise\all;
+use function React\Promise\resolve;
 
 /**
  * @psalm-type S=array{
@@ -73,10 +76,27 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         return $this->getName();
     }
 
+    public function collect(string ...$what): PromiseInterface
+    {
+        /** @var list<PromiseInterface> $promises */
+        $promises = [];
+        foreach ($what as $name) {
+            $promises[] = match ($name) {
+                'biomarkers' => resolve($this->biomarkers),
+                'files' => resolve($this->files),
+                'shipping_types' => resolve($this->shippingTypes),
+                'video' => resolve($this->video),
+                default => null,
+            };
+        }
+
+        return all($promises);
+    }
+
     /**
      * @return list<Biomarker>
      */
-    public function getBiomarkers()
+    public function getBiomarkers(): array
     {
         return $this->biomarkers->getValue();
     }
@@ -166,7 +186,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
     /**
      * @return list<Category>
      */
-    public function getCategories()
+    public function getCategories(): array
     {
         return $this->categories->getValue();
     }

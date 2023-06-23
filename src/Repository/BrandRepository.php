@@ -51,7 +51,7 @@ class BrandRepository extends AbstractRepository
     /**
      * @psalm-return ($await is true ? list<TimeBlock> : PromiseInterface<list<TimeBlock>>)
      */
-    public function getTimeBlocks(bool $await = false)
+    public function getTimeBlocks(bool $await = false): array|PromiseInterface
     {
         $url = '/test_location/timeblocks';
 
@@ -71,7 +71,7 @@ class BrandRepository extends AbstractRepository
     /**
      * @return list<Slot>
      */
-    public function getSlots(string $id, DateTime $when)
+    public function getSlots(string $id, DateTime $when): array
     {
         $url = sprintf('/test_location/slots/%04d/%02d/%02d', $when->format('Y'), $when->format('m'), $when->format('d'));
 
