@@ -97,6 +97,10 @@
             <tag name="twig.extension"/>
         </service>
 
+        <service id="LML\SDK\Twig\Nl2BrNGExtension">
+            <tag name="twig.extension"/>
+        </service>
+
         <service id="LML\SDK\Service\InformationBooth">
             <argument type="service" id="lml_sdk.client"/>
         </service>
