@@ -14,6 +14,7 @@ use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
+use LML\SDK\Entity\TestRegistration\TestRegistrationStatusEnum;
 use function sprintf;
 
 /**
@@ -45,6 +46,7 @@ class TestRegistrationRepository extends AbstractRepository
             patient: new LazyPromise($this->getPatient($entity['patient_id'] ?? null)),
             downloadUrl: new ResolvedValue($entity['download_url'] ?? null),
             trfCode: new ResolvedValue($entity['trf_code'] ?? null),
+            status: TestRegistrationStatusEnum::from($entity['status']),
             resultsReady: new ResolvedValue($entity['results_ready']),
             createdAt: $createdAt ? new DateTime($createdAt) : new DateTime(),
             completedAt: $completedAt ? new DateTime($completedAt) : null,

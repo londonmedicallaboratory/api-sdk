@@ -51,6 +51,7 @@ use function array_map;
  *      doctors_name?: ?string,
  *      download_url?: ?string,
  *      trf_code?: ?string,
+ *      status: string,
  *      appointment_id?: ?string,
  *      uk_address?: null|array{
  *          id?: ?string,
@@ -86,6 +87,7 @@ class TestRegistration implements ModelInterface
         protected LazyValueInterface $patient,
         protected LazyValueInterface $downloadUrl,
         protected LazyValueInterface $trfCode,
+        public TestRegistrationStatusEnum $status,
         protected ?LazyValueInterface $resultsReady = null,
         protected DateTimeInterface $createdAt = new DateTime(),
         protected ?DateTimeInterface $completedAt = null,
@@ -179,6 +181,16 @@ class TestRegistration implements ModelInterface
         $this->appointment = new ResolvedValue($appointment);
     }
 
+    public function getStatus(): TestRegistrationStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function getStatusName(): string
+    {
+        return $this->status->getName();
+    }
+
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -205,6 +217,7 @@ class TestRegistration implements ModelInterface
             'doctors_name' => $this->getDoctorsName(),
             'download_url' => $this->getDownloadUrl(),
             'appointment_id' => $this->getAppointment()?->getId(),
+            'status' => $this->getStatus()->value,
         ];
     }
 }
