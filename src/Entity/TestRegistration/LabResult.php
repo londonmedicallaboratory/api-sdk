@@ -27,7 +27,7 @@ use LML\SDK\Repository\LabResultRepository;
  *      out_of_range?: null|'high'|'low',
  *      biomarker_id: string,
  *      unit_type?: ?string,
- *      human_readable_value?: string,
+ *      human_readable_value?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -198,7 +198,6 @@ class LabResult implements ModelInterface
             'comment' => $this->comment,
             'successful' => $this->isSuccessful,
             'biomarker_id' => $this->getBiomarker()->getId(),
-            'human_readable_result' => $this->getHumanReadableValue(),
         ];
     }
 
