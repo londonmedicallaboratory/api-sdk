@@ -198,14 +198,13 @@ class LabResult implements ModelInterface
             'comment' => $this->comment,
             'successful' => $this->isSuccessful,
             'biomarker_id' => $this->getBiomarker()->getId(),
-            'human_readable_result' => $this->getHumanReadableValue(),
         ];
     }
 
     /**
      * @return null|'high'|'low'
      */
-    private function getOutOfRangeValue(): ?string
+    protected function getOutOfRangeValue(): ?string
     {
         if ($this->errorReason) {
             return null;
