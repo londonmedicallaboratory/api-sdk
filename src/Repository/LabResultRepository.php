@@ -35,7 +35,7 @@ class LabResultRepository extends AbstractRepository
         );
         $labResult->errorReason = $entity['error_reason'] ?? null;
         $labResult->unitName = $entity['unit_type'] ?? null;
-        $labResult->setHumanReadableValue($entity['human_readable_result']);
+        $labResult->setHumanReadableValue($entity['human_readable_value'] ?? null);
 
         return $labResult;
     }
