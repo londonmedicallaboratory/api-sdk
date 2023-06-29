@@ -24,6 +24,9 @@
         <service id="LML\SDK\Repository\TestRegistrationRepository">
             <tag name="lml_sdk.repository"/>
         </service>
+        <service id="LML\SDK\Repository\LabResultRepository">
+            <tag name="lml_sdk.repository"/>
+        </service>
         <service id="LML\SDK\Repository\BiomarkerRepository">
             <tag name="lml_sdk.repository"/>
         </service>

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\TestRegistration;
 
+use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Biomarker\Biomarker;
+use LML\SDK\Repository\LabResultRepository;
 
 /**
  * @template TBiomarker of Biomarker
@@ -23,12 +25,20 @@ use LML\SDK\Entity\Biomarker\Biomarker;
  *      successful: bool,
  *      error_reason?: string,
  *      out_of_range?: null|'high'|'low',
+ *      biomarker_id: string,
+ *      unit_type?: ?string,
+ *     'human_readable_result': ?string,
  * }
  *
  * @implements ModelInterface<S>
  */
+#[Entity(repositoryClass: LabResultRepository::class, baseUrl: 'lab_result')]
 class LabResult implements ModelInterface
 {
+    public ?string $unitName = null;
+    public ?string $errorReason = null;
+    private ?string $humanReadableValue = null;
+
     /**
      * @param LazyValueInterface<TBiomarker> $biomarker
      * @param LazyValueInterface<string> $name
@@ -96,6 +106,86 @@ class LabResult implements ModelInterface
         return $this->id;
     }
 
+    public function getResultLowOrHighMarker(): ?string
+    {
+        return match ($this->getOutOfRangeValue()) {
+            'high' => 'High',
+            'low' => 'Low',
+            default => 'Normal',
+        };
+    }
+
+    public function getFriendlyRange(): string
+    {
+        if ($this->errorReason) {
+            return '';
+        }
+
+        $minRange = $this->getMinRange();
+        $maxRange = $this->getMaxRange();
+
+        return match (true) {
+            !$minRange && !$maxRange => '',
+            !$minRange => sprintf('< %s', $maxRange),
+            !$maxRange => sprintf('> %s', $minRange),
+            default => sprintf('%s - %s', $minRange, $maxRange),
+        };
+    }
+
+    public function isTooHigh(): bool
+    {
+        $max = $this->getMaxRange();
+        if (!is_numeric($max)) {
+            return false;
+        }
+
+        $value = $this->getValue();
+        if (is_string($value) && str_starts_with($value, '>')) {
+            $value = trim($value, '> ');
+        }
+
+        return (float)$value > (float)$max;
+    }
+
+    public function isTooLow(): bool
+    {
+        $minRange = $this->getMinRange();
+        if (!is_numeric($minRange)) {
+            return false;
+        }
+
+        $value = $this->getValue();
+        if (is_string($value) && str_starts_with($value, '<')) {
+            $value = trim($value, '< ');
+        }
+        // there are some other weird characters here; bail
+        if (!is_numeric($value)) {
+            return false;
+        }
+
+        return (float)$value < (float)$minRange;
+    }
+
+    public function isOutsideOfRange(): bool
+    {
+        return !$this->isWithinRange();
+    }
+
+    public function isWithinRange(): bool
+    {
+        return !$this->isTooHigh() && !$this->isTooLow();
+    }
+
+    public function getHumanReadableValue(): ?string
+    {
+        return $this->humanReadableValue;
+    }
+
+    public function setHumanReadableValue(?string $humanReadableValue): void
+    {
+        $this->humanReadableValue = $humanReadableValue;
+    }
+
     public function toArray(): array
     {
         return [
@@ -107,6 +197,27 @@ class LabResult implements ModelInterface
             'max_range' => $this->getMaxRange(),
             'comment' => $this->comment,
             'successful' => $this->isSuccessful,
+            'biomarker_id' => $this->getBiomarker()->getId(),
+            'human_readable_result' => $this->getHumanReadableValue(),
         ];
+    }
+
+    /**
+     * @return null|'high'|'low'
+     */
+    private function getOutOfRangeValue(): ?string
+    {
+        if ($this->errorReason) {
+            return null;
+        }
+
+        if ($this->isTooHigh()) {
+            return 'high';
+        }
+        if ($this->isTooLow()) {
+            return 'low';
+        }
+
+        return null;
     }
 }
