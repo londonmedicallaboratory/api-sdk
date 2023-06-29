@@ -204,7 +204,7 @@ class LabResult implements ModelInterface
     /**
      * @return null|'high'|'low'
      */
-    public function getOutOfRangeValue(): ?string
+    protected function getOutOfRangeValue(): ?string
     {
         if ($this->errorReason) {
             return null;
