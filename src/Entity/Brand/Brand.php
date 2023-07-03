@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Brand;
 
 use Stringable;
+use LML\SDK\Struct\Point;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\View\Lazy\LazyValueInterface;
@@ -24,6 +25,8 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
  *      nearest_bus_station?: ?string,
  *      nearest_train_station?: ?string,
  *      next_available_slot?: ?string,
+ *      latitude?: ?float,
+ *      longitude?: ?float,
  * }
  *
  * @implements ModelInterface<S>
@@ -47,6 +50,7 @@ class Brand implements ModelInterface, Stringable
         protected LazyValueInterface $nextAvailableSlot,
         protected ?string $nearestBusStation = null,
         protected ?string $nearestTrainStation = null,
+        private ?Point $point = null,
     )
     {
     }
@@ -115,6 +119,11 @@ class Brand implements ModelInterface, Stringable
     public function getWeeklyWorkingHours(): WeeklyWorkingHours
     {
         return new WeeklyWorkingHours($this->getWorkingHours());
+    }
+
+    public function getPoint(): ?Point
+    {
+        return $this->point;
     }
 
     public function toArray(): array

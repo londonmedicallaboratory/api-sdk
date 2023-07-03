@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
+use LML\SDK\Struct\Point;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
@@ -117,6 +118,10 @@ class BrandRepository extends AbstractRepository
         $nextAvailableSlot = $entity['next_available_slot'] ?? null;
         $slot = $nextAvailableSlot ? new Slot(new DateTime($nextAvailableSlot), isAvailable: true) : null;
 
+        $latitude = $entity['latitude'] ?? null;
+        $longitude = $entity['longitude'] ?? null;
+        $point = $latitude && $longitude ? new Point($latitude, $longitude) : null;
+
         return new Brand(
             id: $id,
             fullAddress: $entity['full_address'],
@@ -128,7 +133,13 @@ class BrandRepository extends AbstractRepository
             nearestBusStation: $entity['nearest_bus_station'] ?? null,
             nearestTrainStation: $entity['nearest_train_station'] ?? null,
             nextAvailableSlot: new ResolvedValue($slot),
+            point: $point,
         );
+    }
+
+    protected function getCacheTimeout(): int
+    {
+        return 60;
     }
 
     /**
