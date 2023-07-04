@@ -107,7 +107,7 @@ class BrandRepository extends AbstractRepository
             startsAt: $datum['starts_at'],
             endsAt: $datum['ends_at'],
             isActive: $datum['active'] ?? true,
-        ), $data));
+        ), $data ?? []));
 
         return $await ? await($resolvedPromise) : $resolvedPromise;
     }
@@ -139,7 +139,7 @@ class BrandRepository extends AbstractRepository
 
     protected function getCacheTimeout(): int
     {
-        return 60;
+        return 10;
     }
 
     /**
