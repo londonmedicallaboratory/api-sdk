@@ -98,7 +98,7 @@ class BrandRepository extends AbstractRepository
     {
         $url = sprintf('/test_location/%s/workhours', $id);
 
-        /** @var PromiseInterface<list<WH>> $promise */
+        /** @var PromiseInterface<list<WH>|null> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
         $resolvedPromise = $promise->then(fn($data) => array_map(static fn($datum) => new WorkingHours(
