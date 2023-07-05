@@ -27,6 +27,7 @@ use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
  *      next_available_slot?: ?string,
  *      latitude?: ?float,
  *      longitude?: ?float,
+ *      distance?: ?float,
  * }
  *
  * @implements ModelInterface<S>
@@ -51,6 +52,7 @@ class Brand implements ModelInterface, Stringable
         protected ?string $nearestBusStation = null,
         protected ?string $nearestTrainStation = null,
         private ?Point $point = null,
+        protected ?float $distance = null,
     )
     {
     }
@@ -124,6 +126,11 @@ class Brand implements ModelInterface, Stringable
     public function getPoint(): ?Point
     {
         return $this->point;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
     }
 
     public function toArray(): array

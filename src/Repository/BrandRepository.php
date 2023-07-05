@@ -134,6 +134,7 @@ class BrandRepository extends AbstractRepository
             nearestTrainStation: $entity['nearest_train_station'] ?? null,
             nextAvailableSlot: new ResolvedValue($slot),
             point: $point,
+            distance: $entity['distance'] ?? null,
         );
     }
 
