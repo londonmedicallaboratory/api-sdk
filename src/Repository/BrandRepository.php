@@ -11,6 +11,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Enum\DayOfWeekEnum;
 use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Lazy\ExtraLazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Service\API\AbstractRepository;
@@ -128,7 +129,7 @@ class BrandRepository extends AbstractRepository
             city: $entity['city'],
             postalCode: $entity['postal_code'],
             name: $entity['name'],
-            healthcareProfessionals: new LazyPromise($this->getProfessionals($id)),
+            healthcareProfessionals: new ExtraLazyPromise(fn() => $this->getProfessionals($id)),
             workHours: new LazyPromise($this->getWorkHours($id)),
             nearestBusStation: $entity['nearest_bus_station'] ?? null,
             nearestTrainStation: $entity['nearest_train_station'] ?? null,

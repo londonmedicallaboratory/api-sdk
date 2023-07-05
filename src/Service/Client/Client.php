@@ -85,11 +85,12 @@ class Client implements ClientInterface, ResetInterface
     /**
      * @param int|null $cacheTimeout *
      */
-    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null): PromiseInterface
+    public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
         $tag = $tag ? preg_replace('/\W/', '', $tag) : null;
+//        dump($extraQueryParams);
 
-        $url = $this->createRealUrl($url, $filters, $page, $limit);
+        $url = $this->createRealUrl($url, $filters, $page, $limit, extraQueryParams: $extraQueryParams);
         $cache = $this->getCache();
         $cacheKey = $this->createCacheKey($url);
 
@@ -147,7 +148,7 @@ class Client implements ClientInterface, ResetInterface
         return $this->cache ?? throw new RuntimeException('You must set cache pool to use this feature.');
     }
 
-    private function createRealUrl(string $url, array $filters = [], int $page = 1, ?int $limit = null): string
+    private function createRealUrl(string $url, array $filters = [], int $page = 1, ?int $limit = null, array $extraQueryParams = []): string
     {
         $baseUrl = rtrim($this->baseUrl, '/');
         $url = ltrim($url, '/');
@@ -161,7 +162,7 @@ class Client implements ClientInterface, ResetInterface
         if ($limit) {
             $extras['limit'] = $limit;
         }
-        $merge = array_merge($extras, $filters);
+        $merge = array_merge($extras, $filters, $extraQueryParams);
         $queryParams = http_build_query($merge);
         if ($queryParams) {
             $url .= '?' . $queryParams;
