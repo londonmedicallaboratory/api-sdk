@@ -120,7 +120,7 @@ class BrandRepository extends AbstractRepository
 
         $latitude = $entity['latitude'] ?? null;
         $longitude = $entity['longitude'] ?? null;
-        $point = $latitude && $longitude ? new Point($latitude, $longitude) : null;
+        $point = ($latitude !== null) && ($longitude !== null) ? new Point($latitude, $longitude) : null;
 
         return new Brand(
             id: $id,
