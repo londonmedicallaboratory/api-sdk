@@ -53,6 +53,6 @@ class ProductCategoryRepository extends AbstractRepository
 
         $url = sprintf('/product_categories/%s/logo', $id);
 
-        return $fileRepository->findOneBy(url: $url);
+        return $fileRepository->find(url: $url);
     }
 }

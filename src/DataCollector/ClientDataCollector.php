@@ -37,7 +37,7 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
 
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
-        $promise = $this->client->getAsync($url, $filters, $page, $limit, $cacheTimeout, tag: $tag);
+        $promise = $this->client->getAsync($url, $filters, $page, $limit, $cacheTimeout, tag: $tag, extraQueryParams: $extraQueryParams);
         $isCached = $promise instanceof CachedItemPromise;
 
         return $this->logPromise($promise, $url, 'GET', $isCached, filters: $filters);
