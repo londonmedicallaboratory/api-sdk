@@ -69,6 +69,11 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         ];
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     *
+     * @todo Temp fix, must be removed
+     */
     public function __unserialize(array $data)
     {
         $this->firstName = $data['first_name'];
