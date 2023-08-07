@@ -59,7 +59,7 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
     /**
      * @see https://symfony.com/doc/current/security.html#understanding-how-users-are-refreshed-from-the-session
      */
-    public function __serialize()
+    public function __serialize(): array
     {
         return [
             'first_name' => $this->getFirstName(),
@@ -67,6 +67,19 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
             'email' => $this->getEmail(),
             'password' => $this->getPassword(),
         ];
+    }
+
+    /**
+     * @psalm-suppress MixedAssignment
+     *
+     * @todo Temp fix, must be removed
+     */
+    public function __unserialize(array $data)
+    {
+        $this->firstName = $data['first_name'];
+        $this->lastName = $data['last_name'];
+        $this->email = $data['email'];
+        $this->password = $data['password'];
     }
 
     public function __toString(): string
