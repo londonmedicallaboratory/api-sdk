@@ -12,6 +12,7 @@ use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Basket\Basket;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
@@ -43,6 +44,11 @@ class BasketRepository extends AbstractRepository
         private RequestStack $requestStack,
     )
     {
+    }
+
+    public function getPersistenceGraph(ModelInterface $view): iterable
+    {
+        yield $view->getInitialAppointment();
     }
 
     public function findActiveOrCreate(?Customer $customer): Basket
