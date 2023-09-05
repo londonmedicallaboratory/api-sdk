@@ -3,16 +3,20 @@
             {{ stimulus_controller('@londonmedicallaboratory/api-sdk/calendar', {
                 calendarUrl: form.vars.calendar_url,
                 dailySlotsUrl: form.vars.daily_slots_url,
-                formElementId: form.vars.id
+                formElementId: form.vars.id,
+                autoOpen: form.vars.auto_open,
+                closeOnSelect: form.vars.close_on_select
             }) }}>
 
         <span {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'prettyTime') }}>
             {{ form.vars.pretty_time }}
         </span>
 
-        <button {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'selectDate') }} type="button">
-            {{ form.vars.pretty_time ? 'Change' : 'Set' }}
-        </button>
+        {% if form.vars.close_on_select %}
+            <button {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'selectDate') }} type="button">
+                {{ form.vars.pretty_time ? 'Change' : 'Set' }}
+            </button>
+        {% endif %}
 
         {# These are needed for flapickr; it has a "feature" that always updates the widget as soon as it is instanced #}
         <div style="display: none">

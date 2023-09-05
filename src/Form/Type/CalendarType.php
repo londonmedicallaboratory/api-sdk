@@ -32,6 +32,9 @@ class CalendarType extends AbstractType
             'html5' => false,
             'input_format' => 'Y-m-d H:i',
         ]);
+
+        $resolver->setDefault('auto_open', false);
+        $resolver->setDefault('close_on_select', true);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -41,6 +44,8 @@ class CalendarType extends AbstractType
         Assert::nullOrIsInstanceOf($data = $form->getData(), DateTimeInterface::class);
         $view->vars['formatted_time'] = $data?->format('Y-m-d H:i:s');
         $view->vars['pretty_time'] = $data?->format('M, jS Y H:i');
+        $view->vars['auto_open'] = $options['auto_open'];
+        $view->vars['close_on_select'] = $options['close_on_select'];
     }
 
     public function getBlockPrefix(): string
