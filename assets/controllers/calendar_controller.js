@@ -165,11 +165,12 @@ export default class calender_controller extends Controller {
 
             json.forEach(function (struct) {
                 let isAvailable = struct.available;
+                let isInPast = struct.is_past;
                 let humanReadableFormat = struct['human_readable_format'];
                 let preview = struct['preview'];
 
                 slots.innerHTML += `
-                        <span class="lml-calendar-widget-slot ${isAvailable ? '' : 'lml-calendar-widget-slot-not-available'}" 
+                        <span class="lml-calendar-widget-slot ${isAvailable ? '' : 'lml-calendar-widget-slot-not-available'} ${isInPast ? 'lml-calendar-widget-slot-past-time' : ''}" 
                             ${isAvailable ? 'data-action="click->londonmedicallaboratory--api-sdk--calendar#selectSlot"' : ''}    
                             data-londonmedicallaboratory--api-sdk--calendar-time-param="${preview}" 
                             data-londonmedicallaboratory--api-sdk--calendar-human_readable_format-param="${humanReadableFormat}" 

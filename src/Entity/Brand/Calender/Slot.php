@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Brand\Calender;
 
+use DateTime;
 use DateTimeInterface;
 
 class Slot implements SlotInterface
@@ -18,7 +19,13 @@ class Slot implements SlotInterface
     }
 
     /**
-     * @return array{available: bool, human_readable_format: string, time: string, preview: string}
+     * @return array{
+     *     available: bool,
+     *     human_readable_format: string,
+     *     time: string,
+     *     preview: string,
+     *     is_past: bool,
+     * }
      */
     public function toArray(): array
     {
@@ -27,6 +34,7 @@ class Slot implements SlotInterface
             'available' => $this->isAvailable(),
             'human_readable_format' => $this->format('M, jS Y H:i'),
             'time' => $this->time->format('Y-m-d H:i'),
+            'is_past' => $this->isInPast(),
         ];
     }
 
@@ -60,5 +68,12 @@ class Slot implements SlotInterface
     public function isAvailable(): bool
     {
         return $this->isAvailable;
+    }
+
+    public function isInPast(): bool
+    {
+        $now = new DateTime();
+
+        return $this->time < $now;
     }
 }
