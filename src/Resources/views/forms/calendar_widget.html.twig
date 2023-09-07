@@ -36,7 +36,7 @@
     <div {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'dialog') }} class="lml-calendar-widget-dialog hidden">
         <div class="lml-calendar-widget-dialog-content">
             <span class="lml-calendar-widget-dialog-close" {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'close', 'click') }}></span>
-            <div class="lml-calendar-widget" {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'calendar') }}></div>
+            <div class="lml-calendar-display" {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'calendar') }}></div>
 
             <div class="lml-time-slots" {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'slots') }}>
                 {# Keep these if more params are needed; easier to generate them with Symfony than poking with JS
