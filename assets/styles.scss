@@ -6,8 +6,6 @@
   // Use-case: position: absolute, borders etc
   .lml-calendar-widget-dialog {
     &:not(.hidden) {
-      //position: absolute;
-      //background-color: green;
     }
 
     // class `hidden` is standard now, no need for namespace
@@ -25,17 +23,7 @@
   }
 
   .lml-calendar-widget-slot {
-    all: initial;
-    width: 25%;
-    display: inline-block;
-    margin-bottom: 3px;
-    text-align: center;
-    background-color: lightgrey;
-    cursor: pointer;
-
     &.lml-calendar-widget-slot-not-available {
-      background-color: grey;
-      cursor: not-allowed;
     }
   }
 }
