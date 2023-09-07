@@ -19,6 +19,7 @@ enum OrderShippingStatusEnum: string implements NameableInterface
     case DELIVERED = 'delivered';
     case DELIVERY_FAILED = 'delivery_failed';
     case RETURNED = 'returned';
+    case APPOINTMENT = 'appointment';
 
     public function getName(): string
     {
@@ -31,6 +32,7 @@ enum OrderShippingStatusEnum: string implements NameableInterface
             self::DELIVERED => 'Delivered',
             self::DELIVERY_FAILED => 'Delivery failed',
             self::RETURNED => 'Returned',
+            self::APPOINTMENT => 'Appointment',
         };
     }
 }
