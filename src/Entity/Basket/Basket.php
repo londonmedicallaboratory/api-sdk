@@ -80,9 +80,10 @@ class Basket implements ModelInterface
         if ($billingAddress = $this->billingAddress) {
             $data['billing_address'] = $billingAddress->toArray();
         }
-        if ($initialAppointmentTime = $this->initialAppointment) {
-            $data['initial_appointment'] = $initialAppointmentTime->toArray();
-        }
+        $data['initial_appointment'] = $this->initialAppointment?->toArray(); // must be null, or EntityManager won't detect the change
+//        if ($initialAppointmentTime = $this->initialAppointment) {
+//            $data['initial_appointment'] = $initialAppointmentTime->toArray();
+//        }
         if ($customer = $this->getAnonCustomer()) {
             $data['customer'] = [
                 'first_name' => $customer->getFirstName(),
