@@ -14,7 +14,7 @@
             </span>
         </div>
 
-        {% if form.vars.close_on_select %}
+        {% if form.vars.close_on_select and not form.vars.auto_open %}
             <button {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'selectDate') }} type="button">
                 {{ form.vars.pretty_time ? 'Change' : 'Set' }}
             </button>
