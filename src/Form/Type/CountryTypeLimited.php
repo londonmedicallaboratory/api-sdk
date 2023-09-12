@@ -18,8 +18,8 @@ class CountryTypeLimited extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $allowed = ['GB', 'RS', 'DE', 'IT'];
+        $allowed = ['GB'];
         $resolver->setDefault('choice_filter', fn(?string $countryCode) => $countryCode && in_array($countryCode, $allowed, true));
-        $resolver->setDefault('preferred_choices', ['GB']);
+//        $resolver->setDefault('preferred_choices', ['GB']);
     }
 }

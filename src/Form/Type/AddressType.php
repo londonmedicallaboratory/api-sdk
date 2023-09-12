@@ -76,6 +76,7 @@ class AddressType extends AbstractType
         ]);
 
         $builder->add('countryCode', CountryTypeLimited::class, [
+            'label' => 'Country',
             'get_value' => fn(Address $address) => $address->getCountryCode(),
             'update_value' => fn(string $country, Address $address) => $address->setCountryCode($country),
         ]);

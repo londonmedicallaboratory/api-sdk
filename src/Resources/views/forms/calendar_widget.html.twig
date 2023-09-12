@@ -9,13 +9,11 @@
             }) }}>
 
         <div class="lml-selected-time">
-            <span {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'prettyTime') }}>
-                {{ form.vars.pretty_time }}
-            </span>
+            <span {{ stimulus_target('@londonmedicallaboratory/api-sdk/calendar', 'prettyTime') }}>{{- form.vars.pretty_time -}}</span>
         </div>
 
         {% if form.vars.close_on_select and not form.vars.auto_open %}
-            <button {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'selectDate') }} type="button">
+            <button {{ stimulus_action('@londonmedicallaboratory/api-sdk/calendar', 'selectDate') }} type="button" class="lml-time-change-button">
                 {{ form.vars.pretty_time ? 'Change' : 'Set' }}
             </button>
         {% endif %}
