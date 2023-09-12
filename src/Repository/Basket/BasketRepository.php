@@ -25,8 +25,11 @@ use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use function sprintf;
 use function array_map;
 use function Clue\React\Block\await;
@@ -36,14 +39,24 @@ use function Clue\React\Block\await;
  *
  * @extends AbstractRepository<S, Basket, array>
  */
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest')]
 class BasketRepository extends AbstractRepository
 {
     private const SESSION_KEY = 'basket_id';
+    private const AFFILIATE_CODE_KEY = 'affiliate_code';
 
     public function __construct(
         private RequestStack $requestStack,
     )
     {
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        Assert::nullOrString($affiliateCode = $event->getRequest()->query->get('affiliate'));
+        if ($affiliateCode) {
+            $this->getSession()->set(self::AFFILIATE_CODE_KEY, $affiliateCode);
+        }
     }
 
     public function getPersistenceGraph(ModelInterface $view): iterable
@@ -76,6 +89,8 @@ class BasketRepository extends AbstractRepository
     {
         $id = $entity['id'];
 
+        Assert::nullOrString($affiliateCode = $this->getSession()->get(self::AFFILIATE_CODE_KEY));
+
         $basket = new Basket(
             id: $id,
             transactionId: $entity['transaction_id'] ?? null,
@@ -84,6 +99,7 @@ class BasketRepository extends AbstractRepository
             billingAddress: $this->getAddress($entity['billing_address'] ?? null),
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
+            affiliateCode: $affiliateCode,
         );
 
         if ($customerScalars = $entity['customer'] ?? null) {

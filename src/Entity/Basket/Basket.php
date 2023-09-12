@@ -29,6 +29,7 @@ use function array_reduce;
  *
  * @psalm-type S = array{
  *     id: ?string,
+ *     affiliate_code?: ?string,
  *     voucher_id: ?string,
  *     shipping_id: ?string,
  *     customer?: ?TCustomer,
@@ -57,6 +58,7 @@ class Basket implements ModelInterface
         private ?Appointment $initialAppointment = null,
         private ?string $id = null,
         private ?string $transactionId = null,
+        private ?string $affiliateCode = null,
     )
     {
     }
@@ -65,6 +67,7 @@ class Basket implements ModelInterface
     {
         $data = [
             'id' => $this->id,
+            'affiliate_code' => $this->affiliateCode,
             'transaction_id' => $this->transactionId,
             'voucher_id' => $this->getVoucher()?->getId(),
             'shipping_id' => $this->getShipping()?->getId(),
@@ -241,6 +244,16 @@ class Basket implements ModelInterface
     public function setTransactionId(?string $transactionId): void
     {
         $this->transactionId = $transactionId;
+    }
+
+    public function getAffiliateCode(): ?string
+    {
+        return $this->affiliateCode;
+    }
+
+    public function setAffiliateCode(?string $affiliateCode): void
+    {
+        $this->affiliateCode = $affiliateCode;
     }
 
     private function applyVoucher(PriceInterface $price): PriceInterface
