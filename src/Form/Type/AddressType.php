@@ -31,9 +31,11 @@ class AddressType extends AbstractType
         $resolver->setDefaults([
             'show_company' => false,
             'factory' => $this->factory(...),
+            'limit_countries' => true,
             'line1_placeholder' => null,
         ]);
         $resolver->setAllowedTypes('line1_placeholder', ['string', 'null']);
+        $resolver->setAllowedTypes('limit_countries', 'bool');
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -84,7 +86,9 @@ class AddressType extends AbstractType
             ],
         ]);
 
-        $builder->add('countryCode', CountryTypeLimited::class, [
+        Assert::boolean($limitCountries = $options['limit_countries']);
+        $builder->add('countryCode', CountryType::class, [
+            'limit_countries' => $limitCountries,
             'label' => 'Country',
             'get_value' => fn(Address $address) => $address->getCountryCode(),
             'update_value' => fn(string $country, Address $address) => $address->setCountryCode($country),
