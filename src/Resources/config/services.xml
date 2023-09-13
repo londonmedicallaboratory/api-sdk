@@ -152,7 +152,7 @@
         <!-- Forms -->
         <service id="LML\SDK\Form\Type\AddressType"/>
         <service id="LML\SDK\Form\Type\CalendarType"/>
-        <service id="LML\SDK\Form\Type\CountryTypeLimited"/>
+        <service id="LML\SDK\Form\Type\CountryType"/>
         <service id="LML\SDK\Form\Type\DateTypeExtendedYearsRange"/>
         <service id="LML\SDK\Form\Type\EthnicityChoiceType"/>
 
