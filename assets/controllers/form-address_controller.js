@@ -3,7 +3,6 @@
 import {Controller} from '@hotwired/stimulus';
 import './../external/pca.css'
 
-require('../external/pca');
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
@@ -22,6 +21,8 @@ export default class extends Controller {
     static targets = ['editManuallyButton', 'rest'];
 
     connect() {
+        require('../external/pca');
+
         const pca = window.pca;
 
         let fields = [
@@ -51,6 +52,11 @@ export default class extends Controller {
         controls.listen('populate', () => {
             this.showRest();
         });
+    }
+
+    disconnect() {
+        delete window.pca;
+        delete require.cache[require.resolve('../external/pca')];
     }
 
     showRest() {
