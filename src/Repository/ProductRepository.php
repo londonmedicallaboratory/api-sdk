@@ -37,12 +37,18 @@ class ProductRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): Product
     {
         $priceData = $entity['price'] ?? throw new DataNotFoundException();
+        $discountedPriceData = $entity['discounted_price'] ?? null;
 
         $price = new Price(
             amount: $priceData['amount_minor'],
             currency: $priceData['currency'],
             formattedValue: $priceData['formatted_value'],
         );
+        $affiliatePrice = $discountedPriceData ? new Price(
+            amount: $discountedPriceData['amount_minor'],
+            currency: $discountedPriceData['currency'],
+            formattedValue: $discountedPriceData['formatted_value'],
+        ) : null;
 
         $id = $entity['id'];
 
@@ -62,6 +68,7 @@ class ProductRepository extends AbstractRepository
             categories: new ExtraLazyPromise(fn() => $this->getCategories($id)),
             faqs: new ExtraLazyPromise(fn() => $this->getFaqs($id)),
             video: new ExtraLazyPromise(fn() => $this->getVideo($id)),
+            discountedPrice: new ResolvedValue($affiliatePrice),
         );
     }
 

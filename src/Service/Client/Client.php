@@ -9,6 +9,7 @@ use JsonException;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
+use LML\SDK\Service\Visitor\Visitor;
 use LML\SDK\Promise\CachedItemPromise;
 use Symfony\Component\Cache\CacheItem;
 use Psr\Http\Message\ResponseInterface;
@@ -41,6 +42,7 @@ class Client implements ClientInterface, ResetInterface
         private string $apiToken,
         private ?TagAwareAdapterInterface $cache,
         private int $cacheExpiration,
+        private Visitor $visitor,
     )
     {
         $this->browser = new Browser();
@@ -58,6 +60,9 @@ class Client implements ClientInterface, ResetInterface
 
         $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
         unset($data['id']);
+        if ($affiliateCode = $this->visitor->getAffiliateCode()) {
+            $url .= '?affiliate_code=' . $affiliateCode;
+        }
 
         return $this->browser->patch($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
@@ -68,6 +73,9 @@ class Client implements ClientInterface, ResetInterface
         $url = ltrim($url, '/');
 
         $url = sprintf('%s/%s/', $baseUrl, $url);
+        if ($affiliateCode = $this->visitor->getAffiliateCode()) {
+            $url .= '?affiliate_code=' . $affiliateCode;
+        }
 
         return $this->browser->post($url, $this->getAuthHeaders(), json_encode($data, JSON_THROW_ON_ERROR));
     }
@@ -78,6 +86,9 @@ class Client implements ClientInterface, ResetInterface
         $url = ltrim($url, '/');
 
         $url = sprintf('%s/%s/%s', $baseUrl, $url, $id);
+        if ($affiliateCode = $this->visitor->getAffiliateCode()) {
+            $url .= '?affiliate_code=' . $affiliateCode;
+        }
 
         return $this->browser->delete($url, $this->getAuthHeaders());
     }
@@ -87,6 +98,9 @@ class Client implements ClientInterface, ResetInterface
      */
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
+        if ($affiliateCode = $this->visitor->getAffiliateCode()) {
+            $filters['affiliate_code'] = $affiliateCode;
+        }
         $tag = $tag ? preg_replace('/\W/', '', $tag) : null;
 //        dump($extraQueryParams);
 

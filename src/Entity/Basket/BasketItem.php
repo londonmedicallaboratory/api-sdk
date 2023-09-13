@@ -43,6 +43,6 @@ class BasketItem
 
     public function getTotal(): PriceInterface
     {
-        return $this->getProduct()->getPrice()->multiply($this->getQuantity());
+        return $this->getProduct()->getDiscountedPriceOrFallback()->multiply($this->getQuantity());
     }
 }

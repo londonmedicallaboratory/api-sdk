@@ -88,6 +88,8 @@
         </service>
         <!-- <Basket-->
 
+        <service id="LML\SDK\Service\Visitor\Visitor"/>
+
         <service id="LML\SDK\Repository\FAQ\FAQRepository">
             <tag name="lml_sdk.repository"/>
         </service>

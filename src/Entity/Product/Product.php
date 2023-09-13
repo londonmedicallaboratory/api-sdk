@@ -31,6 +31,7 @@ use function React\Promise\resolve;
  *      is_featured?: bool,
  *      preview_image_url: ?string,
  *      price?: array{amount_minor: int, currency: string, formatted_value: string},
+ *      discounted_price?: ?array{amount_minor: int, currency: string, formatted_value: string},
  * }
  *
  * @implements ModelInterface<S>
@@ -50,6 +51,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
      * @param LazyValueInterface<list<Biomarker>> $biomarkers
      * @param LazyValueInterface<list<ProductFaq>> $faqs
      * @param LazyValueInterface<null|Video> $video
+     * @param LazyValueInterface<?PriceInterface> $discountedPrice
      */
     public function __construct(
         protected string $id,
@@ -67,6 +69,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         protected LazyValueInterface $categories,
         protected LazyValueInterface $faqs,
         protected LazyValueInterface $video,
+        protected LazyValueInterface $discountedPrice,
     )
     {
     }
@@ -144,6 +147,16 @@ class Product implements ModelInterface, SluggableInterface, Stringable
     public function getPrice(): PriceInterface
     {
         return $this->price->getValue();
+    }
+
+    public function getDiscountedPrice(): ?PriceInterface
+    {
+        return $this->discountedPrice->getValue();
+    }
+
+    public function getDiscountedPriceOrFallback(): PriceInterface
+    {
+        return $this->getDiscountedPrice() ?? $this->getPrice();
     }
 
     /**
