@@ -20,13 +20,10 @@ use LML\SDK\Exception\EntityNotPersistedException;
  * @template TProduct of Product
  * @template TPatient of Patient
  *
- * @psalm-type Item = array{product_id: string, quantity: int, product_sku?: ?string}
- *
  * @psalm-type S=array{
  *     id?: ?string,
  *     brand_id: string,
  *     appointment_time: string,
- *     product_id: ?string,
  *     patient_id: ?string,
  *     confirmed?: ?bool,
  * }
@@ -37,18 +34,18 @@ use LML\SDK\Exception\EntityNotPersistedException;
 class Appointment implements ModelInterface
 {
     /**
-     * @param LazyValueInterface<TBrand> $brand
-     * @param LazyValueInterface<DateTimeInterface> $appointmentTime
-     * @param LazyValueInterface<?TProduct> $product
-     * @param LazyValueInterface<?TPatient> $patient
-     * @param LazyValueInterface<bool> $isConfirmed
      * @see AppointmentRepository::one()
      *
+     * @param LazyValueInterface<TBrand> $brand
+     * @param LazyValueInterface<list<TProduct>> $products
+     * @param LazyValueInterface<DateTimeInterface> $appointmentTime
+     * @param LazyValueInterface<?TPatient> $patient
+     * @param LazyValueInterface<bool> $isConfirmed
      */
     public function __construct(
         protected LazyValueInterface $brand,
         protected LazyValueInterface $appointmentTime,
-        protected LazyValueInterface $product = new ResolvedValue(null),
+        protected LazyValueInterface $products = new ResolvedValue([]),
         protected LazyValueInterface $patient = new ResolvedValue(null),
         protected LazyValueInterface $isConfirmed = new ResolvedValue(false),
         protected ?string $id = null,
@@ -59,6 +56,14 @@ class Appointment implements ModelInterface
     public function getBrand(): Brand
     {
         return $this->brand->getValue();
+    }
+
+    /**
+     * @return list<TProduct>
+     */
+    public function getProducts(): array
+    {
+        return $this->products->getValue();
     }
 
     /**
@@ -77,14 +82,6 @@ class Appointment implements ModelInterface
     public function setAppointmentTime(DateTimeInterface $appointmentTime): void
     {
         $this->appointmentTime = new ResolvedValue($appointmentTime);
-    }
-
-    /**
-     * @return ?TProduct
-     */
-    public function getProduct(): ?Product
-    {
-        return $this->product->getValue();
     }
 
     /**
@@ -111,7 +108,6 @@ class Appointment implements ModelInterface
             'id' => $this->id,
             'brand_id' => $this->getBrand()->getId(),
             'appointment_time' => $this->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
-            'product_id' => $this->getProduct()?->getId(),
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
         ];

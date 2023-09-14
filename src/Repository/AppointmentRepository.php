@@ -11,10 +11,11 @@ use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\ModelInterface;
 use React\Promise\PromiseInterface;
-use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Product\Product;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use function React\Promise\resolve;
 
 /**
  * @psalm-import-type S from Appointment
@@ -28,7 +29,6 @@ class AppointmentRepository extends AbstractRepository
 {
     public function getPersistenceGraph(ModelInterface $view): iterable
     {
-        yield $view->getProduct();
         yield $view->getPatient();
     }
 
@@ -40,18 +40,10 @@ class AppointmentRepository extends AbstractRepository
             id: $id,
             appointmentTime: new ResolvedValue(new DateTime($entity['appointment_time'])),
             brand: new LazyPromise($this->getTestLocation($entity['brand_id'])),
-            product: new LazyPromise($this->getProduct($entity['product_id'])),
+            products: new LazyPromise($this->getProducts($id)),
             patient: new LazyPromise($this->getPatient($entity['patient_id'])),
             isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
         );
-    }
-
-    /**
-     * @return PromiseInterface<?Product>
-     */
-    private function getProduct(?string $id): PromiseInterface
-    {
-        return $this->get(ProductRepository::class)->find($id);
     }
 
     /**
@@ -68,5 +60,18 @@ class AppointmentRepository extends AbstractRepository
     private function getPatient(?string $id): PromiseInterface
     {
         return $this->get(PatientRepository::class)->find($id);
+    }
+
+    /**
+     * @return PromiseInterface<list<Product>>
+     */
+    private function getProducts(?string $id): PromiseInterface
+    {
+        if (!$id) {
+            return resolve([]);
+        }
+        $url = sprintf('/appointment/%s/products', $id);
+
+        return $this->get(ProductRepository::class)->findBy(url: $url);
     }
 }
