@@ -139,10 +139,10 @@ class BrandRepository extends AbstractRepository
         );
     }
 
-    protected function getCacheTimeout(): int
-    {
-        return 10;
-    }
+//    protected function getCacheTimeout(): int
+//    {
+//        return 10;
+//    }
 
     /**
      * @return PromiseInterface<list<HealthcareProfessional>>
