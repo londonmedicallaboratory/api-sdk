@@ -20,8 +20,6 @@ use LML\SDK\Exception\EntityNotPersistedException;
  * @template TProduct of Product
  * @template TPatient of Patient
  *
- * @psalm-type Item = array{quantity: int, product_sku?: ?string}
- *
  * @psalm-type S=array{
  *     id?: ?string,
  *     brand_id: string,
