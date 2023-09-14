@@ -6,7 +6,6 @@ namespace LML\SDK\Repository\Basket;
 
 use DateTime;
 use LogicException;
-use RuntimeException;
 use Webmozart\Assert\Assert;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Order\Order;
@@ -14,6 +13,7 @@ use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
+use LML\SDK\Service\Visitor\Visitor;
 use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Entity\Shipping\Shipping;
@@ -25,11 +25,6 @@ use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use function sprintf;
 use function array_map;
 use function Clue\React\Block\await;
@@ -39,24 +34,12 @@ use function Clue\React\Block\await;
  *
  * @extends AbstractRepository<S, Basket, array>
  */
-#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest')]
 class BasketRepository extends AbstractRepository
 {
-    private const SESSION_KEY = 'basket_id';
-    private const AFFILIATE_CODE_KEY = 'affiliate_code';
-
     public function __construct(
-        private RequestStack $requestStack,
+        private Visitor $visitor,
     )
     {
-    }
-
-    public function onKernelRequest(RequestEvent $event): void
-    {
-        Assert::nullOrString($affiliateCode = $event->getRequest()->query->get('affiliate'));
-        if ($affiliateCode) {
-            $this->getSession()->set(self::AFFILIATE_CODE_KEY, $affiliateCode);
-        }
     }
 
     public function getPersistenceGraph(ModelInterface $view): iterable
@@ -79,7 +62,6 @@ class BasketRepository extends AbstractRepository
         $response = await($this->getClient()->patch('basket/transform_to_order', $basket->getId(), []));
         $data = (array)json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         Assert::string($orderId = $data['id'] ?? null);
-        $this->getSession()->remove(self::SESSION_KEY);
         $this->createNew();
 
         return $this->get(OrderRepository::class)->find($orderId, true) ?? throw new LogicException('Order not found');
@@ -88,8 +70,7 @@ class BasketRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): Basket
     {
         $id = $entity['id'];
-
-        Assert::nullOrString($affiliateCode = $this->getSession()->get(self::AFFILIATE_CODE_KEY));
+        $affiliateCode = $this->visitor->getAffiliateCode();
 
         $basket = new Basket(
             id: $id,
@@ -110,12 +91,17 @@ class BasketRepository extends AbstractRepository
         return $basket;
     }
 
+    protected function getCacheTimeout(): ?int
+    {
+        return 2;
+    }
+
     private function createNew(): Basket
     {
         $basket = new Basket();
         $this->persist($basket);
         $this->flush();
-        $this->getSession()->set(self::SESSION_KEY, $basket->getId());
+        $this->visitor->setBasketId($basket->getId());
 
         return $basket;
     }
@@ -152,23 +138,16 @@ class BasketRepository extends AbstractRepository
         $url = sprintf('/basket/customer/%s', $customer->getId());
 
         if ($basket = await(parent::find(url: $url))) {
-            $this->getSession()->set(self::SESSION_KEY, $basket->getId());
+            $this->visitor->setBasketId($basket->getId());
         }
 
         return $basket;
     }
 
-    private function getSession(): SessionInterface
-    {
-        return $this->requestStack->getMainRequest()?->getSession() ?? throw new RuntimeException('You must use this method from request only.');
-    }
-
     private function findFromSession(): ?Basket
     {
-        $session = $this->getSession();
-        Assert::nullOrString($id = $session->get(self::SESSION_KEY));
+        $id = $this->visitor->getBasketId();
 
-        // @todo Discuss if basket is shared between logged and not-logged customer
         return parent::find(id: $id, await: true);
     }
 

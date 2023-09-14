@@ -32,12 +32,20 @@ class AddressType extends AbstractType
             'show_company' => false,
             'factory' => $this->factory(...),
             'limit_countries' => true,
+            'line1_placeholder' => null,
         ]);
+        $resolver->setAllowedTypes('line1_placeholder', ['string', 'null']);
         $resolver->setAllowedTypes('limit_countries', 'bool');
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        Assert::nullOrString($line1Placeholder = $options['line1_placeholder']);
+
+        $line1Attrs = [];
+        if ($line1Placeholder) {
+            $line1Attrs['placeholder'] = $line1Placeholder;
+        }
         $builder->add('line1', TextType::class, [
             'required' => true,
             'get_value' => fn(Address $address) => $address->getAddressLine1(),
@@ -45,6 +53,7 @@ class AddressType extends AbstractType
             'constraints' => [
                 new NotNull(),
             ],
+            'attr' => $line1Attrs,
         ]);
 
         $builder->add('line2', TextType::class, [
