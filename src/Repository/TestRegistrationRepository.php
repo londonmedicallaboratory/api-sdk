@@ -16,6 +16,7 @@ use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
 use LML\SDK\Entity\TestRegistration\TestRegistrationStatusEnum;
 use function sprintf;
+use function Clue\React\Block\await;
 
 /**
  * @psalm-import-type S from TestRegistration
@@ -32,6 +33,11 @@ class TestRegistrationRepository extends AbstractRepository
         yield from $view->getProducts();
         yield $view->getPatient();
         yield $view->getAppointment();
+    }
+
+    public function sendCompleteEmail(TestRegistration $testRegistration, string $to): void
+    {
+        await($this->getClient()->post(sprintf('/test_registration/%s/send-complete-email', $testRegistration->getId()), ['email' => $to]));
     }
 
     protected function one($entity, $options, $optimizer): TestRegistration
