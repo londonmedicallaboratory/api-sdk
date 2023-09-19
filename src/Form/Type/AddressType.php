@@ -91,6 +91,7 @@ class AddressType extends AbstractType
 
         Assert::boolean($limitCountries = $options['limit_countries']);
         $builder->add('countryCode', CountryType::class, [
+            'dynamic' => true,
             'limit_countries' => $limitCountries,
             'label' => 'Country',
             'get_value' => fn(Address $address) => $address->getCountryCode(),
