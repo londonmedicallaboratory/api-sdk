@@ -27,6 +27,7 @@ class AddressRepository extends AbstractRepository
             countryCode: $entity['country_code'],
             countryName: $entity['country_name'] ?? $entity['country_code'],
             city: $entity['city'],
+            state: $entity['state'] ?? null,
             company: $entity['company'] ?? null,
         );
     }

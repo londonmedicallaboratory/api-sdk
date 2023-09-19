@@ -7,9 +7,12 @@ namespace LML\SDK\Form\Type;
 use Webmozart\Assert\Assert;
 use LML\SDK\Entity\Address\Address;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Event\PreSubmitEvent;
+use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -104,6 +107,16 @@ class AddressType extends AbstractType
                 ],
             ]);
         }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (PreSetDataEvent $event) {
+            $countryCode = $event->getData()?->getCountryCode();
+            $this->addStateField($event->getForm(), $countryCode);
+        });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (PreSubmitEvent $event) {
+            Assert::nullOrString($countryCode = $event->getData()['countryCode'] ?? null);
+            $this->addStateField($event->getForm(), $countryCode);
+        });
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -129,5 +142,23 @@ class AddressType extends AbstractType
             postalCode: $postalCode,
             city: $city,
         );
+    }
+
+    private function addStateField(FormInterface $form, ?string $countryCode): void
+    {
+        if ($countryCode !== 'US') {
+            $form->remove('state');
+
+            return;
+        }
+
+        $form->add('state', TextType::class, [
+            'required' => true,
+            'get_value' => fn(Address $address) => $address->getState(),
+            'update_value' => fn(string $state, Address $address) => $address->setState($state),
+            'constraints' => [
+                new NotNull(),
+            ],
+        ]);
     }
 }
