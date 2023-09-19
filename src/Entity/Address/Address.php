@@ -23,7 +23,6 @@ use function array_filter;
  *      country_code: string,
  *      city: string,
  *      company?: ?string,
- *      state?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -183,7 +182,6 @@ class Address implements ModelInterface, Stringable
             'country_name' => $this->getCountryName(),
             'country_code' => $this->getCountryCode(),
             'city' => $this->getCity(),
-            'state' => $this->getState(),
             'company' => $this->getCompany(),
         ];
     }
