@@ -23,6 +23,7 @@ use function array_filter;
  *      country_code: string,
  *      city: string,
  *      company?: ?string,
+ *      state?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -36,6 +37,7 @@ class Address implements ModelInterface, Stringable
         private string $countryCode,
         private string $countryName,
         private string $city,
+        private ?string $state = null,
         private ?string $id = null,
         private ?string $line2 = null,
         private ?string $line3 = null,
@@ -51,6 +53,7 @@ class Address implements ModelInterface, Stringable
             $this->getLine2(),
             $this->getLine3(),
             $this->getCity(),
+            $this->getState(),
             $this->getCountryCode(),
             $this->getPostalCode(),
         ];
@@ -159,6 +162,16 @@ class Address implements ModelInterface, Stringable
         $this->company = $company;
     }
 
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): void
+    {
+        $this->state = $state;
+    }
+
     public function toArray()
     {
         return [
@@ -170,6 +183,7 @@ class Address implements ModelInterface, Stringable
             'country_name' => $this->getCountryName(),
             'country_code' => $this->getCountryCode(),
             'city' => $this->getCity(),
+            'state' => $this->getState(),
             'company' => $this->getCompany(),
         ];
     }
