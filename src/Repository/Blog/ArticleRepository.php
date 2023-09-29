@@ -40,6 +40,6 @@ class ArticleRepository extends AbstractRepository
     {
         $url = sprintf('/blog/article/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneBy(url: $url);
+        return $this->get(FileRepository::class)->find(url: $url);
     }
 }
