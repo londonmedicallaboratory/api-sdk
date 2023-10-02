@@ -38,6 +38,6 @@ class BiomarkerCategoryRepository extends AbstractRepository
     {
         $url = sprintf('/biomarker_categories/%s/logo', $id);
 
-        return $this->get(FileRepository::class)->findOneBy(url: $url);
+        return $this->get(FileRepository::class)->find(url: $url);
     }
 }
