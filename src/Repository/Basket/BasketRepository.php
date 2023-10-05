@@ -13,6 +13,8 @@ use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
+use React\Promise\PromiseInterface;
+use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Service\Visitor\Visitor;
 use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
@@ -21,6 +23,7 @@ use LML\SDK\Repository\BrandRepository;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\ProductRepository;
 use LML\SDK\Repository\AddressRepository;
+use LML\SDK\Repository\VoucherRepository;
 use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\ShippingRepository;
 use LML\SDK\Service\API\AbstractRepository;
@@ -81,6 +84,7 @@ class BasketRepository extends AbstractRepository
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
             affiliateCode: $affiliateCode,
+            voucher: new LazyPromise($this->getVoucher($entity['voucher_id'] ?? null))
         );
 
         if ($customerScalars = $entity['customer'] ?? null) {
@@ -166,6 +170,14 @@ class BasketRepository extends AbstractRepository
                 quantity: $item['quantity'],
             );
         }, $items);
+    }
+
+    /**
+     * @return PromiseInterface<?Voucher>
+     */
+    private function getVoucher(?string $id): PromiseInterface
+    {
+        return $this->get(VoucherRepository::class)->find($id);
     }
 
     /**

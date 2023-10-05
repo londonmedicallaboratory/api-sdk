@@ -15,6 +15,7 @@ use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Address\Address;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Customer\Customer;
+use LML\View\Lazy\LazyValueInterface;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
@@ -46,6 +47,7 @@ use function array_reduce;
 class Basket implements ModelInterface
 {
     /**
+     * @param ?LazyValueInterface<?Voucher> $voucher
      * @param list<BasketItem> $items
      */
     public function __construct(
@@ -53,12 +55,12 @@ class Basket implements ModelInterface
         private ?Address $shippingAddress = null,
         private ?Address $billingAddress = null,
         private array $items = [],
-        private ?Voucher $voucher = null,
         private ?Shipping $shipping = null,
         private ?Appointment $initialAppointment = null,
         private ?string $id = null,
         private ?string $transactionId = null,
         private ?string $affiliateCode = null,
+        private ?LazyValueInterface $voucher = null,
     )
     {
     }
@@ -101,12 +103,12 @@ class Basket implements ModelInterface
 
     public function getVoucher(): ?Voucher
     {
-        return $this->voucher;
+        return $this->voucher?->getValue();
     }
 
     public function setVoucher(?Voucher $voucher): void
     {
-        $this->voucher = $voucher;
+        $this->voucher = new ResolvedValue($voucher);
     }
 
     public function getSubtotal(): ?PriceInterface
