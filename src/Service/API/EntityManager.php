@@ -68,7 +68,7 @@ class EntityManager implements ResetInterface
      * ]
      * </code>
      *
-     * @var array<class-string<ModelInterface>, array<string, PromiseInterface<ModelInterface>>>
+     * @var array<class-string<ModelInterface>, array<non-empty-string, PromiseInterface<ModelInterface>>>
      */
     private array $identityMap = [];
 
@@ -143,7 +143,7 @@ class EntityManager implements ResetInterface
      */
     public function find(string $className, string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
-        if (array_key_exists($id, $this->identityMap[$className] ?? [])) {
+        if ($id && array_key_exists($id, $this->identityMap[$className] ?? [])) {
             $promise = $this->identityMap[$className][$id];
 
             return $await ? await($promise) : $promise;
@@ -427,7 +427,10 @@ class EntityManager implements ResetInterface
      */
     private function store(string $className, array $data): ModelInterface
     {
-        $id = (string)($data['id'] ?? throw new LogicException('No ID found.'));
+        $id = (string)($data['id'] ?? null);
+        if (!$id) {
+            throw new LogicException('No ID found.');
+        }
         if (isset($this->fetchedValues[$className][$id])) {
             foreach ($this->managed as $entity) {
                 if (get_class($entity) === $className && $entity->getId() === $id) {

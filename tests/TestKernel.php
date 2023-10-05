@@ -7,6 +7,7 @@ namespace LML\SDK\Tests;
 use LML\SDK\LMLSDKBundle;
 use LML\View\LMLViewBundle;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -29,6 +30,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
     public function registerBundles(): iterable
     {
         yield new FrameworkBundle();
+        yield new SecurityBundle();
         yield new LMLSDKBundle();
         yield new LMLViewBundle();
     }
