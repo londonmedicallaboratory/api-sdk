@@ -61,6 +61,7 @@ class TestRegistrationRepository extends AbstractRepository
             doctorsNote: $entity['doctors_note'] ?? null,
             doctorsName: $entity['doctors_name'] ?? null,
             id: $id,
+            clinicalDetails: $entity['clinical_details'] ?? null,
         );
     }
 

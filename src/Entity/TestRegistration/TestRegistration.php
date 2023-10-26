@@ -63,6 +63,7 @@ use function array_map;
  *          country_code: string,
  *          city: string,
  *      },
+ *     clinical_details?: ?string,
  * }
  *
  * @template TAppointment of Appointment
@@ -98,6 +99,7 @@ class TestRegistration implements ModelInterface
         protected ?string $doctorsNote = null,
         protected ?string $doctorsName = null,
         protected string $id = '',
+        protected ?string $clinicalDetails = null,
     )
     {
     }
@@ -191,6 +193,11 @@ class TestRegistration implements ModelInterface
         return $this->status->getName();
     }
 
+    public function getClinicalDetails(): ?string
+    {
+        return $this->clinicalDetails;
+    }
+
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -218,6 +225,7 @@ class TestRegistration implements ModelInterface
             'download_url' => $this->getDownloadUrl(),
             'appointment_id' => $this->getAppointment()?->getId(),
             'status' => $this->getStatus()->value,
+            'clinical_details' => $this->getClinicalDetails(),
         ];
     }
 }
