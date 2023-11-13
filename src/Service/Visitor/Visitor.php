@@ -45,14 +45,12 @@ class Visitor implements ResetInterface
     public function onKernelResponse(ResponseEvent $event): void
     {
         if ($affiliateCode = $this->affiliateCode) {
-            $cookie = Cookie::create(self::AFFILIATE_CODE_KEY, $affiliateCode);
-            $cookie->withExpires(new DateTime('+1 day'));
+            $cookie = Cookie::create(self::AFFILIATE_CODE_KEY, $affiliateCode, expire: new DateTime('+1 day'));
             $response = $event->getResponse();
             $response->headers->setCookie($cookie);
         }
         if ($basketId = $this->basketId) {
-            $cookie = Cookie::create(self::BASKET_ID_KEY, $basketId);
-            $cookie->withExpires(new DateTime('+1 day'));
+            $cookie = Cookie::create(self::BASKET_ID_KEY, $basketId, expire: new DateTime('+1 day'));
             $response = $event->getResponse();
             $response->headers->setCookie($cookie);
         }
