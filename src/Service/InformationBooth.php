@@ -31,10 +31,8 @@ class InformationBooth
 
     /**
      * @return TExpected
-     *
-     * @noinspection PhpRedundantVariableDocTypeInspection Bug in PHPStorm
      */
-    public function getWebsiteInfo()
+    public function getWebsiteInfo(): array
     {
         /** @var PromiseInterface<TExpected> $promise */
         $promise = $this->client->getAsync('/info/website', tag: 'information_booth');
