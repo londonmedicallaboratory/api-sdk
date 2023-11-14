@@ -8,10 +8,10 @@ use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Repository\Phlebotomy\PhlebotomyAppointmentRepository;
-use function implode;
 
 /**
  * @psalm-type S=array{
+ *      id: string,
  *      starts_at: string,
  *      ends_at: string,
  * }
@@ -22,6 +22,7 @@ use function implode;
 class PhlebotomyAppointment implements ModelInterface
 {
     public function __construct(
+        private string $id,
         private DateTimeInterface $startsAt,
         private DateTimeInterface $endsAt,
     )
@@ -30,12 +31,13 @@ class PhlebotomyAppointment implements ModelInterface
 
     public function getId(): string
     {
-        return implode(',', $this->toArray());
+        return $this->id;
     }
 
     public function toArray(): array
     {
         return [
+            'id' => $this->getId(),
             'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
             'ends_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
         ];
