@@ -14,6 +14,7 @@ use LML\SDK\Repository\Phlebotomy\PhlebotomyAppointmentRepository;
  *      id: string,
  *      starts_at: string,
  *      ends_at: string,
+ *      display_value: string,
  * }
  *
  * @implements ModelInterface<S>
@@ -25,6 +26,7 @@ class PhlebotomyAppointment implements ModelInterface
         private string $id,
         private DateTimeInterface $startsAt,
         private DateTimeInterface $endsAt,
+        private string $displayValue,
     )
     {
     }
@@ -32,15 +34,6 @@ class PhlebotomyAppointment implements ModelInterface
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
-            'ends_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
-        ];
     }
 
     public function getStartsAt(): DateTimeInterface
@@ -51,5 +44,20 @@ class PhlebotomyAppointment implements ModelInterface
     public function getEndsAt(): DateTimeInterface
     {
         return $this->endsAt;
+    }
+
+    public function getDisplayValue(): string
+    {
+        return $this->displayValue;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
+            'ends_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
+            'display_value' => $this->getDisplayValue(),
+        ];
     }
 }

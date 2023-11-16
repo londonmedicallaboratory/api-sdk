@@ -23,6 +23,7 @@ class PhlebotomyAppointmentRepository extends AbstractRepository
             id: $entity['id'],
             startsAt: new DateTimeImmutable($entity['starts_at']),
             endsAt: new DateTimeImmutable($entity['ends_at']),
+            displayValue: $entity['display_value'],
         );
     }
 }
