@@ -61,7 +61,7 @@ class Article implements ModelInterface
         return $this->logo->getValue();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

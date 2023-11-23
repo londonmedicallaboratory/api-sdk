@@ -172,7 +172,7 @@ class Address implements ModelInterface, Stringable
         $this->state = $state;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->id,

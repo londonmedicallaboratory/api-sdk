@@ -57,7 +57,7 @@ class FAQ implements ModelInterface
         return $this->answer->getValue();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->id,

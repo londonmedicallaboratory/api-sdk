@@ -59,8 +59,14 @@
             </errorLevel>
         </DeprecatedInterface>
 
+        <UndefinedAttributeClass>
+            <errorLevel type="suppress">
+                <referencedClass name="JetBrains\PhpStorm\ExpectedValues"/>
+            </errorLevel>
+        </UndefinedAttributeClass>
+
     </issueHandlers>
-    
+
     <plugins>
         <pluginClass class="Bocmah\PsalmReactPhpPromisePlugin\Plugin"/>
         <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>

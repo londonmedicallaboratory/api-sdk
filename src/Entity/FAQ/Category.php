@@ -66,7 +66,7 @@ class Category implements ModelInterface, Stringable
         return $this->faqs->getValue();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->id,

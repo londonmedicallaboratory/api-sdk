@@ -65,7 +65,7 @@ class Basket implements ModelInterface
     {
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'id' => $this->id,

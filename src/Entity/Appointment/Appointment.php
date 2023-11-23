@@ -12,20 +12,27 @@ use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
+use JetBrains\PhpStorm\ExpectedValues;
 use LML\SDK\Repository\AppointmentRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
+ * @psalm-type TType = 'brand_location'|'home_visit_phlebotomist'
+ *
  * @template TBrand of Brand
  * @template TProduct of Product
  * @template TPatient of Patient
  *
  * @psalm-type S=array{
  *     id?: ?string,
+ *     type: TType,
  *     brand_id: string,
- *     appointment_time: string,
+ *     starts_at: string,
+ *     ends_at?: ?string,
+ *     appointment_window?: ?string,
  *     patient_id: ?string,
  *     confirmed?: ?bool,
+ *     time_id?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -36,18 +43,25 @@ class Appointment implements ModelInterface
     /**
      * @see AppointmentRepository::one()
      *
+     * @param TType $type
      * @param LazyValueInterface<TBrand> $brand
      * @param LazyValueInterface<list<TProduct>> $products
-     * @param LazyValueInterface<DateTimeInterface> $appointmentTime
+     * @param LazyValueInterface<DateTimeInterface> $startsAt
+     * @param LazyValueInterface<?DateTimeInterface> $endsAt
      * @param LazyValueInterface<?TPatient> $patient
      * @param LazyValueInterface<bool> $isConfirmed
+     * @param LazyValueInterface<?string> $timeId
      */
     public function __construct(
+        #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
+        protected string $type,
         protected LazyValueInterface $brand,
-        protected LazyValueInterface $appointmentTime,
+        protected LazyValueInterface $startsAt,
+        protected LazyValueInterface $endsAt = new ResolvedValue(null),
         protected LazyValueInterface $products = new ResolvedValue([]),
         protected LazyValueInterface $patient = new ResolvedValue(null),
         protected LazyValueInterface $isConfirmed = new ResolvedValue(false),
+        protected LazyValueInterface $timeId = new ResolvedValue(null),
         protected ?string $id = null,
     )
     {
@@ -74,16 +88,6 @@ class Appointment implements ModelInterface
         $this->brand = new ResolvedValue($brand);
     }
 
-    public function getAppointmentTime(): DateTimeInterface
-    {
-        return $this->appointmentTime->getValue();
-    }
-
-    public function setAppointmentTime(DateTimeInterface $appointmentTime): void
-    {
-        $this->appointmentTime = new ResolvedValue($appointmentTime);
-    }
-
     /**
      * @return ?TPatient
      */
@@ -102,14 +106,40 @@ class Appointment implements ModelInterface
         return $this->id ?? throw new EntityNotPersistedException();
     }
 
-    public function toArray()
+    public function getTimeId(): ?string
+    {
+        return $this->timeId->getValue();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function getAppointmentTime(): DateTimeInterface
+    {
+        return $this->getStartsAt();
+    }
+
+    public function getStartsAt(): DateTimeInterface
+    {
+        return $this->startsAt->getValue();
+    }
+
+    public function getEndsAt(): ?DateTimeInterface
+    {
+        return $this->endsAt->getValue();
+    }
+
+    public function toArray(): array
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'brand_id' => $this->getBrand()->getId(),
-            'appointment_time' => $this->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
+            'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
+            'ends_at' => $this->getEndsAt()?->format('Y-m-d\TH:i:sP'),
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
+            'time_id' => $this->getTimeId(),
         ];
     }
 }

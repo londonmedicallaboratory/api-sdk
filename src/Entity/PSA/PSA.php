@@ -63,7 +63,7 @@ class PSA implements ModelInterface, Stringable
         return $this->backgroundColor;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
