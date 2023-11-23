@@ -182,7 +182,7 @@ class BasketRepository extends AbstractRepository
     }
 
     /**
-     * @param ?array{brand_id: string, appointment_time?: ?string, time_id?: ?string} $initialAppointment
+     * @param ?array{brand_id: string, starts_at?: ?string, time_id?: ?string} $initialAppointment
      */
     private function getInitialAppointment(?array $initialAppointment): ?Appointment
     {
@@ -191,7 +191,7 @@ class BasketRepository extends AbstractRepository
         }
         $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['brand_id']);
 
-        $appointmentTime = $initialAppointment['appointment_time'] ?? throw new DataNotFoundException();
+        $appointmentTime = $initialAppointment['starts_at'] ?? throw new DataNotFoundException();
 
         return new Appointment(
             type: 'brand_location',

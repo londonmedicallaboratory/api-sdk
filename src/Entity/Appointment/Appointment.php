@@ -124,6 +124,11 @@ class Appointment implements ModelInterface
         return $this->startsAt->getValue();
     }
 
+    public function setStartsAt(DateTimeInterface $startsAt): void
+    {
+        $this->startsAt = new ResolvedValue($startsAt);
+    }
+
     public function getEndsAt(): ?DateTimeInterface
     {
         return $this->endsAt->getValue();
