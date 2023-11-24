@@ -56,7 +56,7 @@ class BasketRepository extends AbstractRepository
         return $this->findForCustomer($customer) ?? $this->findFromSession() ?? $this->createNew();
     }
 
-    public function find(?string $id = null, bool $await = false, ?string $url = null): never
+    public function find(?string $id = null, bool $await = false, ?string $url = null, bool $force = false): never
     {
         throw new LogicException('Use \'findActiveOrCreate\' method instead.');
     }
@@ -153,7 +153,13 @@ class BasketRepository extends AbstractRepository
     {
         $id = $this->visitor->getBasketId();
 
-        return parent::find(id: $id, await: true);
+        // try to find by id, but command *will* create new instance if one is not found.
+        // when that happens, new basket_id value must be sent to Visitor so its gets updated in cookie. Otherwise, client app will keep creating new instances
+        if ($basket = parent::find(id: $id, await: true)) {
+            $this->visitor->setBasketId($basket->getId());
+        }
+
+        return $basket;
     }
 
     /**
@@ -182,21 +188,21 @@ class BasketRepository extends AbstractRepository
     }
 
     /**
-     * @param ?array{brand_id: string, starts_at?: ?string, time_id?: ?string} $initialAppointment
+     * @param ?array{brand_id: string, starts_at?: ?string, time_id?: ?string, type: 'brand_location'|'home_visit_phlebotomist'} $initialAppointment
      */
     private function getInitialAppointment(?array $initialAppointment): ?Appointment
     {
+//        dd($initialAppointment);
         if (!$initialAppointment) {
             return null;
         }
         $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['brand_id']);
-
-        $appointmentTime = $initialAppointment['starts_at'] ?? throw new DataNotFoundException();
+        $startsAt = $initialAppointment['starts_at'] ?? throw new DataNotFoundException();
 
         return new Appointment(
-            type: 'brand_location',
+            type: $initialAppointment['type'],
             brand: new LazyPromise($brand),
-            startsAt: new ResolvedValue(new DateTime($appointmentTime)),
+            startsAt: new ResolvedValue(new DateTime($startsAt)),
             timeId: new ResolvedValue($initialAppointment['time_id'] ?? null),
         );
     }

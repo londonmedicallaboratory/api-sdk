@@ -29,7 +29,6 @@ use LML\SDK\Exception\EntityNotPersistedException;
  *     brand_id: string,
  *     starts_at: string,
  *     ends_at?: ?string,
- *     appointment_window?: ?string,
  *     patient_id: ?string,
  *     confirmed?: ?bool,
  *     time_id?: ?string,
