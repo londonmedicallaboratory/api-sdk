@@ -20,5 +20,5 @@ interface ModelInterface
     /**
      * @return T
      */
-    public function toArray();
+    public function toArray(): array;
 }

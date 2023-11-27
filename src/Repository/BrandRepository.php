@@ -32,6 +32,16 @@ use function Clue\React\Block\await;
 class BrandRepository extends AbstractRepository
 {
     /**
+     * @return PromiseInterface<Brand>
+     */
+    public function getCurrent(): PromiseInterface
+    {
+        $url = '/test_location/current';
+
+        return $this->fetchOneBy(url: $url);
+    }
+
+    /**
      * Returns monthly availability array in format of
      * <code>
      *   "2022-12-31": true,

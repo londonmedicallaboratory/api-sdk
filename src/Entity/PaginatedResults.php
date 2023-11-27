@@ -19,11 +19,11 @@ class PaginatedResults implements IteratorAggregate
      * @param int<0, max> $resultsPerPage
      */
     public function __construct(
-        protected int   $currentPage,
-        protected int   $nrOfPages,
-        protected int   $resultsPerPage,
-        protected ?int  $nextPage,
-        protected int   $nrOfResults,
+        protected int $currentPage,
+        protected int $nrOfPages,
+        protected int $resultsPerPage,
+        protected ?int $nextPage,
+        protected int $nrOfResults,
         protected array $items,
     )
     {

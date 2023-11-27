@@ -49,7 +49,8 @@ use function array_map;
  *      payment_status?: ?string,
  *      initial_appointment?: array{
  *          brand_id: string,
- *          appointment_time: string,
+ *          starts_at?: ?string,
+ *          ends_at?: ?string,
  *      },
  * }
  *
@@ -205,7 +206,7 @@ class Order implements ModelInterface
     {
         $this->shippingStatus = $shippingStatus;
     }
-    
+
     /**
      * Status values are not sent to commando
      */
@@ -234,7 +235,7 @@ class Order implements ModelInterface
         if ($initialAppointmentTime = $this->initialAppointment) {
             $data['initial_appointment'] = [
                 'brand_id' => $initialAppointmentTime->getBrand()->getId(),
-                'appointment_time' => $initialAppointmentTime->getAppointmentTime()->format('Y-m-d\TH:i:sP'),
+                'starts_at' => $initialAppointmentTime->getStartsAt()->format('Y-m-d\TH:i:sP'),
             ];
         }
 

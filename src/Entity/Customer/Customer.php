@@ -186,7 +186,7 @@ class Customer implements ModelInterface, Stringable, UserInterface, PasswordAut
         return $this->passwordSet;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'id' => $this->id,

@@ -81,7 +81,7 @@ class Voucher implements ModelInterface, Stringable
         return $this->promotionName->getValue();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

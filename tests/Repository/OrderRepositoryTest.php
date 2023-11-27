@@ -49,7 +49,7 @@ class OrderRepositoryTest extends AbstractTest
         $appointment = new Appointment(
             brand: new ResolvedValue($brand),
             appointmentTime: new ResolvedValue(DateTime::createFromFormat('Y-m-d H:i', '2024-01-01 15:00')),
-            product: new ResolvedValue(null),
+            products: new ResolvedValue([]),
             patient: new ResolvedValue(null),
             isConfirmed: new ResolvedValue(false),
         );

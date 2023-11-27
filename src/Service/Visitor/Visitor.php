@@ -58,6 +58,9 @@ class Visitor implements ResetInterface
 
     public function getBasketId(): ?string
     {
+        if ($basketId = $this->basketId) {
+            return $basketId;
+        }
         Assert::nullOrString($cookie = $this->requestStack->getMainRequest()?->cookies->get(self::BASKET_ID_KEY));
 
         return $cookie;

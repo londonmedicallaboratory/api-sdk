@@ -56,7 +56,7 @@ class PhlebotomyAppointment implements ModelInterface
         return [
             'id' => $this->getId(),
             'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
-            'ends_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
+            'ends_at' => $this->getEndsAt()->format('Y-m-d\TH:i:sP'),
             'display_value' => $this->getDisplayValue(),
         ];
     }
