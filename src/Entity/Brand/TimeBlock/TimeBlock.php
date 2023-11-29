@@ -67,7 +67,7 @@ class TimeBlock implements ModelInterface
         return $this->description;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

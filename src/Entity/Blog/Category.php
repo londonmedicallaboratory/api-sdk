@@ -49,7 +49,7 @@ class Category implements ModelInterface, Stringable
         return $this->slug;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

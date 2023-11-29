@@ -25,7 +25,7 @@ class Month implements MonthInterface
         return sprintf('%04d-%02d', $this->year, $this->month);
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $availability = [];
         foreach ($this->getDays() as $day) {

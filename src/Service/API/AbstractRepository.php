@@ -62,13 +62,19 @@ abstract class AbstractRepository extends AbstractViewFactory
     /**
      * @psalm-return ($await is true ? null|TView : PromiseInterface<?TView>)
      */
-    public function find(?string $id = null, bool $await = false, ?string $url = null): null|ModelInterface|PromiseInterface
+    public function find(?string $id = null, bool $await = false, ?string $url = null, bool $force = false): null|ModelInterface|PromiseInterface
     {
         if (!$id && !$url) {
             return $await ? null : resolve();
         }
 
-        return $this->getEntityManager()->find(className: $this->extractTView(), id: $id, url: $url, cacheTimeout: $this->getCacheTimeout(), await: $await);
+        return $this->getEntityManager()->find(
+            className: $this->extractTView(),
+            id: $id,
+            url: $url,
+            cacheTimeout: $force ? 0 : $this->getCacheTimeout(),
+            await: $await,
+        );
     }
 
     /**

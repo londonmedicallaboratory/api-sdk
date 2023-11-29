@@ -15,6 +15,7 @@ use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Exception\DataNotFoundException;
 use function React\Promise\resolve;
 
 /**
@@ -36,13 +37,19 @@ class AppointmentRepository extends AbstractRepository
     {
         $id = $entity['id'] ?? null;
 
+        $appointmentTime = $entity['starts_at'] ?? throw new DataNotFoundException();
+        $endsAt = $entity['ends_at'] ?? null;
+
         return new Appointment(
             id: $id,
-            appointmentTime: new ResolvedValue(new DateTime($entity['appointment_time'])),
+            type: $entity['type'],
+            startsAt: new ResolvedValue(new DateTime($appointmentTime)),
+            endsAt: $endsAt ? new ResolvedValue(new DateTime($endsAt)) : new ResolvedValue(null),
             brand: new LazyPromise($this->getTestLocation($entity['brand_id'])),
             products: new LazyPromise($this->getProducts($id)),
             patient: new LazyPromise($this->getPatient($entity['patient_id'])),
             isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
+            timeId: new ResolvedValue($entity['time_id'] ?? null),
         );
     }
 

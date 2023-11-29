@@ -13,6 +13,7 @@ use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Address\Address;
+use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
@@ -27,6 +28,7 @@ use function array_reduce;
  * @psalm-import-type S from Address as TAddress
  * @psalm-import-type S from Appointment as TAppointment
  * @psalm-import-type S from Customer as TCustomer
+ * @psalm-import-type S from Patient as TPatient
  *
  * @psalm-type S = array{
  *     id: ?string,
@@ -34,6 +36,7 @@ use function array_reduce;
  *     voucher_id: ?string,
  *     shipping_id: ?string,
  *     customer?: ?TCustomer,
+ *     patient?: ?TPatient,
  *     items: list<array{product_id: string, quantity: int}>,
  *     shipping_address?: ?TAddress,
  *     billing_address?: ?TAddress,
@@ -52,6 +55,7 @@ class Basket implements ModelInterface
      */
     public function __construct(
         private ?Customer $anonCustomer = null,
+        private ?Patient $anonPatient = null,
         private ?Address $shippingAddress = null,
         private ?Address $billingAddress = null,
         private array $items = [],
@@ -65,7 +69,7 @@ class Basket implements ModelInterface
     {
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'id' => $this->id,
@@ -96,6 +100,9 @@ class Basket implements ModelInterface
                 'email' => $customer->getEmail(),
                 'phone_number' => $customer->getPhoneNumber(),
             ];
+        }
+        if ($patient = $this->getAnonPatient()) {
+            $data['patient'] = $patient->toArray();
         }
 
         return $data;
@@ -200,6 +207,16 @@ class Basket implements ModelInterface
     public function setAnonCustomer(?Customer $anonCustomer): void
     {
         $this->anonCustomer = $anonCustomer;
+    }
+
+    public function getAnonPatient(): ?Patient
+    {
+        return $this->anonPatient;
+    }
+
+    public function setAnonPatient(?Patient $patient): void
+    {
+        $this->anonPatient = $patient;
     }
 
     /**

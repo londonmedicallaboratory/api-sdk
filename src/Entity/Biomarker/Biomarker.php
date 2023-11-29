@@ -85,7 +85,7 @@ class Biomarker implements ModelInterface, Stringable
         return $this->code;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

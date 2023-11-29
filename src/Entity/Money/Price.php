@@ -12,7 +12,8 @@ class Price implements PriceInterface
         protected int $amount,
         protected string $currency,
         protected string $formattedValue,
-    ) {
+    )
+    {
     }
 
     public static function fromMoney(Money $money): Price
