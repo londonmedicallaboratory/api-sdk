@@ -28,6 +28,7 @@ use LML\SDK\Repository\LabResultRepository;
  *      biomarker_id: string,
  *      unit_type?: ?string,
  *      human_readable_value?: ?string,
+ *      status?: 'pending'|'success'|'failed'
  * }
  *
  * @implements ModelInterface<S>
