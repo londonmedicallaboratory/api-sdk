@@ -119,6 +119,10 @@ class BasketRepository extends AbstractRepository
      *     postal_code: string,
      *     country_code: string,
      *     city: string,
+     *     id?: ?string,
+     *     country_name?: string,
+     *     state?: ?string,
+     *     company?: ?string,
      * } $param
      */
     private function getAddress(?array $param): ?Address
@@ -188,7 +192,7 @@ class BasketRepository extends AbstractRepository
     }
 
     /**
-     * @param ?array{brand_id: string, starts_at?: ?string, ends_at?: ?string, time_id?: ?string, type: 'brand_location'|'home_visit_phlebotomist'} $initialAppointment
+     * @param ?array{brand_id: string, starts_at?: ?string, ends_at?: ?string, time_id?: ?string, type: 'brand_location'|'home_visit_phlebotomist', ...} $initialAppointment
      */
     private function getInitialAppointment(?array $initialAppointment): ?Appointment
     {

@@ -15,7 +15,6 @@ use LML\SDK\Repository\LabResultRepository;
  *
  * @psalm-type S=array{
  *      id: string,
- *      biomarker_id?: string,
  *      name: string,
  *      code: string,
  *      value: null|bool|string,

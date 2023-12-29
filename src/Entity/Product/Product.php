@@ -21,6 +21,8 @@ use function React\Promise\all;
 use function React\Promise\resolve;
 
 /**
+ * @template TProductFaq of ProductFaq
+ *
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
@@ -49,7 +51,7 @@ class Product implements ModelInterface, SluggableInterface, Stringable
      * @param LazyValueInterface<list<File>> $files
      * @param LazyValueInterface<list<Category>> $categories
      * @param LazyValueInterface<list<Biomarker>> $biomarkers
-     * @param LazyValueInterface<list<ProductFaq>> $faqs
+     * @param LazyValueInterface<list<TProductFaq>> $faqs
      * @param LazyValueInterface<null|Video> $video
      * @param LazyValueInterface<?PriceInterface> $discountedPrice
      */
@@ -196,6 +198,9 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         return $this->getFiles()[0];
     }
 
+    /**
+     * @return list<TProductFaq>
+     */
     public function getFaqs(): array
     {
         return $this->faqs->getValue();

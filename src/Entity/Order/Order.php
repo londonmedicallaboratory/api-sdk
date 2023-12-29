@@ -19,6 +19,7 @@ use function array_map;
 
 /**
  * @template TAppointment of Appointment
+ * @template TOrderItem of OrderItem
  *
  * @psalm-type TItem = array{product_id: string, quantity: int, product_sku?: ?string}
  *
@@ -38,7 +39,6 @@ use function array_map;
  *      items: list<TItem>,
  *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  *      shipping_status?: ?string,
- *      payment_status?: ?string,
  *      created_at?: ?string,
  *      order_number?: ?int,
  *      voucher_id?: ?string,
@@ -69,7 +69,7 @@ class Order implements ModelInterface
      * @param LazyValueInterface<?Shipping> $shipping
      * @param LazyValueInterface<list<TAppointment>> $appointments
      * @param LazyValueInterface<?Address> $billingAddress
-     * @param LazyValueInterface<list<OrderItem>> $items
+     * @param LazyValueInterface<list<TOrderItem>> $items
      * @param LazyValueInterface<?string> $trackingNumber
      */
     public function __construct(
@@ -157,7 +157,7 @@ class Order implements ModelInterface
     }
 
     /**
-     * @return list<OrderItem>
+     * @return list<TOrderItem>
      */
     public function getItems(): array
     {

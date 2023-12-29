@@ -62,6 +62,8 @@ use function array_map;
  *          country_name?: string,
  *          country_code: string,
  *          city: string,
+ *          company?: ?string,
+ *          state?: ?string,
  *      },
  *     clinical_details?: ?string,
  * }

@@ -17,6 +17,7 @@ use function Clue\React\Block\await;
  * @template T
  *
  * @implements LazyValueInterface<T>
+ * @implements PromiseInterface<T>
  *
  * @psalm-suppress InternalClass
  * @psalm-suppress InternalMethod
@@ -56,10 +57,7 @@ class ExtraLazyPromise implements LazyValueInterface, PromiseInterface
         return $this->promise ??= $this->doGetPromise();
     }
 
-    /**
-     * @psalm-suppress InvalidArgument
-     */
-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
+    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null): PromiseInterface
     {
         return $this->getPromise()->then($onFulfilled, $onRejected, $onProgress);
     }

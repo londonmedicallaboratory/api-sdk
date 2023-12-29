@@ -34,6 +34,12 @@
     <issueHandlers>
 
         <UnusedMethodCall errorLevel="suppress"/>
+        
+        <InvalidReturnType>
+            <errorLevel type="suppress">
+                <directory name="src/Service/Client/Faker"/>
+            </errorLevel>
+        </InvalidReturnType>
 
         <MethodSignatureMismatch>
             <errorLevel type="suppress">

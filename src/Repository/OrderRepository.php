@@ -149,7 +149,7 @@ class OrderRepository extends AbstractRepository
     }
 
     /**
-     * @param list<array{product_id: string, quantity: int}> $items
+     * @param list<array{product_id: string, quantity: int, ...}> $items
      *
      * @return list<OrderItem>
      */

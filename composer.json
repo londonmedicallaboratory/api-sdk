@@ -38,18 +38,22 @@
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "vimeo/psalm": "^4.26",
-        "psalm/plugin-symfony": "^3.1.8",
+        "vimeo/psalm": "^5.18.0",
+        "psalm/plugin-symfony": "5.1.0",
         "symfony/phpunit-bridge": "^6.1.3",
         "symfony/yaml": "^6.1.4",
         "symfony/stopwatch": "^6.1",
-        "bocmah/psalm-reactphp-promise-plugin": "^0.1.1",
+        "bocmah/psalm-reactphp-promise-plugin": "dev-main",
         "symfony/web-profiler-bundle": "^6.1.2"
     },
     "repositories": [
         {
             "type": "github",
             "url": "https://github.com/strictify/form-mapper-bundle"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/zmitic/psalm-reactphp-promise-plugin.git"
         },
         {
             "type": "github",
