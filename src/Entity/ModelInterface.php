@@ -7,7 +7,7 @@ namespace LML\SDK\Entity;
 use LML\SDK\Exception\EntityNotPersistedException;
 
 /**
- * @template T of array<string, mixed>
+ * @template-covariant T of array<string, mixed>
  */
 interface ModelInterface
 {

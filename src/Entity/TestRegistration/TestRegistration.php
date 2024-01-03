@@ -53,6 +53,10 @@ use function array_map;
  *      trf_code?: ?string,
  *      status: string,
  *      appointment_id?: ?string,
+ *      clinical_details?: ?string,
+ *      short_code?: ?string,
+ *      parent_id?: ?string,
+ *      lab_id?: ?string,
  *      uk_address?: null|array{
  *          id?: ?string,
  *          line1: string,
@@ -65,7 +69,6 @@ use function array_map;
  *          company?: ?string,
  *          state?: ?string,
  *      },
- *     clinical_details?: ?string,
  * }
  *
  * @template TAppointment of Appointment

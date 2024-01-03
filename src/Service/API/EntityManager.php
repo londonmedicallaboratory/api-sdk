@@ -173,8 +173,7 @@ class EntityManager implements ResetInterface
      */
     public function fetch(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->find($className, id: $id, url: $url, cacheTimeout: $cacheTimeout)
-            ->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
+        $promise = $this->find($className, id: $id, url: $url, cacheTimeout: $cacheTimeout)->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
 
         return $await ? await($promise) : $promise;
     }
