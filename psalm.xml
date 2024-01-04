@@ -7,6 +7,8 @@
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
         limitMethodComplexity="true"
+        findUnusedBaselineEntry="false"
+        findUnusedCode="false"
 >
 
     <forbiddenFunctions>
@@ -34,7 +36,7 @@
     <issueHandlers>
 
         <UnusedMethodCall errorLevel="suppress"/>
-        
+
         <InvalidReturnType>
             <errorLevel type="suppress">
                 <directory name="src/Service/Client/Faker"/>
