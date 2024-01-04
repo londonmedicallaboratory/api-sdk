@@ -8,20 +8,18 @@ use DateTime;
 use RuntimeException;
 use LML\SDK\Attribute\QueryParam;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use function sprintf;
 
-class QueryParamResolver implements ArgumentValueResolverInterface
+class QueryParamResolver implements ValueResolverInterface
 {
-    public function supports(Request $request, ArgumentMetadata $argument): bool
-    {
-        return (bool)$this->getAttribute($argument);
-    }
-
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $argument->getType() ?? throw new RuntimeException('You must typehint parameter when using QueryParam attribute.');
+        if (!$this->supports($argument)) {
+            return [];
+        }
+            $argument->getType() ?? throw new RuntimeException('You must typehint parameter when using QueryParam attribute.');
         $attribute = $this->getAttribute($argument) ?? throw new RuntimeException('This should never happen.');
 
         $name = $attribute->getName();
@@ -34,6 +32,11 @@ class QueryParamResolver implements ArgumentValueResolverInterface
 
         // add support for other types, not just the date
         yield new DateTime($value);
+    }
+
+    private function supports(ArgumentMetadata $argument): bool
+    {
+        return (bool)$this->getAttribute($argument);
     }
 
     private function getAttribute(ArgumentMetadata $argument): ?QueryParam

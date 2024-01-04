@@ -55,18 +55,6 @@
             </errorLevel>
         </MissingDependency>
 
-        <DeprecatedClass>
-            <errorLevel type="suppress">
-                <directory name="src"/>
-            </errorLevel>
-        </DeprecatedClass>
-
-        <DeprecatedInterface>
-            <errorLevel type="suppress">
-                <directory name="src"/>
-            </errorLevel>
-        </DeprecatedInterface>
-
         <UndefinedAttributeClass>
             <errorLevel type="suppress">
                 <referencedClass name="JetBrains\PhpStorm\ExpectedValues"/>

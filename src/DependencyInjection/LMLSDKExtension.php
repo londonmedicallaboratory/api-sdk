@@ -37,7 +37,7 @@ class LMLSDKExtension extends ConfigurableExtension implements CompilerPassInter
         }
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 
