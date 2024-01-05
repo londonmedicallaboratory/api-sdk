@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace LML\SDK\Lazy;
 
 use Closure;
+use Throwable;
 use LogicException;
 use LML\View\Lazy\Store;
 use React\Promise\PromiseInterface;
 use LML\View\Lazy\LazyValueInterface;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @todo YOU MUST FIX THESE SUPPRESSIONS
@@ -17,13 +18,12 @@ use function Clue\React\Block\await;
  * @template T
  *
  * @implements LazyValueInterface<T>
- * @implements PromiseInterface<T>
+ * implements PromiseInterface<T>
  *
- * @psalm-suppress InternalClass
- * @psalm-suppress InternalMethod
- * @psalm-suppress MethodSignatureMismatch
+ * @psalm-suppress all
  */
-class ExtraLazyPromise implements LazyValueInterface, PromiseInterface
+class ExtraLazyPromise implements LazyValueInterface
+//    , PromiseInterface
 {
     /**
      * @var null|Store<T>
@@ -57,6 +57,13 @@ class ExtraLazyPromise implements LazyValueInterface, PromiseInterface
         return $this->promise ??= $this->doGetPromise();
     }
 
+    /**
+     * @template TFulfilled
+     * @template TRejected
+     * @param ?(callable((T is void ? null : T)): (PromiseInterface<TFulfilled>|TFulfilled)) $onFulfilled
+     * @param ?(callable(Throwable): (PromiseInterface<TRejected>|TRejected)) $onRejected
+     * @return PromiseInterface<($onRejected is null ? ($onFulfilled is null ? T : TFulfilled) : ($onFulfilled is null ? T|TRejected : TFulfilled|TRejected))>
+     */
     public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null): PromiseInterface
     {
         return $this->getPromise()->then($onFulfilled, $onRejected, $onProgress);
@@ -80,6 +87,29 @@ class ExtraLazyPromise implements LazyValueInterface, PromiseInterface
         $store = $this->store ??= $this->doGetStore();
 
         return $store->getValue();
+    }
+
+    /**
+     * @return PromiseInterface<T>
+     */
+    public function catch(callable $onRejected): PromiseInterface
+    {
+        return $this->getPromise()->catch($onRejected);
+    }
+
+    public function finally(callable $onFulfilledOrRejected): PromiseInterface
+    {
+        return $this->getPromise()->catch($onFulfilledOrRejected);
+    }
+
+    public function cancel(): void
+    {
+        $this->getPromise()->cancel();
+    }
+
+    public function always(callable $onFulfilledOrRejected): PromiseInterface
+    {
+        return $this->getPromise()->always($onFulfilledOrRejected);
     }
 
     /**

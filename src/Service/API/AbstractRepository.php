@@ -19,8 +19,8 @@ use LML\SDK\Service\Client\ClientInterface;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\View\ViewFactory\AbstractViewFactory;
 use function sprintf;
+use function React\Async\await;
 use function React\Promise\resolve;
-use function Clue\React\Block\await;
 
 /**
  * @template TData
@@ -65,7 +65,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function find(?string $id = null, bool $await = false, ?string $url = null, bool $force = false): null|ModelInterface|PromiseInterface
     {
         if (!$id && !$url) {
-            return $await ? null : resolve();
+            return $await ? null : resolve(null);
         }
 
         return $this->getEntityManager()->find(
@@ -95,7 +95,7 @@ abstract class AbstractRepository extends AbstractViewFactory
     public function findOneBy(array $filters = [], ?string $url = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
         $paginated = $this->paginate($filters, $url, limit: 1);
-        $promise = $paginated->then(fn(PaginatedResults $results) => $results->first());
+        $promise = $paginated->then(/** @param PaginatedResults<TView> $results */ fn(PaginatedResults $results) => $results->first());
 
         return $await ? await($promise) : $promise;
     }

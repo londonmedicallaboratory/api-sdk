@@ -12,6 +12,7 @@ use LML\SDK\Entity\Order\Order;
 use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Lazy\ExtraLazyPromise;
 use LML\SDK\Entity\Address\Address;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Voucher\Voucher;
@@ -31,7 +32,7 @@ use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
 use function sprintf;
 use function array_map;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @psalm-import-type S from Basket
@@ -85,7 +86,8 @@ class BasketRepository extends AbstractRepository
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
             affiliateCode: $affiliateCode,
-            voucher: new LazyPromise($this->getVoucher($entity['voucher_id'] ?? null))
+//            voucher: new LazyPromise($this->getVoucher($entity['voucher_id'] ?? null))
+            voucher: new ExtraLazyPromise(fn() => $this->getVoucher($entity['voucher_id'] ?? null))
         );
 
         if ($customerScalars = $entity['customer'] ?? null) {
@@ -156,6 +158,9 @@ class BasketRepository extends AbstractRepository
     private function findFromSession(): ?Basket
     {
         $id = $this->visitor->getBasketId();
+        if (!$id) {
+            return null;
+        }
 
         // try to find by id, but command *will* create new instance if one is not found.
         // when that happens, new basket_id value must be sent to Visitor so its gets updated in cookie. Otherwise, client app will keep creating new instances

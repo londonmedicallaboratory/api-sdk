@@ -20,7 +20,7 @@ use LML\SDK\Entity\Brand\WorkingHours\WorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
 use function sprintf;
 use function array_map;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @psalm-import-type S from Brand
@@ -61,7 +61,7 @@ class BrandRepository extends AbstractRepository
     }
 
     /**
-     * @psalm-return ($await is true ? list<TimeBlock> : PromiseInterface<list<TimeBlock>>)
+     * @psalm-return ($await is true ? array<TimeBlock> : PromiseInterface<array<TimeBlock>>)
      */
     public function getTimeBlocks(bool $await = false): array|PromiseInterface
     {
@@ -69,8 +69,7 @@ class BrandRepository extends AbstractRepository
 
         /** @var PromiseInterface<list<TH>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
-
-        $resolvedPromise = $promise->then(fn($data) => array_map(static fn($datum) => new TimeBlock(
+        $resolvedPromise = $promise->then(/** @param list<TH> $data */ fn(array $data): array => array_map(static fn(array $datum): TimeBlock => new TimeBlock(
             id: $datum['id'],
             startsAt: new DateTime($datum['starts_at']),
             endsAt: new DateTime($datum['ends_at']),
@@ -103,24 +102,16 @@ class BrandRepository extends AbstractRepository
     }
 
     /**
-     * @psalm-return ($await is true ? list<WorkingHours> : PromiseInterface<list<WorkingHours>>)
+     * @return PromiseInterface<list<WorkingHours>>
      */
-    public function getWorkHours(string $id, bool $await = false): PromiseInterface|array
+    public function getWorkHours(string $id,): PromiseInterface
     {
         $url = sprintf('/test_location/%s/workhours', $id);
 
-        /** @var PromiseInterface<list<WH>|null> $promise */
+        /** @var PromiseInterface<null|list<WH>> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
 
-        $resolvedPromise = $promise->then(fn($data) => array_map(static fn($datum) => new WorkingHours(
-            id: $datum['id'],
-            dayOfWeek: DayOfWeekEnum::fromShortcut($datum['day_of_week']),
-            startsAt: $datum['starts_at'],
-            endsAt: $datum['ends_at'],
-            isActive: $datum['active'] ?? true,
-        ), $data ?? []));
-
-        return $await ? await($resolvedPromise) : $resolvedPromise;
+        return $promise->then($this->createWorkHours(...));
     }
 
     protected function one($entity, $options, $optimizer): Brand
@@ -147,6 +138,29 @@ class BrandRepository extends AbstractRepository
             point: $point,
             distance: $entity['distance'] ?? null,
         );
+    }
+
+    /**
+     * Must be dedicated method, psalm couldn't understand Closure param
+     *
+     * @param null|list<WH> $data
+     *
+     * @return list<WorkingHours>
+     */
+    private function createWorkHours(?array $data): array
+    {
+        if (!$data) {
+            return [];
+        }
+
+        return array_map(static fn($datum) => new WorkingHours(
+
+            id: $datum['id'],
+            dayOfWeek: DayOfWeekEnum::fromShortcut($datum['day_of_week']),
+            startsAt: $datum['starts_at'],
+            endsAt: $datum['ends_at'],
+            isActive: $datum['active'] ?? true,
+        ), $data);
     }
 
 //    protected function getCacheTimeout(): int

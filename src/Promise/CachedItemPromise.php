@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LML\SDK\Promise;
 
-use React\Promise\Promise;
+class CachedItemPromise
 
-class CachedItemPromise extends Promise
+//    extends Promise
 {
 }

@@ -6,8 +6,8 @@ namespace LML\SDK\DataCollector;
 
 use Throwable;
 use React\Promise\PromiseInterface;
-use LML\SDK\Promise\CachedItemPromise;
 use LML\SDK\Service\Client\ClientInterface;
+use React\Promise\Internal\FulfilledPromise;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
@@ -40,7 +40,7 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
         $promise = $this->client->getAsync($url, $filters, $page, $limit, $cacheTimeout, tag: $tag, extraQueryParams: $extraQueryParams);
-        $isCached = $promise instanceof CachedItemPromise;
+        $isCached = $promise instanceof FulfilledPromise;
 
         return $this->logPromise($promise, $url, 'GET', $isCached, filters: $filters);
     }

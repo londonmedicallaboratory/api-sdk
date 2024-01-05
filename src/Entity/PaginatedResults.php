@@ -8,7 +8,7 @@ use Traversable;
 use IteratorAggregate;
 
 /**
- * @template-covariant T
+ * @template T
  * @implements IteratorAggregate<T>
  */
 class PaginatedResults implements IteratorAggregate

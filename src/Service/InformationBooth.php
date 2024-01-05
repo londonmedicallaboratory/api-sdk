@@ -47,7 +47,7 @@ class InformationBooth
     public function getVisitorsCoordinates(?string $ip, ?string $search): PromiseInterface
     {
         if (!$ip && !$search) {
-            return resolve();
+            return resolve(null);
         }
         $url = sprintf('/info/coordinates?ip=%s&wide_search=%s', (string)$ip, (string)$search);
 

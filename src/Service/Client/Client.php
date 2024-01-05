@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\Client;
 
-use Closure;
+use Throwable;
 use JsonException;
 use RuntimeException;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
 use LML\SDK\Service\Visitor\Visitor;
-use LML\SDK\Promise\CachedItemPromise;
 use Symfony\Component\Cache\CacheItem;
 use Psr\Http\Message\ResponseInterface;
-use React\Http\Message\ResponseException;
 use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use function rtrim;
@@ -27,6 +25,7 @@ use function json_encode;
 use function preg_replace;
 use function base64_encode;
 use function http_build_query;
+use function React\Promise\resolve;
 
 class Client implements ClientInterface, ResetInterface
 {
@@ -95,6 +94,8 @@ class Client implements ClientInterface, ResetInterface
 
     /**
      * @param int|null $cacheTimeout *
+     *
+     * @return PromiseInterface<mixed>
      */
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
@@ -110,9 +111,10 @@ class Client implements ClientInterface, ResetInterface
 
         $item = $cache->getItem($cacheKey);
         if ($item->isHit()) {
-            return new CachedItemPromise(function (Closure $resolve) use ($item) {
-                $resolve($item->get());
-            });
+            return resolve($item->get());
+//            return new CachedItemPromise(function (Closure $resolve) use ($item) {
+//                $resolve($item->get());
+//            });
         }
 
         return $this->promiseMap[$url] ??= $this->doGetPromise($url, $item, $cacheTimeout ?? $this->cacheExpiration, $tag);
@@ -147,7 +149,7 @@ class Client implements ClientInterface, ResetInterface
 
                     return $data;
                 },
-                onRejected: function (ResponseException $_e) use ($item, $cacheTimeout) {
+                onRejected: function (Throwable $_e) use ($item, $cacheTimeout) {
                     $item->expiresAfter($cacheTimeout);
                     $item->set(null);
 

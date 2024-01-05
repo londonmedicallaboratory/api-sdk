@@ -7,7 +7,7 @@ namespace LML\SDK\Pager;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\PaginatedResults;
 use Pagerfanta\Adapter\AdapterInterface;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @template T

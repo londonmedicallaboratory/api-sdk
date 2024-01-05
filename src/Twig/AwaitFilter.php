@@ -7,7 +7,8 @@ namespace LML\SDK\Twig;
 use Twig\TwigFilter;
 use React\Promise\PromiseInterface;
 use Twig\Extension\AbstractExtension;
-use function Clue\React\Block\await;
+use function React\Async\await;
+
 
 class AwaitFilter extends AbstractExtension
 {

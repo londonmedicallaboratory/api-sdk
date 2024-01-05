@@ -20,7 +20,6 @@
         "endroid/installer": "^1.4",
         "londonmedicallaboratory/view-bundle": "dev-master",
         "react/http": "^1.7",
-        "clue/block-react": "^1.5",
         "brick/money": "^0.5.3",
         "symfony/twig-bundle": "^6",
         "omnipay/sagepay": "dev-feature/pi-protocol-4",
@@ -34,7 +33,9 @@
         "symfony/form": "^6",
         "webmozart/assert": "^1.11",
         "symfony/security-bundle": "^6",
-        "nyholm/psr7": "^1.7"
+        "nyholm/psr7": "^1.7",
+        "php-http/httplug": "^2.4",
+        "react/async": "^4.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
