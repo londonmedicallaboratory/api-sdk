@@ -16,6 +16,7 @@ use LML\SDK\Entity\TestRegistration\LabResult;
  *
  * @extends AbstractRepository<S, LabResult, array{
  *     test_registration?: string,
+ *     test_registration_id?: string,
  * }>
  */
 class LabResultRepository extends AbstractRepository
