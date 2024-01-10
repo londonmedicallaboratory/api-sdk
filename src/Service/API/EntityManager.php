@@ -154,7 +154,7 @@ class EntityManager implements ResetInterface
 
         $promise = $this->client->getAsync($url, cacheTimeout: $cacheTimeout, tag: $className)
             ->then(
-                onFulfilled: fn($data) => $data ? $this->store($className, $data) : null,
+                onFulfilled: fn(?array $data) => $data ? $this->store($className, $data) : null,
                 onRejected: fn(Throwable $e) => null,
             );
 
@@ -162,12 +162,12 @@ class EntityManager implements ResetInterface
 
         return $await ? await($promise) : $promise;
 
-//        try {
-//            return $await ? await($promise) : $promise;
-//        } catch (AssertionError $e) {
-//            return $await ? null : resolve(null);
-//            dd($className, $id, $url, $await, $e->getMessage(), $promise);
-//        }
+        try {
+            return $await ? await($promise) : $promise;
+        } catch (AssertionError $e) {
+            return $await ? null : resolve(null);
+            dd($className, $id, $url, $await, $e->getMessage(), $promise);
+        }
     }
 
     /**
