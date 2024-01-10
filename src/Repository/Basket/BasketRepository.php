@@ -198,7 +198,7 @@ class BasketRepository extends AbstractRepository
     }
 
     /**
-     * @param ?TAppointment $initialAppointment
+     * @param ?array{brand_id: string, starts_at?: ?string, ends_at?: ?string, time_id?: ?string, type: 'brand_location'|'home_visit_phlebotomist', id?: ?string, patient_id?: ?string, confirmed?: ?bool} $initialAppointment
      */
     private function getInitialAppointment(?array $initialAppointment): ?Appointment
     {
