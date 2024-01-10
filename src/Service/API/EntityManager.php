@@ -6,7 +6,6 @@ namespace LML\SDK\Service\API;
 
 use Throwable;
 use LogicException;
-use AssertionError;
 use ReflectionClass;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Event\PostFlushEvent;
@@ -161,14 +160,14 @@ class EntityManager implements ResetInterface
 
         $this->identityMap[$className][$id] = $promise;
 
-//        return $await ? await($promise) : $promise;
+        return $await ? await($promise) : $promise;
 
-        try {
-            return $await ? await($promise) : $promise;
-        } catch (AssertionError $e) {
-            return $await ? null : resolve(null);
-            dd($className, $id, $url, $await, $e->getMessage(), $promise);
-        }
+//        try {
+//            return $await ? await($promise) : $promise;
+//        } catch (AssertionError $e) {
+//            return $await ? null : resolve(null);
+//            dd($className, $id, $url, $await, $e->getMessage(), $promise);
+//        }
     }
 
     /**

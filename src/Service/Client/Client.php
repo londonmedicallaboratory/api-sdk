@@ -112,9 +112,6 @@ class Client implements ClientInterface, ResetInterface
         $item = $cache->getItem($cacheKey);
         if ($item->isHit()) {
             return resolve($item->get());
-//            return new CachedItemPromise(function (Closure $resolve) use ($item) {
-//                $resolve($item->get());
-//            });
         }
 
         return $this->promiseMap[$url] ??= $this->doGetPromise($url, $item, $cacheTimeout ?? $this->cacheExpiration, $tag);
@@ -132,12 +129,16 @@ class Client implements ClientInterface, ResetInterface
         return $this->browser->get($url, $this->getAuthHeaders())
             ->then(
                 onFulfilled: function (ResponseInterface $response) use ($item, $cacheTimeout, $tag): array {
-                    $body = (string)$response->getBody();
-                    try {
-                        /** @var array<string, mixed> $data */
-                        $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-                    } catch (JsonException) {
+                    if ($response->getStatusCode() !== 200) {
                         $data = [];
+                    } else {
+                        $body = (string)$response->getBody();
+                        try {
+                            /** @var array<string, mixed> $data */
+                            $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+                        } catch (JsonException) {
+                            $data = [];
+                        }
                     }
 
                     $item->expiresAfter($cacheTimeout);
