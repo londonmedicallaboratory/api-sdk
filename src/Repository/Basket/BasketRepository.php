@@ -101,7 +101,7 @@ class BasketRepository extends AbstractRepository
 
     protected function getCacheTimeout(): ?int
     {
-        return 2;
+        return 5;
     }
 
     private function createNew(): Basket
@@ -149,11 +149,13 @@ class BasketRepository extends AbstractRepository
         }
         $url = sprintf('/basket/customer/%s', $customer->getId());
 
-        if ($basket = await(parent::find(url: $url))) {
+        if ($basket = parent::find(url: $url, await: true)) {
             $this->visitor->setBasketId($basket->getId());
+
+            return $basket;
         }
 
-        return $basket;
+        return null;
     }
 
     private function findFromSession(): ?Basket
@@ -167,9 +169,11 @@ class BasketRepository extends AbstractRepository
         // when that happens, new basket_id value must be sent to Visitor so its gets updated in cookie. Otherwise, client app will keep creating new instances
         if ($basket = parent::find(id: $id, await: true)) {
             $this->visitor->setBasketId($basket->getId());
+
+            return $basket;
         }
 
-        return $basket;
+        return null;
     }
 
     /**
