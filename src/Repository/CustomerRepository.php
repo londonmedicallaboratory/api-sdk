@@ -11,7 +11,7 @@ use LML\SDK\Entity\Customer\Customer;
 use LML\View\Lazy\LazyValueInterface;
 use React\Http\Message\ResponseException;
 use LML\SDK\Service\API\AbstractRepository;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @psalm-import-type S from Customer

@@ -24,8 +24,8 @@ use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Entity\Order\OrderPaymentStatusEnum;
 use LML\SDK\Entity\Order\OrderShippingStatusEnum;
 use function sprintf;
+use function React\Async\await;
 use function React\Promise\resolve;
-use function Clue\React\Block\await;
 
 /**
  * @psalm-import-type S from Order
@@ -149,7 +149,7 @@ class OrderRepository extends AbstractRepository
     }
 
     /**
-     * @param list<array{product_id: string, quantity: int}> $items
+     * @param list<array{product_id: string, quantity: int, product_sku?: ?string}> $items
      *
      * @return list<OrderItem>
      */

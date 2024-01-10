@@ -15,41 +15,46 @@
     ],
     "require": {
         "php": "^8.1",
-        "symfony/http-kernel": "^6.1.4",
-        "symfony/http-client": "^6.1.4",
+        "symfony/http-kernel": "^6",
+        "symfony/http-client": "^6",
         "endroid/installer": "^1.4",
         "londonmedicallaboratory/view-bundle": "dev-master",
         "react/http": "^1.7",
-        "clue/block-react": "^1.5",
         "brick/money": "^0.5.3",
-        "symfony/twig-bundle": "^6.1.1",
+        "symfony/twig-bundle": "^6",
         "omnipay/sagepay": "dev-feature/pi-protocol-4",
-        "symfony/intl": "^6.1",
-        "sensio/framework-extra-bundle": "^6.2.7",
+        "symfony/intl": "^6",
+        "sensio/framework-extra-bundle": "^6",
         "twig/extra-bundle": "^3.4",
         "twig/string-extra": "^3.4",
-        "symfony/framework-bundle": "^6.1.4",
+        "symfony/framework-bundle": "^6",
         "strictify/form-mapper-bundle": "dev-master",
         "strictify/goodies-bundle": "dev-master",
-        "symfony/form": "^6.1.4",
+        "symfony/form": "^6",
         "webmozart/assert": "^1.11",
-        "symfony/security-bundle": "^6.1",
-        "nyholm/psr7": "^1.7"
+        "symfony/security-bundle": "^6",
+        "nyholm/psr7": "^1.7",
+        "php-http/httplug": "^2.4",
+        "react/async": "^4.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "vimeo/psalm": "^4.26",
-        "psalm/plugin-symfony": "^3.1.8",
-        "symfony/phpunit-bridge": "^6.1.3",
-        "symfony/yaml": "^6.1.4",
-        "symfony/stopwatch": "^6.1",
-        "bocmah/psalm-reactphp-promise-plugin": "^0.1.1",
-        "symfony/web-profiler-bundle": "^6.1.2"
+        "vimeo/psalm": "^5.18.0",
+        "psalm/plugin-symfony": "dev-symfony-forms-6.3-compatibility",
+        "symfony/phpunit-bridge": "^6",
+        "symfony/yaml": "^6",
+        "symfony/stopwatch": "^6",
+        "bocmah/psalm-reactphp-promise-plugin": "dev-main",
+        "symfony/web-profiler-bundle": "^6"
     },
     "repositories": [
         {
             "type": "github",
             "url": "https://github.com/strictify/form-mapper-bundle"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/zmitic/psalm-reactphp-promise-plugin.git"
         },
         {
             "type": "github",
@@ -62,6 +67,10 @@
         {
             "type": "github",
             "url": "https://github.com/benjam-es/omnipay-sagepay"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/zmitic/psalm-plugin-symfony.git"
         }
     ],
     "autoload": {

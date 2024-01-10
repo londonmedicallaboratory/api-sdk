@@ -12,6 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CountryType as BaseCountryType;
 use function in_array;
 
+/**
+ * @extends AbstractType<string>
+ */
 class CountryType extends AbstractType
 {
     public function getParent(): string

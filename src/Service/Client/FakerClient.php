@@ -41,6 +41,7 @@ class FakerClient implements ClientInterface
         foreach ($this->fakers as $faker) {
             foreach ($faker->getPaginatedData() as $prefix => $paginatedDatum) {
                 if ($prefix === $url) {
+                    /** @psalm-suppress ArgumentTypeCoercion */
                     return new Promise(function (Closure $resolve) use ($paginatedDatum) {
                         $resolve($paginatedDatum);
                     });

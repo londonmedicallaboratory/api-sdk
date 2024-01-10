@@ -16,7 +16,7 @@ use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
 use LML\SDK\Entity\TestRegistration\TestRegistrationStatusEnum;
 use function sprintf;
-use function Clue\React\Block\await;
+use function React\Async\await;
 
 /**
  * @psalm-import-type S from TestRegistration

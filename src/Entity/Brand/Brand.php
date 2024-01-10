@@ -16,6 +16,8 @@ use LML\SDK\Entity\Brand\WeeklyWorkingHours\WeeklyWorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
 
 /**
+ * @template TWorkingHours of WorkingHours
+ *
  * @psalm-type S=array{
  *      id: string,
  *      name: string,
@@ -37,7 +39,7 @@ class Brand implements ModelInterface, Stringable
 {
     /**
      * @param LazyValueInterface<list<HealthcareProfessional>> $healthcareProfessionals
-     * @param LazyValueInterface<list<WorkingHours>> $workHours
+     * @param LazyValueInterface<list<TWorkingHours>> $workHours
      * @param LazyValueInterface<?Slot> $nextAvailableSlot
      */
     public function __construct(
@@ -111,7 +113,7 @@ class Brand implements ModelInterface, Stringable
     }
 
     /**
-     * @return list<WorkingHours>
+     * @return list<TWorkingHours>
      */
     public function getWorkingHours(): array
     {

@@ -6,14 +6,16 @@ namespace LML\SDK\DataCollector;
 
 use Throwable;
 use React\Promise\PromiseInterface;
-use LML\SDK\Promise\CachedItemPromise;
 use LML\SDK\Service\Client\ClientInterface;
+use React\Promise\Internal\FulfilledPromise;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 
 /**
- * @property array{requests: null|list<array{url: string, cached: bool, method: string, filters: array}>} $data
+ * @psalm-type TRequest = array{url: string, cached: bool, method: string, filters: array, data?: mixed, response?: mixed}
+ *
+ * @property array{requests: null|list<TRequest>} $data
  *
  * @psalm-suppress MixedReturnTypeCoercion - It is OK to suppress mixed here, we don't really need static analysis here.
  */
@@ -26,7 +28,7 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
     }
 
     /**
-     * @return list<array{url: string, cached: bool}>
+     * @return list<TRequest>
      *
      * Used in client_collector.html.twig
      */
@@ -38,7 +40,7 @@ class ClientDataCollector extends AbstractDataCollector implements ClientInterfa
     public function getAsync(string $url, array $filters = [], int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, ?string $tag = null, array $extraQueryParams = []): PromiseInterface
     {
         $promise = $this->client->getAsync($url, $filters, $page, $limit, $cacheTimeout, tag: $tag, extraQueryParams: $extraQueryParams);
-        $isCached = $promise instanceof CachedItemPromise;
+        $isCached = $promise instanceof FulfilledPromise;
 
         return $this->logPromise($promise, $url, 'GET', $isCached, filters: $filters);
     }

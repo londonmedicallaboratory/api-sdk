@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace LML\SDK\Form\Type;
 
 use DateTime;
+use DateTimeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use function range;
 
+/**
+ * @extends AbstractType<DateTimeInterface>
+ */
 class DateTypeExtendedYearsRange extends AbstractType
 {
     public function getParent(): string

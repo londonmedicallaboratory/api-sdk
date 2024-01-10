@@ -11,6 +11,7 @@ use LML\View\Lazy\ResolvedValue;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Order\OrderItem;
+use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
@@ -19,7 +20,9 @@ use LML\SDK\Repository\ShippingRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function array_filter;
 use function array_values;
-use function Clue\React\Block\awaitAll;
+use function React\Async\await;
+use function React\Async\awaitAll;
+use function React\Async\parallel;
 
 class Basket
 {
@@ -77,7 +80,7 @@ class Basket
     }
 
     /**
-     * @return list<OrderItem>
+     * @return list<OrderItem<Product>>
      */
     public function getItems(): array
     {
@@ -233,7 +236,7 @@ class Basket
     }
 
     /**
-     * @return list<OrderItem>
+     * @return list<OrderItem<Product>>
      */
     private function doGetItems(): array
     {
@@ -242,18 +245,27 @@ class Basket
         /** @var array<int|string, int> $values */
         $values = $session->get(self::SESSION_KEY, []);
 
-        $promises = [];
+        $tasks = [];
         foreach ($values as $id => $quantity) {
-            $promises[] = $repository->find((string)$id)
-                ->then(fn(?Product $product) => $product ? new OrderItem(new ResolvedValue($product), $quantity) : null, fn() => null);
+            $tasks[] = fn(): PromiseInterface => $this->createTask((string)$id, $quantity);
         }
-
-        /** @var list<?OrderItem> $responses */
-        $responses = awaitAll($promises);
+        $parallel = parallel($tasks);
+        $responses = await($parallel);
 
         $filtered = array_filter($responses, fn(?OrderItem $item) => (bool)$item);
 
         return array_values($filtered);
+    }
+
+    /**
+     * @return PromiseInterface<null|OrderItem<Product>>
+     */
+    private function createTask(string $id, int $quantity): PromiseInterface
+    {
+        $repository = $this->productRepository;
+        $promise = $repository->find($id);
+        /** @noinspection NullPointerExceptionInspection - EA doesn't understand psalm */
+        return $promise->then(fn(?Product $product) => $product ? new OrderItem(new ResolvedValue($product), $quantity) : null, fn() => null);
     }
 
     private function doGetVoucher(): ?Voucher

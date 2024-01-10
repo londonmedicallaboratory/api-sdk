@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 /**
  * If enum implements @see NameableInterface , use that to generate `choice_label` values.
  * This avoids lots of repetitions.
+ *
+ * @extends AbstractTypeExtension<void>
  */
 class NamedEnumTypeExtension extends AbstractTypeExtension
 {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LML\SDK\Service\API;
 
+use Throwable;
 use LogicException;
 use ReflectionClass;
 use LML\SDK\Attribute\Entity;
@@ -33,9 +34,9 @@ use function json_decode;
 use function array_merge;
 use function spl_object_hash;
 use function array_key_exists;
+use function React\Async\await;
+use function React\Async\parallel;
 use function React\Promise\resolve;
-use function Clue\React\Block\await;
-use function Clue\React\Block\awaitAll;
 
 /**
  * Doctrine equivalent for models
@@ -117,7 +118,7 @@ class EntityManager implements ResetInterface
     public function findOneBy(string $className, array $filters = [], ?string $url = null, ?int $cacheTimeout = null, bool $await = false): null|ModelInterface|PromiseInterface
     {
         $paginated = $this->paginate($className, filters: $filters, url: $url, cacheTimeout: $cacheTimeout);
-        $promise = $paginated->then(onFulfilled: fn(PaginatedResults $results) => $results->first());
+        $promise = $paginated->then(onFulfilled: /** @param PaginatedResults<TView> $results */ fn(PaginatedResults $results) => $results->first());
 
         return $await ? await($promise) : $promise;
     }
@@ -160,6 +161,14 @@ class EntityManager implements ResetInterface
         $this->identityMap[$className][$id] = $promise;
 
         return $await ? await($promise) : $promise;
+
+//        try {
+//            return $await ? await($promise) : $promise;
+//        } catch (AssertionError $e) {
+//            dd($e->getMessage());
+//            return $await ? null : resolve(null);
+//            dd($className, $id, $url, $await, $e->getMessage(), $promise);
+//        }
     }
 
     /**
@@ -173,8 +182,7 @@ class EntityManager implements ResetInterface
      */
     public function fetch(string $className, ?string $id = null, ?string $url = null, ?int $cacheTimeout = null, bool $await = false): ModelInterface|PromiseInterface
     {
-        $promise = $this->find($className, id: $id, url: $url, cacheTimeout: $cacheTimeout)
-            ->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
+        $promise = $this->find($className, id: $id, url: $url, cacheTimeout: $cacheTimeout)->then(onFulfilled: /** @param ?TView $data */ fn(?ModelInterface $data) => $data ?: throw new DataNotFoundException());
 
         return $await ? await($promise) : $promise;
     }
@@ -188,8 +196,7 @@ class EntityManager implements ResetInterface
      *
      * @psalm-suppress MixedArgument
      * @psalm-suppress ArgumentTypeCoercion
-     * @psalm-suppress InvalidReturnStatement
-     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public function paginate(string $className, array $filters = [], ?string $url = null, int $page = 1, ?int $limit = null, ?int $cacheTimeout = null, bool $await = false): PromiseInterface|PaginatedResults
     {
@@ -219,7 +226,7 @@ class EntityManager implements ResetInterface
                     resultsPerPage: $data['results_per_page'] ?? 10,
                     nextPage: $data['next_page'] ?? null,
                     nrOfResults: $data['nr_of_results'] ?? 0,
-                    items: array_map(fn($item) => $this->store($className, $item), $data['items'] ?? []),
+                    items: array_map(fn(array $item): ModelInterface => $this->store($className, $item), $data['items'] ?? []),
                 );
             });
 
@@ -271,29 +278,34 @@ class EntityManager implements ResetInterface
 
                     $this->eventDispatcher->dispatch(new PostFlushEvent($entity, $this));
                 },
-                onRejected: function (ResponseException $e) {
-                    $body = (string)$e->getResponse()->getBody();
-                    $error = (string)(json_decode($body, true)['error'] ?? $e->getMessage());
-                    throw new FlushException(previous: $e, message: $error);
+                onRejected: function (Throwable $e) {
+                    if ($e instanceof ResponseException) {
+                        $body = (string)$e->getResponse()->getBody();
+                        $error = (string)(json_decode($body, true)['error'] ?? $e->getMessage());
+                        throw new FlushException(previous: $e, message: $error);
+                    }
+
+                    throw $e;
                 }
             );
             await($promise);
         }
 
-        $promises = [];
+        $tasks = [];
         foreach ($this->managed as $entity) {
             if ($diff = $this->getChangeSet($entity)) {
                 $this->eventDispatcher->dispatch(new PreUpdateEvent($entity, $this));
                 $baseUrl = $this->getBaseUrl(get_class($entity));
-                $promises[] = $this->client->patch($baseUrl, $entity->getId(), $diff);
+                $tasks[] = fn(): PromiseInterface => $this->client->patch($baseUrl, $entity->getId(), $diff);
             }
         }
         foreach ($this->entitiesToBeDeleted as $entity) {
             $baseUrl = $this->getBaseUrl(get_class($entity));
-            $promises[] = $this->client->delete($baseUrl, $entity->getId());
+            $tasks[] = fn(): PromiseInterface => $this->client->delete($baseUrl, $entity->getId());
         }
 
-        awaitAll($promises);
+
+        await(parallel($tasks));
 
         foreach ($this->newEntities as $oid => $entity) {
             $this->managed[$oid] = $entity;
