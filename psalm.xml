@@ -43,12 +43,6 @@
             </errorLevel>
         </InvalidReturnType>
 
-        <MethodSignatureMismatch>
-            <errorLevel type="suppress">
-                <file name="src/Promise/CachedItemPromise.php"/>
-            </errorLevel>
-        </MethodSignatureMismatch>
-
         <MissingDependency>
             <errorLevel type="suppress">
                 <directory name="tests"/>
