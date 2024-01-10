@@ -36,6 +36,7 @@ use function React\Async\await;
 
 /**
  * @psalm-import-type S from Basket
+ * @psalm-import-type S from Appointment as TAppointment
  *
  * @extends AbstractRepository<S, Basket, array>
  */
@@ -197,20 +198,19 @@ class BasketRepository extends AbstractRepository
     }
 
     /**
-     * @param ?array{brand_id: string, starts_at?: ?string, ends_at?: ?string, time_id?: ?string, type: 'brand_location'|'home_visit_phlebotomist', id?: ?string, patient_id?: ?string, confirmed?: ?bool} $initialAppointment
+     * @param ?TAppointment $initialAppointment
      */
     private function getInitialAppointment(?array $initialAppointment): ?Appointment
     {
-//        dd($initialAppointment);
         if (!$initialAppointment) {
             return null;
         }
-        $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['brand_id']);
+        $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['test_location_id']);
         $startsAt = $initialAppointment['starts_at'] ?? throw new DataNotFoundException();
 
         return new Appointment(
             type: $initialAppointment['type'],
-            brand: new LazyPromise($brand),
+            location: new LazyPromise($brand),
             startsAt: new ResolvedValue(new DateTime($startsAt)),
             timeId: new ResolvedValue($initialAppointment['time_id'] ?? null),
         );

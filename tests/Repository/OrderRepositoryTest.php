@@ -47,7 +47,7 @@ class OrderRepositoryTest extends AbstractTest
         $shipping = $this->getService(ShippingRepository::class)->findOneBy(await: true) ?? throw new InvalidArgumentException('No shipping found.');
 
         $appointment = new Appointment(
-            brand: new ResolvedValue($brand),
+            location: new ResolvedValue($brand),
             appointmentTime: new ResolvedValue(DateTime::createFromFormat('Y-m-d H:i', '2024-01-01 15:00')),
             products: new ResolvedValue([]),
             patient: new ResolvedValue(null),
