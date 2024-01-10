@@ -26,7 +26,7 @@ use LML\SDK\Exception\EntityNotPersistedException;
  * @psalm-type S=array{
  *     id?: ?string,
  *     type: TType,
- *     brand_id: string,
+ *     test_location_id: string,
  *     starts_at: string,
  *     ends_at?: ?string,
  *     patient_id: ?string,
@@ -43,7 +43,7 @@ class Appointment implements ModelInterface
      * @see AppointmentRepository::one()
      *
      * @param TType $type
-     * @param LazyValueInterface<TBrand> $brand
+     * @param LazyValueInterface<TBrand> $location
      * @param LazyValueInterface<list<TProduct>> $products
      * @param LazyValueInterface<DateTimeInterface> $startsAt
      * @param LazyValueInterface<?DateTimeInterface> $endsAt
@@ -54,7 +54,7 @@ class Appointment implements ModelInterface
     public function __construct(
         #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
         protected string $type,
-        protected LazyValueInterface $brand,
+        protected LazyValueInterface $location,
         protected LazyValueInterface $startsAt,
         protected LazyValueInterface $endsAt = new ResolvedValue(null),
         protected LazyValueInterface $products = new ResolvedValue([]),
@@ -66,9 +66,9 @@ class Appointment implements ModelInterface
     {
     }
 
-    public function getBrand(): Brand
+    public function getLocation(): Brand
     {
-        return $this->brand->getValue();
+        return $this->location->getValue();
     }
 
     /**
@@ -80,11 +80,11 @@ class Appointment implements ModelInterface
     }
 
     /**
-     * @param TBrand $brand
+     * @param TBrand $location
      */
-    public function setBrand(Brand $brand): void
+    public function setLocation(Brand $location): void
     {
-        $this->brand = new ResolvedValue($brand);
+        $this->location = new ResolvedValue($location);
     }
 
     /**
@@ -138,7 +138,7 @@ class Appointment implements ModelInterface
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'brand_id' => $this->getBrand()->getId(),
+            'test_location_id' => $this->getLocation()->getId(),
             'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
             'ends_at' => $this->getEndsAt()?->format('Y-m-d\TH:i:sP'),
             'patient_id' => $this->getPatient()?->getId(),

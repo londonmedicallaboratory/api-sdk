@@ -48,7 +48,7 @@ use function array_map;
  *      refund?: ?bool,
  *      payment_status?: ?string,
  *      initial_appointment?: array{
- *          brand_id: string,
+ *          test_location_id: string,
  *          starts_at?: ?string,
  *          ends_at?: ?string,
  *      },
@@ -234,7 +234,7 @@ class Order implements ModelInterface
         }
         if ($initialAppointmentTime = $this->initialAppointment) {
             $data['initial_appointment'] = [
-                'brand_id' => $initialAppointmentTime->getBrand()->getId(),
+                'test_location_id' => $initialAppointmentTime->getLocation()->getId(),
                 'starts_at' => $initialAppointmentTime->getStartsAt()->format('Y-m-d\TH:i:sP'),
             ];
         }
