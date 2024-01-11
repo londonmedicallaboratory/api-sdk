@@ -82,12 +82,11 @@ class BasketRepository extends AbstractRepository
             id: $id,
             transactionId: $entity['transaction_id'] ?? null,
             shippingAddress: $this->getAddress($entity['shipping_address'] ?? null),
-            shipping: $this->getShipping($entity['shipping_id'] ?? null),
+            shipping: new LazyPromise($this->getShipping($entity['shipping_id'] ?? null)),
             billingAddress: $this->getAddress($entity['billing_address'] ?? null),
             items: $this->getItems($entity['items']),
             initialAppointment: $this->getInitialAppointment($entity['initial_appointment'] ?? null),
             affiliateCode: $affiliateCode,
-//            voucher: new LazyPromise($this->getVoucher($entity['voucher_id'] ?? null))
             voucher: new ExtraLazyPromise(fn() => $this->getVoucher($entity['voucher_id'] ?? null))
         );
 
@@ -137,9 +136,12 @@ class BasketRepository extends AbstractRepository
         return $this->get(AddressRepository::class)->buildOne($param);
     }
 
-    private function getShipping(?string $id): ?Shipping
+    /**
+     * @return PromiseInterface<?Shipping>
+     */
+    private function getShipping(?string $id): PromiseInterface
     {
-        return $this->get(ShippingRepository::class)->find($id, true);
+        return $this->get(ShippingRepository::class)->find($id);
     }
 
     private function findForCustomer(?Customer $customer): ?Basket

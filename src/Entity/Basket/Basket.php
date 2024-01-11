@@ -51,6 +51,7 @@ class Basket implements ModelInterface
 {
     /**
      * @param ?LazyValueInterface<?Voucher> $voucher
+     * @param ?LazyValueInterface<?Shipping> $shipping
      * @param list<BasketItem> $items
      */
     public function __construct(
@@ -59,7 +60,7 @@ class Basket implements ModelInterface
         private ?Address $shippingAddress = null,
         private ?Address $billingAddress = null,
         private array $items = [],
-        private ?Shipping $shipping = null,
+        private ?LazyValueInterface $shipping = new ResolvedValue(null),
         private ?Appointment $initialAppointment = null,
         private ?string $id = null,
         private ?string $transactionId = null,
@@ -150,12 +151,12 @@ class Basket implements ModelInterface
 
     public function getShipping(): ?Shipping
     {
-        return $this->shipping;
+        return $this->shipping?->getValue();
     }
 
     public function setShipping(?Shipping $shipping): void
     {
-        $this->shipping = $shipping;
+        $this->shipping = new ResolvedValue($shipping);
     }
 
     public function getDiscount(): ?PriceInterface

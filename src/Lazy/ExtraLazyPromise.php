@@ -120,8 +120,6 @@ class ExtraLazyPromise implements LazyValueInterface
         $promise = $this->getPromise();
 
         return new Store(await($promise));
-
-//        return $this->store;
     }
 
     /**
@@ -131,12 +129,12 @@ class ExtraLazyPromise implements LazyValueInterface
     {
         $callable = $this->callable;
         $promise = $callable();
-        $promise->then(function ($data): mixed {
+        return $promise->then(function ($data): mixed {
             $this->evaluated = true;
 
             return $data;
         });
 
-        return $promise;
+//        return $promise;
     }
 }

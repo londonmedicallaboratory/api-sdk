@@ -32,6 +32,8 @@ class Visitor implements ResetInterface
 
     public function reset(): void
     {
+        $this->affiliateCode = null;
+        $this->basketId = null;
     }
 
     public function onKernelRequest(RequestEvent $event): void
