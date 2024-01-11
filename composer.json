@@ -35,8 +35,7 @@
         "symfony/security-bundle": "^6",
         "nyholm/psr7": "^1.7",
         "php-http/httplug": "^2.4",
-        "react/async": "^4",
-        "symfony/lock": "^6.0|^7.0"
+        "react/async": "^4.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

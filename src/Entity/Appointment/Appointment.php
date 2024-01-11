@@ -66,6 +66,11 @@ class Appointment implements ModelInterface
     {
     }
 
+    public function getBrand(): Brand
+    {
+        return $this->getLocation();
+    }
+
     public function getLocation(): Brand
     {
         return $this->location->getValue();
