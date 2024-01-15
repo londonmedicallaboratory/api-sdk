@@ -31,6 +31,7 @@ use LML\SDK\Exception\EntityNotPersistedException;
  *     ends_at?: ?string,
  *     patient_id: ?string,
  *     confirmed?: ?bool,
+ *     expires_at?: ?string,
  *     time_id?: ?string,
  * }
  *
@@ -50,6 +51,7 @@ class Appointment implements ModelInterface
      * @param LazyValueInterface<?TPatient> $patient
      * @param LazyValueInterface<bool> $isConfirmed
      * @param LazyValueInterface<?string> $timeId
+     * @param LazyValueInterface<?DateTimeInterface> $expiresAt
      */
     public function __construct(
         #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
@@ -61,9 +63,15 @@ class Appointment implements ModelInterface
         protected LazyValueInterface $patient = new ResolvedValue(null),
         protected LazyValueInterface $isConfirmed = new ResolvedValue(false),
         protected LazyValueInterface $timeId = new ResolvedValue(null),
+        protected LazyValueInterface $expiresAt = new ResolvedValue(null),
         protected ?string $id = null,
     )
     {
+    }
+
+    public function getExpiresAt(): ?DateTimeInterface
+    {
+        return $this->expiresAt->getValue();
     }
 
     public function getBrand(): Brand

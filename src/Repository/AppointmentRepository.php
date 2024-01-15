@@ -39,6 +39,7 @@ class AppointmentRepository extends AbstractRepository
 
         $appointmentTime = $entity['starts_at'] ?? throw new DataNotFoundException();
         $endsAt = $entity['ends_at'] ?? null;
+        $expiresAt = $entity['expires_at'] ?? null;
 
         return new Appointment(
             id: $id,
@@ -50,6 +51,7 @@ class AppointmentRepository extends AbstractRepository
             patient: new LazyPromise($this->getPatient($entity['patient_id'])),
             isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
             timeId: new ResolvedValue($entity['time_id'] ?? null),
+            expiresAt: new ResolvedValue($expiresAt ? new DateTime($expiresAt) : null),
         );
     }
 
