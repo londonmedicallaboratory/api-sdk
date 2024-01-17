@@ -89,7 +89,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
 
     public function getIcon(): ?File
     {
-        return $this->logo->getValue();
+        return $this->icon->getValue();
     }
 
     public function toArray(): array
