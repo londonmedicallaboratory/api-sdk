@@ -76,6 +76,14 @@ class Appointment implements ModelInterface
     {
     }
 
+    /**
+     * @return TType
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
     public function getExpiresAt(): ?DateTimeInterface
     {
         return $this->expiresAt->getValue();
