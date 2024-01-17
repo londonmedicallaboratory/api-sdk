@@ -28,6 +28,7 @@ class BiomarkerCategoryRepository extends AbstractRepository
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
             description: $entity['description'],
             logo: new LazyPromise($this->getLogo($entity['id'])),
+            icon: new ResolvedValue(null),
         );
     }
 
