@@ -17,6 +17,7 @@ use LML\SDK\Entity\Category\ProductCategory;
  *
  * @extends AbstractRepository<S, Category, array{
  *     product_id?: string,
+ *     slug_in?: list<string>
  * }>
  */
 class ProductCategoryRepository extends AbstractRepository
@@ -25,6 +26,7 @@ class ProductCategoryRepository extends AbstractRepository
     {
         $id = $entity['id'];
         $logoId = $entity['logo_id'] ?? null;
+        $iconId = $entity['icon_id'] ?? null;
 
         return new ProductCategory(
             id: $id,
@@ -33,6 +35,7 @@ class ProductCategoryRepository extends AbstractRepository
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
             description: $entity['description'],
             logo: new LazyPromise($this->getLogo($logoId, $id)),
+            icon: new LazyPromise($this->getIcon($iconId, $id)),
         );
     }
 
@@ -52,6 +55,22 @@ class ProductCategoryRepository extends AbstractRepository
         }
 
         $url = sprintf('/product_categories/%s/logo', $id);
+
+        return $fileRepository->find(url: $url);
+    }
+
+    /**
+     * @return PromiseInterface<?File>
+     */
+    private function getIcon(?string $iconId, string $id): PromiseInterface
+    {
+        $fileRepository = $this->get(FileRepository::class);
+
+        if (!$iconId) {
+            return $fileRepository->find($iconId);
+        }
+
+        $url = sprintf('/product_categories/%s/icon', $id);
 
         return $fileRepository->find(url: $url);
     }

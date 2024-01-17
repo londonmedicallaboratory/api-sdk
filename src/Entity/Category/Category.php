@@ -20,6 +20,7 @@ use LML\SDK\Repository\BiomarkerCategoryRepository;
  *     slug: string,
  *     description: ?string,
  *     logo_id?: ?string,
+ *     icon_id?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -32,6 +33,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
      *
      * @param LazyValueInterface<?int> $nrOfProducts
      * @param LazyValueInterface<?File> $logo
+     * @param LazyValueInterface<?File> $icon
      */
     public function __construct(
         protected string $id,
@@ -40,6 +42,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
         protected LazyValueInterface $nrOfProducts,
         protected ?string $description,
         protected LazyValueInterface $logo,
+        protected LazyValueInterface $icon,
     )
     {
     }
@@ -82,6 +85,11 @@ class Category implements ModelInterface, SluggableInterface, Stringable
     public function getLogo(): ?File
     {
         return $this->logo->getValue();
+    }
+
+    public function getIcon(): ?File
+    {
+        return $this->icon->getValue();
     }
 
     public function toArray(): array
