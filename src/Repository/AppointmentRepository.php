@@ -6,6 +6,7 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use DateTimeInterface;
+use LML\SDK\Struct\Point;
 use LML\SDK\Lazy\LazyPromise;
 use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
@@ -41,6 +42,10 @@ class AppointmentRepository extends AbstractRepository
         $endsAt = $entity['ends_at'] ?? null;
         $expiresAt = $entity['expires_at'] ?? null;
 
+        $latitude = $entity['point']['latitude'] ?? null;
+        $longitude = $entity['point']['longitude'] ?? null;
+        $point = ($latitude !== null) && ($longitude !== null) ? new Point($latitude, $longitude) : null;
+
         return new Appointment(
             id: $id,
             type: $entity['type'],
@@ -52,6 +57,8 @@ class AppointmentRepository extends AbstractRepository
             isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
             timeId: new ResolvedValue($entity['time_id'] ?? null),
             expiresAt: new ResolvedValue($expiresAt ? new DateTime($expiresAt) : null),
+            fullAddress: new ResolvedValue($entity['full_address'] ?? null),
+            point: new ResolvedValue($point),
         );
     }
 

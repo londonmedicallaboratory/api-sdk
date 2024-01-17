@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Appointment;
 
 use DateTimeInterface;
+use LML\SDK\Struct\Point;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\Brand\Brand;
 use LML\View\Lazy\ResolvedValue;
@@ -33,6 +34,8 @@ use LML\SDK\Exception\EntityNotPersistedException;
  *     confirmed?: ?bool,
  *     expires_at?: ?string,
  *     time_id?: ?string,
+ *     full_address?: ?string,
+ *     point?: array{latitude: float, longitude: float},
  * }
  *
  * @implements ModelInterface<S>
@@ -52,6 +55,8 @@ class Appointment implements ModelInterface
      * @param LazyValueInterface<bool> $isConfirmed
      * @param LazyValueInterface<?string> $timeId
      * @param LazyValueInterface<?DateTimeInterface> $expiresAt
+     * @param LazyValueInterface<?string> $fullAddress
+     * @param LazyValueInterface<?Point> $point
      */
     public function __construct(
         #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
@@ -64,6 +69,8 @@ class Appointment implements ModelInterface
         protected LazyValueInterface $isConfirmed = new ResolvedValue(false),
         protected LazyValueInterface $timeId = new ResolvedValue(null),
         protected LazyValueInterface $expiresAt = new ResolvedValue(null),
+        protected LazyValueInterface $fullAddress = new ResolvedValue(null),
+        protected LazyValueInterface $point = new ResolvedValue(null),
         protected ?string $id = null,
     )
     {
@@ -72,6 +79,16 @@ class Appointment implements ModelInterface
     public function getExpiresAt(): ?DateTimeInterface
     {
         return $this->expiresAt->getValue();
+    }
+
+    public function getFullAddress(): ?string
+    {
+        return $this->fullAddress->getValue();
+    }
+
+    public function getPoint(): ?Point
+    {
+        return $this->point->getValue();
     }
 
     public function getBrand(): Brand
