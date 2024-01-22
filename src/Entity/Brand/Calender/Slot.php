@@ -10,6 +10,7 @@ use DateTimeInterface;
 class Slot implements SlotInterface
 {
     public function __construct(
+        protected string $id,
         protected DateTimeInterface $time,
         private bool $isAvailable,
         protected ?SlotInterface $previous = null,
@@ -20,8 +21,8 @@ class Slot implements SlotInterface
 
     /**
      * @return array{
+     *     id: string,
      *     available: bool,
-     *     human_readable_format: string,
      *     time: string,
      *     preview: string,
      *     is_past: bool,
@@ -30,9 +31,9 @@ class Slot implements SlotInterface
     public function toArray(): array
     {
         return [
+            'id' => $this->getId(),
             'preview' => $this->format('H:i'),
             'available' => $this->isAvailable(),
-            'human_readable_format' => $this->format('M, jS Y H:i'),
             'time' => $this->time->format('Y-m-d H:i'),
             'is_past' => $this->isInPast(),
         ];
@@ -75,5 +76,10 @@ class Slot implements SlotInterface
         $now = new DateTime();
 
         return $this->time < $now;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

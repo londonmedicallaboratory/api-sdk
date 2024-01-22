@@ -15,6 +15,7 @@ use LML\SDK\Lazy\ExtraLazyPromise;
 use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Entity\Brand\TimeBlock\TimeBlock;
 use LML\SDK\Entity\Brand\WorkingHours\WorkingHours;
 use LML\SDK\Entity\HealthcareProfessional\HealthcareProfessional;
@@ -93,9 +94,10 @@ class BrandRepository extends AbstractRepository
 
         $results = [];
         foreach ($slots as $datum) {
+            $id = (string)($datum['id'] ?? throw new DataNotFoundException()); // psalm got berserk with $datum['id']
             Assert::string($date = $datum['time'] ?? null);
             Assert::boolean($isAvailable = $datum['available'] ?? null);
-            $results[] = new Slot(new DateTime($date), $isAvailable);
+            $results[] = new Slot($id, new DateTime($date), $isAvailable);
         }
 
         return $results;
@@ -104,7 +106,7 @@ class BrandRepository extends AbstractRepository
     /**
      * @return PromiseInterface<list<WorkingHours>>
      */
-    public function getWorkHours(string $id,): PromiseInterface
+    public function getWorkHours(string $id): PromiseInterface
     {
         $url = sprintf('/test_location/%s/workhours', $id);
 
@@ -118,7 +120,8 @@ class BrandRepository extends AbstractRepository
     {
         $id = $entity['id'];
         $nextAvailableSlot = $entity['next_available_slot'] ?? null;
-        $slot = $nextAvailableSlot ? new Slot(new DateTime($nextAvailableSlot), isAvailable: true) : null;
+        $nextAvailableSlotId = $entity['next_available_slot_id'] ?? null;
+        $slot = $nextAvailableSlot && $nextAvailableSlotId ? new Slot($nextAvailableSlotId, new DateTime($nextAvailableSlot), isAvailable: true) : null;
 
         $latitude = $entity['latitude'] ?? null;
         $longitude = $entity['longitude'] ?? null;
