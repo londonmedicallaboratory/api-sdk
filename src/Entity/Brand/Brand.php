@@ -108,7 +108,7 @@ class Brand implements ModelInterface, Stringable
     /**
      * @return list<HealthcareProfessional>
      */
-    public function getHealthcareProfessionals()
+    public function getHealthcareProfessionals(): array
     {
         return $this->healthcareProfessionals->getValue();
     }
@@ -147,7 +147,7 @@ class Brand implements ModelInterface, Stringable
             'nearest_bus_station' => $this->getNearestBusStation(),
             'nearest_train_station' => $this->getNearestTrainStation(),
             'next_available_slot' => $this->getNextAvailableSlot()?->format('Y-m-d H:i'),
-            'next_available_id' => $this->getNextAvailableSlot()?->getId(),
+            'next_available_slot_id' => $this->getNextAvailableSlot()?->getId(),
         ];
     }
 }
