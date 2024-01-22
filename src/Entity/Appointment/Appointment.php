@@ -14,6 +14,7 @@ use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
 use LML\View\Lazy\LazyValueInterface;
 use JetBrains\PhpStorm\ExpectedValues;
+use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Repository\AppointmentRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
 
@@ -23,11 +24,13 @@ use LML\SDK\Exception\EntityNotPersistedException;
  * @template TBrand of Brand
  * @template TProduct of Product
  * @template TPatient of Patient
+ * @template TSlot of Slot
  *
  * @psalm-type S=array{
  *     id?: ?string,
  *     type: TType,
  *     test_location_id: string,
+ *     slot_id?: ?string,
  *     starts_at: string,
  *     ends_at?: ?string,
  *     patient_id: ?string,
@@ -57,6 +60,7 @@ class Appointment implements ModelInterface
      * @param LazyValueInterface<?DateTimeInterface> $expiresAt
      * @param LazyValueInterface<?string> $fullAddress
      * @param LazyValueInterface<?Point> $point
+     * @param LazyValueInterface<?TSlot> $slot
      */
     public function __construct(
         #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
@@ -71,6 +75,7 @@ class Appointment implements ModelInterface
         protected LazyValueInterface $expiresAt = new ResolvedValue(null),
         protected LazyValueInterface $fullAddress = new ResolvedValue(null),
         protected LazyValueInterface $point = new ResolvedValue(null),
+        protected LazyValueInterface $slot = new ResolvedValue(null),
         protected ?string $id = null,
     )
     {
@@ -156,6 +161,22 @@ class Appointment implements ModelInterface
         return $this->getStartsAt();
     }
 
+    /**
+     * @return ?TSlot
+     */
+    public function getSlot(): ?Slot
+    {
+        return $this->slot->getValue();
+    }
+
+    /**
+     * @param ?TSlot $slot
+     */
+    public function setSlot(?Slot $slot): void
+    {
+        $this->slot = new ResolvedValue($slot);
+    }
+
     public function getStartsAt(): DateTimeInterface
     {
         return $this->startsAt->getValue();
@@ -182,6 +203,7 @@ class Appointment implements ModelInterface
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
             'time_id' => $this->getTimeId(),
+            'slot_id' => $this->getSlot()?->getId(),
         ];
     }
 }
