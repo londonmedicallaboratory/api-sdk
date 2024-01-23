@@ -194,7 +194,7 @@ class Appointment implements ModelInterface
 
     public function toArray(): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'type' => $this->type,
             'test_location_id' => $this->getLocation()->getId(),
@@ -202,8 +202,12 @@ class Appointment implements ModelInterface
             'ends_at' => $this->getEndsAt()?->format('Y-m-d\TH:i:sP'),
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
-            'time_id' => $this->getTimeId(),
-            'slot_id' => $this->getSlot()?->getId(),
         ];
+
+        if ($slot = $this->getSlot()) {
+            $data['slot_id'] = $slot->getId();
+        }
+
+        return $data;
     }
 }
