@@ -52,7 +52,7 @@ class BrandRepository extends AbstractRepository
      */
     public function getMonthlyCalender(string $id, DateTime $when): array
     {
-        $url = sprintf('/test_location/calender/%04d/%02d', $when->format('Y'), $when->format('m'));
+        $url = sprintf('/test_location/calendar/%04d/%02d', $when->format('Y'), $when->format('m'));
 
         /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
         $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10, filters: ['brand_id' => $id]);
