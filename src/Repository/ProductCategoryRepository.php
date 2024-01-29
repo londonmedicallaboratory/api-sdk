@@ -36,6 +36,7 @@ class ProductCategoryRepository extends AbstractRepository
             description: $entity['description'],
             logo: new LazyPromise($this->getLogo($logoId, $id)),
             icon: new LazyPromise($this->getIcon($iconId, $id)),
+            color: new ResolvedValue($entity['color'] ?? null),
         );
     }
 
