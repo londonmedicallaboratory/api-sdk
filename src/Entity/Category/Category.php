@@ -35,6 +35,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
      * @param LazyValueInterface<?int> $nrOfProducts
      * @param LazyValueInterface<?File> $logo
      * @param LazyValueInterface<?File> $icon
+     * @param LazyValueInterface<?string> $color
      */
     public function __construct(
         protected string $id,
@@ -92,6 +93,11 @@ class Category implements ModelInterface, SluggableInterface, Stringable
     public function getIcon(): ?File
     {
         return $this->icon->getValue();
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color->getValue();
     }
 
     public function toArray(): array
