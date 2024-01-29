@@ -29,6 +29,7 @@ class BiomarkerCategoryRepository extends AbstractRepository
             description: $entity['description'],
             logo: new LazyPromise($this->getLogo($entity['id'])),
             icon: new ResolvedValue(null),
+            color: new ResolvedValue($entity['color'] ?? null),
         );
     }
 

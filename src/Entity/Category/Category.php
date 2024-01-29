@@ -21,6 +21,7 @@ use LML\SDK\Repository\BiomarkerCategoryRepository;
  *     description: ?string,
  *     logo_id?: ?string,
  *     icon_id?: ?string,
+ *     color?: ?string,
  * }
  *
  * @implements ModelInterface<S>
@@ -43,6 +44,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
         protected ?string $description,
         protected LazyValueInterface $logo,
         protected LazyValueInterface $icon,
+        protected LazyValueInterface $color,
     )
     {
     }
