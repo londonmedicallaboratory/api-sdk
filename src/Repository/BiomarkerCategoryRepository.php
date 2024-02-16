@@ -27,7 +27,7 @@ class BiomarkerCategoryRepository extends AbstractRepository
             slug: $entity['slug'],
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
             description: $entity['description'],
-            logo: new LazyPromise($this->getLogo($entity['id'])),
+            headerImage: new LazyPromise($this->getHeaderImage($entity['id'])),
             icon: new ResolvedValue(null),
             color: new ResolvedValue($entity['color'] ?? null),
         );
@@ -36,9 +36,9 @@ class BiomarkerCategoryRepository extends AbstractRepository
     /**
      * @return PromiseInterface<?File>
      */
-    private function getLogo(string $id): PromiseInterface
+    private function getHeaderImage(string $id): PromiseInterface
     {
-        $url = sprintf('/biomarker_categories/%s/logo', $id);
+        $url = sprintf('/biomarker_categories/%s/header_image', $id);
 
         return $this->get(FileRepository::class)->find(url: $url);
     }

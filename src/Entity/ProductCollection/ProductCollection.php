@@ -24,21 +24,21 @@ use LML\SDK\Repository\ProductCollectionRepository;
 class ProductCollection implements ModelInterface
 {
     /**
-     * @param LazyValueInterface<?File> $logo
+     * @param LazyValueInterface<?File> $headerImage
      */
     public function __construct(
         protected string $id,
         protected string $name,
         protected string $slug,
         protected string $description,
-        protected LazyValueInterface $logo,
+        protected LazyValueInterface $headerImage,
     )
     {
     }
 
-    public function getLogo(): ?File
+    public function getHeaderImage(): ?File
     {
-        return $this->logo->getValue();
+        return $this->headerImage->getValue();
     }
 
     public function getName(): string

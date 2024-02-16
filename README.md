@@ -1,3 +1,3 @@
-# api-sdk
+# London Medical Laboratory PHP API
 
-https://miro.com/app/board/uXjVPaxmXOw=/
+London Medical Laboratory API SDK for PHP 8.2+

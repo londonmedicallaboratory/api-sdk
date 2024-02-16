@@ -19,7 +19,7 @@ use LML\SDK\Repository\BiomarkerCategoryRepository;
  *     nr_of_products?: int,
  *     slug: string,
  *     description: ?string,
- *     logo_id?: ?string,
+ *     header_image_id?: ?string,
  *     icon_id?: ?string,
  *     color?: ?string,
  * }
@@ -33,7 +33,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
      * @see BiomarkerCategoryRepository::one()
      *
      * @param LazyValueInterface<?int> $nrOfProducts
-     * @param LazyValueInterface<?File> $logo
+     * @param LazyValueInterface<?File> $headerImage
      * @param LazyValueInterface<?File> $icon
      * @param LazyValueInterface<?string> $color
      */
@@ -43,7 +43,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
         protected string $slug,
         protected LazyValueInterface $nrOfProducts,
         protected ?string $description,
-        protected LazyValueInterface $logo,
+        protected LazyValueInterface $headerImage,
         protected LazyValueInterface $icon,
         protected LazyValueInterface $color,
     )
@@ -85,9 +85,9 @@ class Category implements ModelInterface, SluggableInterface, Stringable
         return $this->nrOfProducts->getValue();
     }
 
-    public function getLogo(): ?File
+    public function getHeaderImage(): ?File
     {
-        return $this->logo->getValue();
+        return $this->headerImage>getValue();
     }
 
     public function getIcon(): ?File

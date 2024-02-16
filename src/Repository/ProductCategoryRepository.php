@@ -25,7 +25,7 @@ class ProductCategoryRepository extends AbstractRepository
     protected function one($entity, $options, $optimizer): ProductCategory
     {
         $id = $entity['id'];
-        $logoId = $entity['logo_id'] ?? null;
+        $headerImageId = $entity['header_image_id'] ?? null;
         $iconId = $entity['icon_id'] ?? null;
 
         return new ProductCategory(
@@ -34,7 +34,7 @@ class ProductCategoryRepository extends AbstractRepository
             slug: $entity['slug'],
             nrOfProducts: new ResolvedValue($entity['nr_of_products'] ?? null),
             description: $entity['description'],
-            logo: new LazyPromise($this->getLogo($logoId, $id)),
+            headerImage: new LazyPromise($this->getHeaderImage($headerImageId, $id)),
             icon: new LazyPromise($this->getIcon($iconId, $id)),
             color: new ResolvedValue($entity['color'] ?? null),
         );
@@ -43,19 +43,15 @@ class ProductCategoryRepository extends AbstractRepository
     /**
      * @return PromiseInterface<?File>
      */
-    private function getLogo(?string $logoId, string $id): PromiseInterface
+    private function getHeaderImage(?string $headerImageId, string $id): PromiseInterface
     {
         $fileRepository = $this->get(FileRepository::class);
-        // there is something wrong with psalm and unions when using resolve(); wait for clue/react stubs to be created
-        //        if (!$logoId) {
-        //            return resolve(null);
-        //        }
 
-        if (!$logoId) {
-            return $fileRepository->find($logoId); // this will always return null, but at least psalm is happy, and we save on API request
+        if (!$headerImageId) {
+            return $fileRepository->find($headerImageId); // this will always return null, but at least psalm is happy, and we save on API request
         }
 
-        $url = sprintf('/product_categories/%s/logo', $id);
+        $url = sprintf('/product_categories/%s/header_image', $id);
 
         return $fileRepository->find(url: $url);
     }

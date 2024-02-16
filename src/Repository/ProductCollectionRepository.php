@@ -26,16 +26,16 @@ class ProductCollectionRepository extends AbstractRepository
             name: $entity['name'],
             slug: $entity['slug'],
             description: $entity['description'],
-            logo: new LazyPromise($this->getLogo($id)),
+            headerImage: new LazyPromise($this->getHeaderImage($id)),
         );
     }
 
     /**
      * @return PromiseInterface<?File>
      */
-    private function getLogo(string $id): PromiseInterface
+    private function getHeaderImage(string $id): PromiseInterface
     {
-        $url = sprintf('/product_collection/%s/logo', $id);
+        $url = sprintf('/product_collection/%s/header_image', $id);
 
         return $this->get(FileRepository::class)->findOneBy(url: $url);
     }
