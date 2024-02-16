@@ -87,7 +87,7 @@ class Category implements ModelInterface, SluggableInterface, Stringable
 
     public function getHeaderImage(): ?File
     {
-        return $this->headerImage>getValue();
+        return $this->headerImage->getValue();
     }
 
     public function getIcon(): ?File
