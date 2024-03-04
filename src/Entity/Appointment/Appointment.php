@@ -30,6 +30,7 @@ use LML\SDK\Exception\EntityNotPersistedException;
  *     id?: ?string,
  *     type: TType,
  *     test_location_id: string,
+ *     brand_id: string,
  *     slot_id?: ?string,
  *     starts_at: string,
  *     ends_at?: ?string,
@@ -47,9 +48,8 @@ use LML\SDK\Exception\EntityNotPersistedException;
 class Appointment implements ModelInterface
 {
     /**
-     * @see AppointmentRepository::one()
-     *
      * @param TType $type
+     * @param LazyValueInterface<TBrand> $brand
      * @param LazyValueInterface<TBrand> $location
      * @param LazyValueInterface<list<TProduct>> $products
      * @param LazyValueInterface<DateTimeInterface> $startsAt
@@ -61,10 +61,13 @@ class Appointment implements ModelInterface
      * @param LazyValueInterface<?string> $fullAddress
      * @param LazyValueInterface<?Point> $point
      * @param LazyValueInterface<?TSlot> $slot
+     * @see AppointmentRepository::one()
+     *
      */
     public function __construct(
         #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
         protected string $type,
+        protected LazyValueInterface $brand,
         protected LazyValueInterface $location,
         protected LazyValueInterface $startsAt,
         protected LazyValueInterface $endsAt = new ResolvedValue(null),
@@ -106,7 +109,7 @@ class Appointment implements ModelInterface
 
     public function getBrand(): Brand
     {
-        return $this->getLocation();
+        return $this->brand->getValue();
     }
 
     public function getLocation(): Brand
@@ -198,6 +201,7 @@ class Appointment implements ModelInterface
             'id' => $this->id,
             'type' => $this->type,
             'test_location_id' => $this->getLocation()->getId(),
+            'brand_id' => $this->getBrand()->getId(),
             'starts_at' => $this->getStartsAt()->format('Y-m-d\TH:i:sP'),
             'ends_at' => $this->getEndsAt()?->format('Y-m-d\TH:i:sP'),
             'patient_id' => $this->getPatient()?->getId(),

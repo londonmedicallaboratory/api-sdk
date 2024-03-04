@@ -52,6 +52,7 @@ class AppointmentRepository extends AbstractRepository
             startsAt: new ResolvedValue(new DateTime($appointmentTime)),
             endsAt: $endsAt ? new ResolvedValue(new DateTime($endsAt)) : new ResolvedValue(null),
             location: new LazyPromise($this->getTestLocation($entity['test_location_id'])),
+            brand: new LazyPromise($this->getBrand($entity['brand_id'])),
             products: new LazyPromise($this->getProducts($id)),
             patient: new LazyPromise($this->getPatient($entity['patient_id'])),
             isConfirmed: new ResolvedValue($entity['confirmed'] ?? false),
@@ -66,6 +67,14 @@ class AppointmentRepository extends AbstractRepository
      * @return PromiseInterface<Brand>
      */
     private function getTestLocation(string $id): PromiseInterface
+    {
+        return $this->get(BrandRepository::class)->fetch($id);
+    }
+
+    /**
+     * @return PromiseInterface<Brand>
+     */
+    private function getBrand(string $id): PromiseInterface
     {
         return $this->get(BrandRepository::class)->fetch($id);
     }
