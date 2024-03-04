@@ -211,12 +211,14 @@ class BasketRepository extends AbstractRepository
         if (!$initialAppointment) {
             return null;
         }
-        $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['test_location_id']);
+        $brand = $this->get(BrandRepository::class)->fetch($initialAppointment['brand_id']);
+        $location = $this->get(BrandRepository::class)->fetch($initialAppointment['test_location_id']);
         $startsAt = $initialAppointment['starts_at'] ?? throw new DataNotFoundException();
 
         return new Appointment(
             type: $initialAppointment['type'],
-            location: new LazyPromise($brand),
+            brand: new LazyPromise($brand),
+            location: new LazyPromise($location),
             startsAt: new ResolvedValue(new DateTime($startsAt)),
             timeId: new ResolvedValue($initialAppointment['time_id'] ?? null),
         );
