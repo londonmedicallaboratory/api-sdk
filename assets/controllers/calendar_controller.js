@@ -129,14 +129,14 @@ export default class calender_controller extends Controller {
         url = url + prefix + queryParams;
 
         return fetch(url)
-        .then((r) => r.json())
-        .then((json) => this.fInstance.set('enable', [
-            (date) => {
-                let formattedDate = sprintf('%04d-%02d-%02d', date.getFullYear(), date.getMonth() + 1, date.getDate());
+            .then((r) => r.json())
+            .then((json) => this.fInstance.set('enable', [
+                (date) => {
+                    let formattedDate = sprintf('%04d-%02d-%02d', date.getFullYear(), date.getMonth() + 1, date.getDate());
 
-                return formattedDate in json && json[formattedDate] === true;
-            }
-        ]))
+                    return formattedDate in json && json[formattedDate] === true;
+                }
+            ]))
             ;
     }
 
@@ -158,18 +158,22 @@ export default class calender_controller extends Controller {
         slotsUrl = slotsUrl + prefix + queryParams;
 
         fetch(slotsUrl)
-        .then((r) => r.json())
-        .then((json) => {
-            let slots = this.slotsTarget;
-            slots.innerHTML = '';
+            .then((r) => r.json())
+            .then((json) => {
+                let slots = this.slotsTarget;
+                if (json.length === 0) {
+                    slots.innerHTML = `<span class="lml-calendar-widget-day-not-available">No available slots for selected date</span>`;
 
-            json.forEach(function (struct) {
-                let isAvailable = struct.available;
-                let isInPast = struct.is_past;
-                let humanReadableFormat = struct['human_readable_format'];
-                let preview = struct['preview'];
+                    return;
+                }
+                slots.innerHTML = '';
+                json.forEach(function (struct) {
+                    let isAvailable = struct.available;
+                    let isInPast = struct.is_past;
+                    let humanReadableFormat = struct['human_readable_format'];
+                    let preview = struct['preview'];
 
-                slots.innerHTML += `
+                    slots.innerHTML += `
                         <span class="lml-calendar-widget-slot ${isAvailable ? '' : 'lml-calendar-widget-slot-not-available'} ${isInPast ? 'lml-calendar-widget-slot-past-time' : ''}" 
                             ${isAvailable ? 'data-action="click->londonmedicallaboratory--api-sdk--calendar#selectSlot"' : ''}    
                             data-londonmedicallaboratory--api-sdk--calendar-time-param="${preview}" 
@@ -177,7 +181,7 @@ export default class calender_controller extends Controller {
                             data-londonmedicallaboratory--api-sdk--calendar-available-param="${isAvailable ? 'true' : 'false'}">${preview}
                         </span>
                     `;
-            });
-        })
+                });
+            })
     }
 }
