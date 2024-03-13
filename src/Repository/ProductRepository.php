@@ -29,7 +29,6 @@ use function sprintf;
  *     category_slug?: string,
  *     collection_slug?: string,
  *     product_categories?: list<string>,
- *     featured?: bool,
  * }>
  */
 class ProductRepository extends AbstractRepository
@@ -60,7 +59,6 @@ class ProductRepository extends AbstractRepository
             description: new ResolvedValue($entity['description'] ?? throw new DataNotFoundException()),
             shortDescription: new ResolvedValue($entity['short_description'] ?? throw new DataNotFoundException()),
             previewImageUrl: $entity['preview_image_url'],
-            isFeatured: $entity['is_featured'] ?? false,
             price: new ResolvedValue($price),
             biomarkers: new ExtraLazyPromise(fn() => $this->getBiomarkers($id)),
             shippingTypes: new ExtraLazyPromise(fn() => $this->getShippingTypes($id)),
