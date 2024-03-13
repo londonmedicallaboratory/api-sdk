@@ -30,7 +30,6 @@ use function React\Promise\resolve;
  *      slug?: ?string,
  *      description?: string,
  *      short_description?: ?string,
- *      is_featured?: bool,
  *      preview_image_url: ?string,
  *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  *      discounted_price?: ?array{amount_minor: int, currency: string, formatted_value: string},
@@ -42,8 +41,6 @@ use function React\Promise\resolve;
 class Product implements ModelInterface, SluggableInterface, Stringable
 {
     /**
-     * @see ProductRepository::one()
-     *
      * @param LazyValueInterface<string> $description
      * @param LazyValueInterface<string> $shortDescription
      * @param LazyValueInterface<PriceInterface> $price
@@ -54,6 +51,8 @@ class Product implements ModelInterface, SluggableInterface, Stringable
      * @param LazyValueInterface<list<TProductFaq>> $faqs
      * @param LazyValueInterface<null|Video> $video
      * @param LazyValueInterface<?PriceInterface> $discountedPrice
+     * @see ProductRepository::one()
+     *
      */
     public function __construct(
         protected string $id,
@@ -62,7 +61,6 @@ class Product implements ModelInterface, SluggableInterface, Stringable
         protected string $slug,
         protected LazyValueInterface $description,
         protected LazyValueInterface $shortDescription,
-        protected bool $isFeatured,
         protected ?string $previewImageUrl,
         protected LazyValueInterface $price,
         protected LazyValueInterface $biomarkers,
@@ -129,11 +127,6 @@ class Product implements ModelInterface, SluggableInterface, Stringable
     public function getPreviewImageUrl(): ?string
     {
         return $this->previewImageUrl;
-    }
-
-    public function isFeatured(): bool
-    {
-        return $this->isFeatured;
     }
 
     public function getShortDescription(): string
