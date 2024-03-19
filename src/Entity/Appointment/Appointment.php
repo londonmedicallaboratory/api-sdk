@@ -206,6 +206,7 @@ class Appointment implements ModelInterface
             'ends_at' => $this->getEndsAt()?->format('Y-m-d\TH:i:sP'),
             'patient_id' => $this->getPatient()?->getId(),
             'confirmed' => $this->isConfirmed(),
+            'time_id' => $this->getTimeId(),
         ];
 
         if ($slot = $this->getSlot()) {
