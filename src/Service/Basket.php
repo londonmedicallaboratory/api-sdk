@@ -164,7 +164,9 @@ class Basket
         $itemsShippingMethods = array_map(fn(OrderItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
         foreach ($itemsShippingMethods as $itemShippingMethods) {
             if (!empty($itemShippingMethods)) {
-                return array_intersect(...$itemsShippingMethods);
+                $itemsShippingMethods = array_intersect(...$itemsShippingMethods);
+
+                return $this->getTotalQuantity() > 1 ? array_filter($itemsShippingMethods, fn(Shipping $shipping) => $shipping->getType() !== 'at_home_phlebotomist') : $itemsShippingMethods;
             }
         }
 
