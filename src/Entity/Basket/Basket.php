@@ -136,7 +136,14 @@ class Basket implements ModelInterface
         }
         $newPrice = $this->applyVoucher($subtotal);
 
-        return $this->getShipping() ? $newPrice->plus($this->getShipping()->getPrice()) : $newPrice;
+        if ($this->getShipping()) {
+            $shippingCost = $this->getShipping()->getPrice();
+            $quantity = $this->getTotalQuantity();
+            $totalShippingCost = $shippingCost->multiply($quantity);
+            $newPrice = $newPrice->plus($totalShippingCost);
+        }
+
+        return $newPrice;
     }
 
     public function getShippingAddress(): ?Address
