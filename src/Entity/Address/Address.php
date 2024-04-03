@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Address;
 
-use Stringable;
+use JsonSerializable;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Repository\AddressRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
-use function implode;
+use LML\SDK\Repository\AddressRepository;
+use Stringable;
 use function array_filter;
+use function implode;
 
 /**
  * @psalm-type S=array{
@@ -29,7 +30,7 @@ use function array_filter;
  * @implements ModelInterface<S>
  */
 #[Entity(repositoryClass: AddressRepository::class, baseUrl: 'address')]
-class Address implements ModelInterface, Stringable
+class Address implements ModelInterface, Stringable, JsonSerializable
 {
     public function __construct(
         private string $line1,
@@ -186,5 +187,10 @@ class Address implements ModelInterface, Stringable
             'state' => $this->getState(),
             'company' => $this->getCompany(),
         ];
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }
