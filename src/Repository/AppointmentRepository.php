@@ -6,17 +6,21 @@ namespace LML\SDK\Repository;
 
 use DateTime;
 use DateTimeInterface;
-use LML\SDK\Struct\Point;
-use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Entity\Brand\Brand;
-use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\Brand\Calender\DoctorSlot;
+use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Entity\ModelInterface;
-use React\Promise\PromiseInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
-use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Exception\DataNotFoundException;
+use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\SDK\Struct\Point;
+use LML\View\Lazy\ResolvedValue;
+use React\Promise\PromiseInterface;
+use Webmozart\Assert\Assert;
+use function React\Async\await;
 use function React\Promise\resolve;
 
 /**
@@ -32,6 +36,43 @@ class AppointmentRepository extends AbstractRepository
     public function getPersistenceGraph(ModelInterface $view): iterable
     {
         yield $view->getPatient();
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    public function getMonthlyCalender(DateTime $when): array
+    {
+        $url = sprintf('/appointment/video/calendar/%04d/%02d', $when->format('Y'), $when->format('m'));
+
+        /** @var PromiseInterface<array{id: string, availability: array<string, bool>}> $promise */
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+        $resolved = await($promise);
+
+        return $resolved['availability'];
+    }
+
+    /**
+     * @return list<Slot>
+     */
+    public function getSlots(DateTime $when): array
+    {
+        $url = sprintf('/appointment/video/slots/%04d/%02d/%02d', $when->format('Y'), $when->format('m'), $when->format('d'));
+
+        /** @var PromiseInterface<list<array<mixed>>> $promise */
+        $promise = $this->getClient()->getAsync(url: $url, cacheTimeout: 10);
+
+        $slots = await($promise);
+
+        $results = [];
+        foreach ($slots as $datum) {
+            $id = (string)($datum['id'] ?? throw new DataNotFoundException());
+            Assert::string($date = $datum['time'] ?? null);
+            Assert::boolean($isAvailable = $datum['available'] ?? null);
+            $results[] = new Slot($id, new DateTime($date), $isAvailable);
+        }
+
+        return $results;
     }
 
     protected function one($entity, $options, $optimizer): Appointment

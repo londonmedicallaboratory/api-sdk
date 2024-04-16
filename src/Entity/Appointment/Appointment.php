@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace LML\SDK\Entity\Appointment;
 
 use DateTimeInterface;
-use LML\SDK\Struct\Point;
+use JetBrains\PhpStorm\ExpectedValues;
 use LML\SDK\Attribute\Entity;
 use LML\SDK\Entity\Brand\Brand;
-use LML\View\Lazy\ResolvedValue;
+use LML\SDK\Entity\Brand\Calender\Slot;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
-use LML\View\Lazy\LazyValueInterface;
-use JetBrains\PhpStorm\ExpectedValues;
-use LML\SDK\Entity\Brand\Calender\Slot;
-use LML\SDK\Repository\AppointmentRepository;
 use LML\SDK\Exception\EntityNotPersistedException;
+use LML\SDK\Repository\AppointmentRepository;
+use LML\SDK\Struct\Point;
+use LML\View\Lazy\LazyValueInterface;
+use LML\View\Lazy\ResolvedValue;
 
 /**
- * @psalm-type TType = 'brand_location'|'home_visit_phlebotomist'
+ * @psalm-type TType = 'brand_location'|'home_visit_phlebotomist'|'video'
  *
  * @template TBrand of Brand
  * @template TProduct of Product
@@ -65,7 +65,7 @@ class Appointment implements ModelInterface
      *
      */
     public function __construct(
-        #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist'])]
+        #[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist', 'video'])]
         protected string $type,
         protected LazyValueInterface $brand,
         protected LazyValueInterface $location,
