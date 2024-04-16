@@ -92,6 +92,14 @@ class Appointment implements ModelInterface
         return $this->type;
     }
 
+    /**
+     * @param TType $type
+     */
+    public function setType(#[ExpectedValues(values: ['brand_location', 'home_visit_phlebotomist', 'video'])] string $type): void
+    {
+        $this->type = $type;
+    }
+
     public function getExpiresAt(): ?DateTimeInterface
     {
         return $this->expiresAt->getValue();
