@@ -5,34 +5,34 @@ declare(strict_types=1);
 namespace LML\SDK\Repository\Basket;
 
 use DateTime;
-use LogicException;
-use Webmozart\Assert\Assert;
-use LML\SDK\Lazy\LazyPromise;
-use LML\SDK\Entity\Order\Order;
-use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\Basket\Basket;
-use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Lazy\ExtraLazyPromise;
 use LML\SDK\Entity\Address\Address;
-use React\Promise\PromiseInterface;
-use LML\SDK\Entity\Voucher\Voucher;
-use LML\SDK\Service\Visitor\Visitor;
+use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Entity\Basket\Basket;
 use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Order\Order;
 use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\Voucher\Voucher;
+use LML\SDK\Exception\DataNotFoundException;
+use LML\SDK\Lazy\ExtraLazyPromise;
+use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Repository\AddressRepository;
 use LML\SDK\Repository\BrandRepository;
+use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\OrderRepository;
 use LML\SDK\Repository\ProductRepository;
-use LML\SDK\Repository\AddressRepository;
-use LML\SDK\Repository\VoucherRepository;
-use LML\SDK\Repository\CustomerRepository;
 use LML\SDK\Repository\ShippingRepository;
+use LML\SDK\Repository\VoucherRepository;
 use LML\SDK\Service\API\AbstractRepository;
-use LML\SDK\Entity\Appointment\Appointment;
-use LML\SDK\Exception\DataNotFoundException;
-use function sprintf;
+use LML\SDK\Service\Visitor\Visitor;
+use LML\View\Lazy\ResolvedValue;
+use LogicException;
+use React\Promise\PromiseInterface;
+use Webmozart\Assert\Assert;
 use function array_map;
 use function React\Async\await;
+use function sprintf;
 
 /**
  * @psalm-import-type S from Basket
@@ -73,6 +73,16 @@ class BasketRepository extends AbstractRepository
         return $this->get(OrderRepository::class)->find($orderId, true) ?? throw new LogicException('Order not found');
     }
 
+    public function createNew(): Basket
+    {
+        $basket = new Basket();
+        $this->persist($basket);
+        $this->flush();
+        $this->visitor->setBasketId($basket->getId());
+
+        return $basket;
+    }
+
     protected function one($entity, $options, $optimizer): Basket
     {
         $id = $entity['id'];
@@ -101,16 +111,6 @@ class BasketRepository extends AbstractRepository
     protected function getCacheTimeout(): ?int
     {
         return 5;
-    }
-
-    private function createNew(): Basket
-    {
-        $basket = new Basket();
-        $this->persist($basket);
-        $this->flush();
-        $this->visitor->setBasketId($basket->getId());
-
-        return $basket;
     }
 
     /**
