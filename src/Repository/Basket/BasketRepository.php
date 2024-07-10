@@ -12,6 +12,7 @@ use LML\SDK\Entity\Basket\BasketItem;
 use LML\SDK\Entity\Customer\Customer;
 use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Order\Order;
+use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Exception\DataNotFoundException;
@@ -81,6 +82,16 @@ class BasketRepository extends AbstractRepository
         $this->visitor->setBasketId($basket->getId());
 
         return $basket;
+    }
+
+    /**
+     * @return PromiseInterface<list<Product>>
+     */
+    public function findAddOns(Basket $basket): PromiseInterface
+    {
+        $url = sprintf('/basket/%s/add-ons', $basket->getId());
+
+        return $this->get(ProductRepository::class)->findBy(url: $url);
     }
 
     protected function one($entity, $options, $optimizer): Basket
