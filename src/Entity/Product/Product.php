@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Product;
 
-use Stringable;
 use LML\SDK\Attribute\Entity;
+use LML\SDK\Entity\Biomarker\Biomarker;
+use LML\SDK\Entity\Category\Category;
 use LML\SDK\Entity\File\File;
 use LML\SDK\Entity\File\Video;
 use LML\SDK\Entity\ModelInterface;
-use React\Promise\PromiseInterface;
-use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\Category\Category;
+use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Shipping\Shipping;
 use LML\SDK\Entity\SluggableInterface;
-use LML\SDK\Entity\Biomarker\Biomarker;
-use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Repository\ProductRepository;
+use LML\View\Lazy\LazyValueInterface;
+use React\Promise\PromiseInterface;
+use Stringable;
 use function React\Promise\all;
 use function React\Promise\resolve;
 
@@ -33,6 +33,8 @@ use function React\Promise\resolve;
  *      preview_image_url: ?string,
  *      price?: array{amount_minor: int, currency: string, formatted_value: string},
  *      discounted_price?: ?array{amount_minor: int, currency: string, formatted_value: string},
+ *      turnaround_time?: ?string,
+ *      sample_collection_instructions?: ?string,
  * }
  *
  * @implements ModelInterface<S>
