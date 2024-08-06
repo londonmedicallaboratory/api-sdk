@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace LML\SDK\Entity\Basket;
 
-use RuntimeException;
 use Brick\Money\Money;
 use LML\SDK\Attribute\Entity;
-use LML\SDK\Entity\Money\Price;
-use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Entity\Product\Product;
-use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Entity\Address\Address;
-use LML\SDK\Entity\Patient\Patient;
-use LML\SDK\Entity\Shipping\Shipping;
-use LML\SDK\Entity\Customer\Customer;
-use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\Money\PriceInterface;
 use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Entity\Customer\Customer;
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Money\Price;
+use LML\SDK\Entity\Money\PriceInterface;
+use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Product\Product;
+use LML\SDK\Entity\Shipping\Shipping;
+use LML\SDK\Entity\Voucher\Voucher;
 use LML\SDK\Exception\DataNotFoundException;
 use LML\SDK\Repository\Basket\BasketRepository;
+use LML\View\Lazy\LazyValueInterface;
+use LML\View\Lazy\ResolvedValue;
+use RuntimeException;
 use function array_map;
 use function array_reduce;
 
@@ -233,15 +233,10 @@ class Basket implements ModelInterface
     public function getAvailableShippingMethods(): array
     {
         $itemsShippingMethods = array_map(fn(BasketItem $basketItem) => $basketItem->getProduct()->getShippingTypes(), $this->getItems());
-        foreach ($itemsShippingMethods as $itemShippingMethods) {
-            if (!empty($itemShippingMethods)) {
-                $itemsShippingMethods = array_intersect(...$itemsShippingMethods);
+        $itemsShippingMethods = array_filter($itemsShippingMethods, fn(array $itemsShippingMethods) => !empty($itemsShippingMethods));
+        $itemsShippingMethods = array_intersect(...$itemsShippingMethods);
 
-                return $this->getTotalQuantity() > 1 ? array_filter($itemsShippingMethods, fn(Shipping $shipping) => $shipping->getType() !== 'at_home_phlebotomist') : $itemsShippingMethods;
-            }
-        }
-
-        return [];
+        return $this->getTotalQuantity() > 1 ? array_filter($itemsShippingMethods, fn(Shipping $shipping) => $shipping->getType() !== 'at_home_phlebotomist') : $itemsShippingMethods;
     }
 
     public function setQuantityForProduct(Product $product, int $quantity): void
