@@ -205,6 +205,11 @@ class TestRegistration implements ModelInterface
         return $this->clinicalDetails;
     }
 
+    public function setIncludeHumanityProduct(bool $includeHumanityProduct): void
+    {
+        $this->includeHumanityProduct = $includeHumanityProduct;
+    }
+
     public function includeHumanityProduct(): bool
     {
         return $this->includeHumanityProduct;
