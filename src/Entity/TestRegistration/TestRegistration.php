@@ -7,14 +7,14 @@ namespace LML\SDK\Entity\TestRegistration;
 use DateTime;
 use DateTimeInterface;
 use LML\SDK\Attribute\Entity;
-use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Address\Address;
+use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Entity\ModelInterface;
 use LML\SDK\Entity\Patient\Patient;
 use LML\SDK\Entity\Product\Product;
-use LML\View\Lazy\LazyValueInterface;
-use LML\SDK\Entity\Appointment\Appointment;
 use LML\SDK\Repository\TestRegistrationRepository;
+use LML\View\Lazy\LazyValueInterface;
+use LML\View\Lazy\ResolvedValue;
 use function array_map;
 
 
@@ -57,6 +57,7 @@ use function array_map;
  *      short_code?: ?string,
  *      parent_id?: ?string,
  *      lab_id?: ?string,
+ *      include_humanity_product?: bool,
  *      uk_address?: null|array{
  *          id?: ?string,
  *          line1: string,
@@ -105,6 +106,7 @@ class TestRegistration implements ModelInterface
         protected ?string $doctorsName = null,
         protected string $id = '',
         protected ?string $clinicalDetails = null,
+        protected bool $includeHumanityProduct = false,
     )
     {
     }
@@ -203,6 +205,16 @@ class TestRegistration implements ModelInterface
         return $this->clinicalDetails;
     }
 
+    public function setIncludeHumanityProduct(bool $includeHumanityProduct): void
+    {
+        $this->includeHumanityProduct = $includeHumanityProduct;
+    }
+
+    public function includeHumanityProduct(): bool
+    {
+        return $this->includeHumanityProduct;
+    }
+
     public function toArray(): array
     {
         $patient = $this->getPatient();
@@ -231,6 +243,7 @@ class TestRegistration implements ModelInterface
             'appointment_id' => $this->getAppointment()?->getId(),
             'status' => $this->getStatus()->value,
             'clinical_details' => $this->getClinicalDetails(),
+            'include_humanity_product' => $this->includeHumanityProduct(),
         ];
     }
 }
