@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace LML\SDK\Repository;
 
 use DateTime;
-use LML\SDK\Lazy\LazyPromise;
-use LML\View\Lazy\ResolvedValue;
-use LML\SDK\Entity\ModelInterface;
-use LML\SDK\Entity\Product\Product;
-use React\Promise\PromiseInterface;
-use LML\SDK\Entity\Patient\Patient;
-use LML\SDK\Service\API\AbstractRepository;
 use LML\SDK\Entity\Appointment\Appointment;
+use LML\SDK\Entity\ModelInterface;
+use LML\SDK\Entity\Patient\Patient;
+use LML\SDK\Entity\Product\Product;
 use LML\SDK\Entity\TestRegistration\TestRegistration;
 use LML\SDK\Entity\TestRegistration\TestRegistrationStatusEnum;
-use function sprintf;
+use LML\SDK\Lazy\LazyPromise;
+use LML\SDK\Service\API\AbstractRepository;
+use LML\View\Lazy\ResolvedValue;
+use React\Promise\PromiseInterface;
 use function React\Async\await;
+use function sprintf;
 
 /**
  * @psalm-import-type S from TestRegistration
@@ -62,6 +62,7 @@ class TestRegistrationRepository extends AbstractRepository
             doctorsName: $entity['doctors_name'] ?? null,
             id: $id,
             clinicalDetails: $entity['clinical_details'] ?? null,
+            includeHumanityProduct: $entity['include_humanity_product'] ?? false,
         );
     }
 
