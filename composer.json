@@ -15,41 +15,33 @@
     ],
     "require": {
         "php": "^8.1",
-        "symfony/http-kernel": "^6",
-        "symfony/http-client": "^6",
+        "symfony/http-kernel": "^6|^7",
+        "symfony/http-client": "^6|^7",
         "endroid/installer": "^1.4",
         "londonmedicallaboratory/view-bundle": "dev-master",
         "react/http": "^1.7",
         "brick/money": "^0.5.3",
-        "symfony/twig-bundle": "^6",
+        "symfony/twig-bundle": "^6|^7",
         "omnipay/sagepay": "dev-feature/pi-protocol-4",
-        "symfony/intl": "^6",
-        "sensio/framework-extra-bundle": "^6",
+        "symfony/intl": "^6|^7",
         "twig/extra-bundle": "^3.4",
         "twig/string-extra": "^3.4",
-        "symfony/framework-bundle": "^6",
-        "symfony/form": "^6",
+        "symfony/framework-bundle": "^6|^7",
+        "symfony/form": "^6|^7",
         "webmozart/assert": "^1.11",
-        "symfony/security-bundle": "^6",
+        "symfony/security-bundle": "^6|^7",
         "nyholm/psr7": "^1.7",
         "php-http/httplug": "^2.4",
         "react/async": "^4.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "vimeo/psalm": "^5.18.0",
-        "psalm/plugin-symfony": "dev-symfony-forms-6.3-compatibility",
-        "symfony/phpunit-bridge": "^6",
-        "symfony/yaml": "^6",
-        "symfony/stopwatch": "^6",
-        "bocmah/psalm-reactphp-promise-plugin": "dev-main",
-        "symfony/web-profiler-bundle": "^6"
+        "symfony/phpunit-bridge": "^6|^7",
+        "symfony/yaml": "^6|^7",
+        "symfony/stopwatch": "^6|^7",
+        "symfony/web-profiler-bundle": "^6|^7"
     },
     "repositories": [
-        {
-            "type": "github",
-            "url": "https://github.com/zmitic/psalm-reactphp-promise-plugin.git"
-        },
         {
             "type": "github",
             "url": "https://github.com/londonmedicallaboratory/view-bundle.git"
@@ -57,10 +49,6 @@
         {
             "type": "github",
             "url": "https://github.com/benjam-es/omnipay-sagepay"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/zmitic/psalm-plugin-symfony.git"
         }
     ],
     "autoload": {
@@ -80,7 +68,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "6.0.*"
+            "require": "^7"
         }
     },
     "config": {
