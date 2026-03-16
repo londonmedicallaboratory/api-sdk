@@ -28,8 +28,6 @@
         "twig/extra-bundle": "^3.4",
         "twig/string-extra": "^3.4",
         "symfony/framework-bundle": "^6",
-        "strictify/form-mapper-bundle": "dev-master",
-        "strictify/goodies-bundle": "dev-master",
         "symfony/form": "^6",
         "webmozart/assert": "^1.11",
         "symfony/security-bundle": "^6",
@@ -50,19 +48,11 @@
     "repositories": [
         {
             "type": "github",
-            "url": "https://github.com/strictify/form-mapper-bundle"
-        },
-        {
-            "type": "github",
             "url": "https://github.com/zmitic/psalm-reactphp-promise-plugin.git"
         },
         {
             "type": "github",
             "url": "https://github.com/londonmedicallaboratory/view-bundle.git"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/strictify/goodies-bundle.git"
         },
         {
             "type": "github",
